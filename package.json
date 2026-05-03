@@ -1,0 +1,15 @@
+{
+  "name": "huellas",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "Mobile",
+    "Server",
+    "Shared"
+  ],
+  "scripts": {
+    "mobile": "npm --workspace @huellas/mobile run start",
+    "server": "npm --workspace @huellas/server run dev",
+    "build": "npm --workspaces run build --if-present"
+  }
+}

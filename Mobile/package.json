@@ -1,0 +1,25 @@
+{
+  "name": "@huellas/mobile",
+  "version": "1.0.0",
+  "private": true,
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "axios": "latest",
+    "expo": "latest",
+    "expo-location": "latest",
+    "react": "latest",
+    "react-native": "latest",
+    "react-native-svg": "latest",
+    "zustand": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "typescript": "latest"
+  }
+}
