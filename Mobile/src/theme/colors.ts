@@ -19,6 +19,7 @@ export const colors = {
   gray900: "#111827",
 
   background: "#F1EEEE",
+  like: "#FFB0B0",
 
   //Texto
   textPrimary: "#111827",
