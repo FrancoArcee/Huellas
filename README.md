@@ -1,4 +1,4 @@
-# 🐾 Adopta
+# 🐾 Huellas
 
 Plataforma móvil para centralizar y facilitar la adopción de animales, conectando adoptantes con refugios y rescatistas.
 
