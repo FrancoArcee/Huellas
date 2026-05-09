@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "Huellas",
+    "slug": "huellas-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.huellas.app"
+    },
+    "android": {
+      "package": "com.huellas.app"
+    }
+  }
+}
