@@ -10,4 +10,4 @@ export const theme = {
 
 export type Theme = typeof theme;
 
-export { colors, typography, spacing  };
+export { colors, typography, spacing };

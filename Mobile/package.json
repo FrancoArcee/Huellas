@@ -2,24 +2,31 @@
   "name": "@huellas/mobile",
   "version": "1.0.0",
   "private": true,
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
+    "start-nocached": "expo start -c",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/native": "^7.2.4",
+    "@react-navigation/native-stack": "^7.14.14",
     "axios": "latest",
-    "expo": "latest",
-    "expo-location": "latest",
-    "react": "latest",
-    "react-native": "latest",
-    "react-native-svg": "latest",
+    "expo": "~54.0.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.2",
+    "react-native-screens": "~4.16.0",
+    "react-native-svg": "15.12.1",
+    "react-native-svg-transformer": "^1.5.3",
+    "react-native-web": "^0.21.0",
     "zustand": "latest"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "typescript": "latest"
+    "@types/react": "~19.1.10",
+    "typescript": "~5.9.2"
   }
 }
