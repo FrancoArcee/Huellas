@@ -29,7 +29,7 @@ export const RegisterScreen = ({ navigation }: any) => {
 
         <Button 
           title="Registrarme" 
-          onPress={() => {}} 
+          onPress={() => navigation.navigate('Home')} 
         />
 
         <TouchableOpacity onPress={() => navigation.goBack()}>

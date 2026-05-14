@@ -16,19 +16,19 @@ export const LogInScreen = ({ navigation }: any) => {
       </View>
 
       <View style={styles.form}>
-        <CustomInput 
+        <CustomInput
           label="Correo electrónico"
           placeholder="Correo electrónico"
         />
-        <CustomInput 
+        <CustomInput
           label="Contraseña"
           placeholder="Contraseña"
           secureTextEntry
         />
 
-        <Button 
-          title="Iniciar Sesión" 
-          onPress={() => console.log('Login press')} 
+        <Button
+          title="Iniciar Sesión"
+          onPress={() => navigation.navigate('Home')}
           style={styles.loginButton}
         />
 
@@ -44,11 +44,11 @@ export const LogInScreen = ({ navigation }: any) => {
           <View style={styles.line} />
         </View>
 
-        <Button 
-          title="Continuar con Google" 
+        <Button
+          title="Continuar con Google"
           icon={GoogleSvg}
           iconPosition='left'
-          onPress={() => {}} 
+          onPress={() => { }}
           style={styles.googleButton}
           textColor={theme.colors.black}
         />
