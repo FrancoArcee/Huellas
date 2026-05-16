@@ -18,8 +18,8 @@ export default function ExploreRoute() {
           headerLeft: () => (
             <View style={{ marginLeft: 16 }}>
               <BackIcon
-                width={32}
-                height={32}
+                width={26}
+                height={26}
               />
             </View>
           ),
