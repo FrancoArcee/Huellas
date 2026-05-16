@@ -25,7 +25,7 @@ export default function FavoritesRoute() {
           ),
         }}
       />
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+      <View style={[styles.container, { paddingTop: insets.top + 20, paddingBottom: insets.bottom }]}>
         <CustomText variant="h2">Favoritos</CustomText>
       </View>
     </>

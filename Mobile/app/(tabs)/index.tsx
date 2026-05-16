@@ -15,7 +15,7 @@ export default function HomeRoute() {
           title: 'Inicio',
         }}
       />
-      <View style={{ flex: 1, paddingTop: insets.top }}>
+      <View style={{ flex: 1, paddingTop: insets.top + 20 }}>
         <HomeScreen />
       </View>
     </>

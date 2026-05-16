@@ -25,7 +25,7 @@ export default function ExploreRoute() {
           ),
         }}
       />
-      <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
+      <View style={[styles.container, { paddingTop: insets.top + 20, paddingBottom: insets.bottom }]}>
         <CustomText variant="h2">Explorar</CustomText>
       </View>
     </>
