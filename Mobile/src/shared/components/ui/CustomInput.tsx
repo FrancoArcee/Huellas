@@ -17,7 +17,7 @@ export const CustomInput = ({ label, placeholder, secureTextEntry, value, onChan
       <CustomText variant="h3" style={styles.label}>
         {label}
       </CustomText>
-      <TextInput 
+      <TextInput
         style={styles.input}
         placeholder={placeholder}
         placeholderTextColor={theme.colors.gray500}
@@ -30,17 +30,17 @@ export const CustomInput = ({ label, placeholder, secureTextEntry, value, onChan
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    marginBottom: theme.spacing.md, 
-    width: '100%' 
+  container: {
+    marginBottom: theme.spacing.md,
+    width: '100%'
   },
-  label: { 
-    marginBottom: 8, 
-    fontFamily: theme.typography.fontFamily.bold 
+  label: {
+    marginBottom: 8,
+    fontFamily: theme.typography.fontFamily.bold
   },
   input: {
-    backgroundColor: theme.colors.gray100, 
-    borderRadius: 12,
+    backgroundColor: theme.colors.gray100,
+    borderRadius: 100,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
