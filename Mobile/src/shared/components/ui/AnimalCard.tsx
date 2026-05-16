@@ -1,14 +1,15 @@
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ImageSourcePropType } from "react-native";
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, ImageSourcePropType, Pressable } from "react-native";
 import LocationIcon from "../../../assets/icons/location.svg";
 import LikeIcon from "../../../assets/icons/like.svg";
 import { Animal } from "../../../../../Shared/types/animal";
-
+import { Link } from 'expo-router';
 interface AnimalCardProps extends Animal {
   isFavorite?: boolean;
   onFavoritePress?: () => void;
 }
 
 export function AnimalCard({
+  id,
   name,
   photoUri,
   distanceKm,
@@ -23,44 +24,44 @@ export function AnimalCard({
     typeof photoUri === "string" ? { uri: photoUri } : photoUri;
 
   return (
-    <View style={styles.card}>
-      <ImageBackground
-        source={imageSource}
-        style={styles.image}
-        imageStyle={styles.imageStyle}
-        resizeMode="cover"
-      >
-        {/* Top row: distance badge + favorite button */}
-        <View style={styles.topRow}>
-          <View style={styles.distanceBadge}>
-            <LocationIcon width={16} height={20} />
-            <Text style={styles.distanceText}>{distanceKm} km</Text>
+    <Link href={`animal/${id}`} asChild>
+      <Pressable style={styles.card}>
+        <ImageBackground
+          source={imageSource}
+          style={styles.image}
+          imageStyle={styles.imageStyle}
+          resizeMode="cover"
+        >
+          <View style={styles.topRow}>
+            <View style={styles.distanceBadge}>
+              <LocationIcon width={16} height={20} />
+              <Text style={styles.distanceText}>{distanceKm} km</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.favoriteButton}
+              onPress={onFavoritePress}
+              activeOpacity={0.8}
+            >
+              <LikeIcon
+                width={22}
+                height={20}
+                fill={isFavorite ? "#ff6b8a" : "none"}
+                stroke={isFavorite ? "#ff6b8a" : "#000000"}
+              />
+            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.favoriteButton}
-            onPress={onFavoritePress}
-            activeOpacity={0.8}
-          >
-            <LikeIcon
-              width={22}
-              height={20}
-              fill={isFavorite ? "#ff6b8a" : "none"}
-              stroke={isFavorite ? "#ff6b8a" : "#000000"}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Gradient overlay + info at bottom */}
-        <View style={styles.gradient}>
-          <Text style={styles.animalName}>{name}</Text>
-          <Text style={styles.animalDetails}>
-            {type} · {gender} · {age}
-          </Text>
-          <Text style={styles.animalWeight}>{weightKg} KG</Text>
-        </View>
-      </ImageBackground>
-    </View>
+          <View style={styles.gradient}>
+            <Text style={styles.animalName}>{name}</Text>
+            <Text style={styles.animalDetails}>
+              {type} · {gender} · {age}
+            </Text>
+            <Text style={styles.animalWeight}>{weightKg} KG</Text>
+          </View>
+        </ImageBackground>
+      </Pressable>
+    </Link>
   );
 }
 
