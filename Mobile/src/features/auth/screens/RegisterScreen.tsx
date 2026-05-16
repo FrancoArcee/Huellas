@@ -5,8 +5,9 @@ import { CustomText } from '../../../shared/components/ui/CustomText';
 import { CustomInput } from '../../../shared/components/ui/CustomInput';
 import { Button } from '../../../shared/components/ui/Button';
 import LogoSvg from '../../../assets/images/logo.svg';
+import { Link } from 'expo-router';
 
-export const RegisterScreen = ({ navigation }: any) => {
+export const RegisterScreen = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       <View style={styles.header}>
@@ -21,22 +22,24 @@ export const RegisterScreen = ({ navigation }: any) => {
         <CustomInput label="Contraseña" placeholder="Contraseña" secureTextEntry />
 
         <View style={styles.checkboxContainer}>
-          <View style={styles.checkbox} /> 
+          <View style={styles.checkbox} />
           <CustomText variant="caption" style={{ marginLeft: 10 }}>
             Acepto los términos y condiciones
           </CustomText>
         </View>
 
-        <Button 
-          title="Registrarme" 
-          onPress={() => {}} 
+        <Button
+          title="Registrarme"
+          href="/(tabs)"
         />
 
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <CustomText variant="body" style={styles.footerText}>
-            Ya tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Inicia sesión</CustomText>
-          </CustomText>
-        </TouchableOpacity>
+        <Link href="/(auth)/login" asChild>
+          <TouchableOpacity>
+            <CustomText variant="body" style={styles.footerText}>
+              Ya tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Inicia sesión</CustomText>
+            </CustomText>
+          </TouchableOpacity>
+        </Link>
       </View>
     </ScrollView>
   );
@@ -45,9 +48,9 @@ export const RegisterScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background, paddingHorizontal: 24 },
   header: { alignItems: 'center', marginTop: 40, marginBottom: 20 },
-  appName: { marginTop: 5, fontWeight: 'bold' },
+  appName: { marginTop: 5, fontWeight: 'bold', color: theme.colors.primaryDark },
   form: { width: '100%' },
-  checkboxContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 15 },
+  checkboxContainer: { justifyContent: "center", flexDirection: 'row', alignItems: 'center', marginVertical: 15 },
   checkbox: { width: 18, height: 18, borderRadius: 4, borderWidth: 1, borderColor: theme.colors.gray400 },
   footerText: { textAlign: 'center', marginTop: 20 }
 });
