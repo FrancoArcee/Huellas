@@ -5,6 +5,7 @@ import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
 import { Navbar } from '../../../shared/components/layout/Navbar';
 import { CategoryCarousel } from '../components/CategoryCarousel';
+import { AnimalsCarousel } from '../components/AnimalsCarousel';
 
 export const HomeScreen = () => {
   return (
@@ -44,7 +45,7 @@ export const HomeScreen = () => {
           <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
             Cerca tuyo
           </CustomText>
-          {/* Espacio reservado para el componente de cards (a implementar por el equipo) */}
+          <AnimalsCarousel />
           <View style={styles.cardsPlaceholder} />
         </View>
       </ScrollView>
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
   titleSection: {
     paddingHorizontal: theme.spacing['2xl'],
     marginBottom: theme.spacing['2xl'],
+    fontFamily: theme.typography.fontFamily.bold,
   },
   section: {
     paddingHorizontal: theme.spacing['2xl'],
