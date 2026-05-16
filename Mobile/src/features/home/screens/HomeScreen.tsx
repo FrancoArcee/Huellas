@@ -10,43 +10,37 @@ export const HomeScreen = () => {
   return (
     <View style={styles.screen}>
       {/* Contenido principal con scroll */}
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Título */}
-        <View style={styles.titleSection}>
-          <CustomText variant="h4" color="textPrimary">
-            Adoptá
-          </CustomText>
-          <CustomText variant="h1" color="black">
-            tu próximo compañero
-          </CustomText>
-        </View>
+      {/* Título */}
+      <View style={styles.titleSection}>
+        <CustomText variant="h4" color="textPrimary">
+          Adoptá
+        </CustomText>
+        <CustomText variant="h1" color="black">
+          tu próximo compañero
+        </CustomText>
+      </View>
 
-        {/* Barra de búsqueda + filtros */}
-        <View style={styles.section}>
-          <SearchBar />
-        </View>
+      {/* Barra de búsqueda + filtros */}
+      <View style={styles.section}>
+        <SearchBar />
+      </View>
 
-        {/* Categorías */}
-        <View style={styles.sectionWithTitle}>
-          <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
-            Categorias
-          </CustomText>
-          <CategoryCarousel />
-        </View>
+      {/* Categorías */}
+      <View style={styles.sectionWithTitle}>
+        <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
+          Categorias
+        </CustomText>
+        <CategoryCarousel />
+      </View>
 
-        {/* Sección "Cerca tuyo" — espacio reservado para las cards */}
-        <View style={styles.sectionWithTitle}>
-          <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
-            Cerca tuyo
-          </CustomText>
-          <AnimalsCarousel />
-          <View style={styles.cardsPlaceholder} />
-        </View>
-      </ScrollView>
+      {/* Sección "Cerca tuyo" — espacio reservado para las cards */}
+      <View style={styles.sectionWithTitle}>
+        <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
+          Cerca tuyo
+        </CustomText>
+        <AnimalsCarousel />
+        <View style={styles.cardsPlaceholder} />
+      </View>
     </View>
   );
 };
