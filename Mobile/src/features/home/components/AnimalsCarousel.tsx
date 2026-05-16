@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AnimalCard } from "../../../shared/components/ui/AnimalCard";
 import { animalMocks } from "../../../mocks/animalsMocks";
 
-export function AnimalsCarousel({}) {
+export function AnimalsCarousel({ }) {
   const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
 
   return (

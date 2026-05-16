@@ -6,8 +6,9 @@ import { CustomInput } from '../../../shared/components/ui/CustomInput';
 import { Button } from '../../../shared/components/ui/Button';
 import LogoSvg from '../../../assets/images/logo.svg';
 import GoogleSvg from '../../../assets/icons/google.svg';
+import { Link } from 'expo-router';
 
-export const LogInScreen = ({ navigation }: any) => {
+export const LogInScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -28,15 +29,17 @@ export const LogInScreen = ({ navigation }: any) => {
 
         <Button
           title="Iniciar Sesión"
-          onPress={() => navigation.navigate('Home')}
+          href="/(tabs)"
           style={styles.loginButton}
         />
 
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <CustomText variant="body" style={styles.footerText}>
-            No tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Regístrate</CustomText>
-          </CustomText>
-        </TouchableOpacity>
+        <Link href="/(auth)/register" asChild>
+          <TouchableOpacity>
+            <CustomText variant="body" style={styles.footerText}>
+              No tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Regístrate</CustomText>
+            </CustomText>
+          </TouchableOpacity>
+        </Link>
 
         <View style={styles.separatorContainer}>
           <View style={styles.line} />
@@ -49,6 +52,7 @@ export const LogInScreen = ({ navigation }: any) => {
           icon={GoogleSvg}
           iconPosition='left'
           onPress={() => { }}
+          disabled={true}
           style={styles.googleButton}
           textColor={theme.colors.black}
         />
@@ -60,7 +64,7 @@ export const LogInScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background, padding: 24 },
   header: { alignItems: 'center', marginTop: 40, marginBottom: 30 },
-  appName: { marginTop: 10, fontWeight: 'bold' },
+  appName: { marginTop: 10, fontWeight: 'bold', color: theme.colors.primaryDark },
   form: { width: '100%' },
   loginButton: { marginTop: 10 },
   footerText: { textAlign: 'center', marginTop: 20 },

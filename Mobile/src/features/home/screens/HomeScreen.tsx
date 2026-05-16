@@ -3,14 +3,12 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
-import { Navbar } from '../../../shared/components/layout/Navbar';
 import { CategoryCarousel } from '../components/CategoryCarousel';
 import { AnimalsCarousel } from '../components/AnimalsCarousel';
 
 export const HomeScreen = () => {
   return (
     <View style={styles.screen}>
-
       {/* Contenido principal con scroll */}
       <ScrollView
         style={styles.scroll}
@@ -49,9 +47,6 @@ export const HomeScreen = () => {
           <View style={styles.cardsPlaceholder} />
         </View>
       </ScrollView>
-
-      {/* Navbar fijo en la parte inferior */}
-      <Navbar activeTab="home" />
     </View>
   );
 };
