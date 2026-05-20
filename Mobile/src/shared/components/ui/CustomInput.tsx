@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from './CustomText';
 
@@ -9,16 +9,28 @@ interface Props {
   secureTextEntry?: boolean;
   value?: string;
   onChangeText?: (text: string) => void;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  inputStyle?: StyleProp<TextStyle>;
 }
 
-export const CustomInput = ({ label, placeholder, secureTextEntry, value, onChangeText }: Props) => {
+export const CustomInput = ({
+  label,
+  placeholder,
+  secureTextEntry,
+  value,
+  onChangeText,
+  style,
+  labelStyle,
+  inputStyle,
+}: Props) => {
   return (
-    <View style={styles.container}>
-      <CustomText variant="h3" style={styles.label}>
+    <View style={[styles.container, style]}>
+      <CustomText variant="h3" style={[styles.label, labelStyle]}>
         {label}
       </CustomText>
       <TextInput
-        style={styles.input}
+        style={[styles.input, inputStyle]}
         placeholder={placeholder}
         placeholderTextColor={theme.colors.gray500}
         secureTextEntry={secureTextEntry}
