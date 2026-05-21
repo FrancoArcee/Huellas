@@ -1,12 +1,23 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
 import { CategoryCarousel } from '../components/CategoryCarousel';
 import { AnimalsCarousel } from '../components/AnimalsCarousel';
+import { FilterBottomSheet } from '../components/FilterBottomSheet';
 
 export const HomeScreen = () => {
+  const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
+
+  const openFilterSheet = () => {
+    setIsFilterSheetVisible(true);
+  };
+
+  const closeFilterSheet = () => {
+    setIsFilterSheetVisible(false);
+  };
+
   return (
     <View style={styles.screen}>
       {/* Contenido principal con scroll */}
@@ -22,7 +33,7 @@ export const HomeScreen = () => {
 
       {/* Barra de búsqueda + filtros */}
       <View style={styles.section}>
-        <SearchBar />
+        <SearchBar onFilterPress={openFilterSheet} />
       </View>
 
       {/* Categorías */}
@@ -41,6 +52,8 @@ export const HomeScreen = () => {
         <AnimalsCarousel />
         <View style={styles.cardsPlaceholder} />
       </View>
+
+      <FilterBottomSheet visible={isFilterSheetVisible} onClose={closeFilterSheet} />
     </View>
   );
 };

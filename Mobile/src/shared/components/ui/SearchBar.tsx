@@ -4,7 +4,11 @@ import { theme } from '../../../theme';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
 import FilterIcon from '../../../assets/icons/buttons/filter.svg';
 
-export const SearchBar = () => {
+interface SearchBarProps {
+  onFilterPress?: () => void;
+}
+
+export const SearchBar = ({ onFilterPress }: SearchBarProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -20,8 +24,7 @@ export const SearchBar = () => {
         />
       </View>
 
-      {/* Botón de filtros — la modal de filtros se implementará aparte */}
-      <TouchableOpacity style={styles.filterButton} activeOpacity={0.8}>
+      <TouchableOpacity style={styles.filterButton} activeOpacity={0.8} onPress={onFilterPress}>
         <FilterIcon width={18} height={18} fill={theme.colors.white} />
       </TouchableOpacity>
     </View>
