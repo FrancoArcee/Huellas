@@ -10,10 +10,15 @@ export const typography = {
 
   //Variantes de tamaños y estilos para cada tipo de texto
   variants: {
+    hero: {
+      fontFamily: "Poppins_600SemiBold",
+      fontSize: 38,
+      lineHeight: 46,
+    },
     h1: {
       fontFamily: "Poppins_700Bold",
-      fontSize: 32,
-      lineHeight: 40,
+      fontSize: 34,
+      lineHeight: 42,
     },
     h2: {
       fontFamily: "Poppins_700Bold",
