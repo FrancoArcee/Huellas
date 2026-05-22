@@ -24,7 +24,7 @@ export function AnimalCard({
     typeof photoUri === "string" ? { uri: photoUri } : photoUri;
 
   return (
-    <Link href={`animal/${id}`} asChild>
+    <Link href={`/animals/${id}`} asChild>
       <Pressable style={styles.card}>
         <ImageBackground
           source={imageSource}

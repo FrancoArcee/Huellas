@@ -10,6 +10,8 @@ import {
 import { useRouter } from 'expo-router';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
+import ChevronBackSvg from '../../../assets/icons/buttons/chevronBack.svg';
+import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
 import WhatsAppSvg from '../../../assets/icons/whatsapp.svg';
 import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
@@ -119,7 +121,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                   (pressed || backHovered) && styles.iconButtonActive,
                 ]}
               >
-                <CustomText style={styles.backIcon}>‹</CustomText>
+                <ChevronBackSvg width={11} height={14} />
               </Pressable>
 
               <Pressable
@@ -135,9 +137,12 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                   (pressed || likeHovered) && styles.iconButtonActive,
                 ]}
               >
-                <CustomText style={[styles.heartIcon, liked && styles.heartIconSelected]}>
-                  ♥
-                </CustomText>
+                <LikeIcon
+                  width={25}
+                  height={23}
+                  fill={liked ? '#ff6b8a' : 'none'}
+                  stroke={liked ? '#ff6b8a' : theme.colors.white}
+                />
               </Pressable>
             </View>
           </ImageBackground>
@@ -226,7 +231,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     flex: 1,
     width: '100%',
-    maxWidth: 390,
     backgroundColor: theme.colors.background,
   },
   scroll: {
@@ -262,23 +266,6 @@ const styles = StyleSheet.create({
   },
   likeButtonSelected: {
     backgroundColor: 'rgba(52, 67, 27, 0.9)',
-  },
-  backIcon: {
-    marginTop: -3,
-    color: theme.colors.white,
-    fontFamily: roundedFont,
-    fontSize: 35,
-    lineHeight: 38,
-  },
-  heartIcon: {
-    color: '#FFB0B0',
-    fontFamily: roundedBold,
-    fontSize: 29,
-    fontWeight: '800',
-    lineHeight: 34,
-  },
-  heartIconSelected: {
-    color: '#FF6E82',
   },
   body: {
     width: '100%',
