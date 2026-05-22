@@ -174,7 +174,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
             </View>
 
             <View style={styles.locationRow}>
-              <LocationSvg width={22} height={22} />
+              <LocationSvg width={22} height={22} color="#4E4A4A" />
               <CustomText variant="p" style={styles.locationText}>
                 {animal.location}
               </CustomText>
