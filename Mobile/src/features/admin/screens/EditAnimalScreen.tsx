@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,8 @@ import { usePublicacionesStore } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { validateStep, validateAll, sanitizeNumericInput } from '../utils/validateAnimalForm';
 
 type AnimalFormData = {
   nombre: string;
@@ -28,8 +30,9 @@ type AnimalFormData = {
   imagen?: string;
 };
 
-export default function EditAnimalScreen({ route, navigation }: any) {
-  const { id } = route.params; // ID de la publicación a editar
+export default function EditAnimalScreen() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { publicaciones, editarPublicacion } = usePublicacionesStore();
   const [step, setStep] = useState(1);
 
@@ -46,55 +49,56 @@ export default function EditAnimalScreen({ route, navigation }: any) {
     imagen: '',
   });
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
 
-  // Cargar datos al montar la pantalla
   useEffect(() => {
     const pub = publicaciones.find(p => p.id === id);
     if (pub) {
       setFormData(pub);
     } else {
       Alert.alert('Error', 'Publicación no encontrada');
-      navigation.goBack();
+      router.back();
     }
   }, [id, publicaciones]);
 
-  const updateForm = (key: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  const setError = (key: string, msg: string | null) => {
+    setErrors((prev) => ({ ...prev, [key]: msg }));
   };
 
-  const validateStep = (s: number) => {
-    if (s === 1) {
-      const { nombre, fechaNacimiento, edad, tamano } = formData;
-      if (!nombre.trim() || !fechaNacimiento.trim() || !edad.trim() || !tamano.trim()) {
-        Alert.alert('Error', 'Completá todos los campos requeridos del paso 1.');
-        return false;
-      }
-    }
-    if (s === 2) {
-      const { ubicacion, peso, genero, castrado } = formData;
-      if (!ubicacion.trim() || !peso.trim() || !genero.trim() || !castrado.trim()) {
-        Alert.alert('Error', 'Completá todos los campos requeridos del paso 2.');
-        return false;
-      }
-    }
-    return true;
+  const updateForm = (key: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+    setError(key, null);
   };
 
   const handleSiguiente = () => {
-    if (step < 3 && validateStep(step)) setStep(step + 1);
+    if (step >= 3) return;
+    const error = validateStep(formData, step);
+    if (error) {
+      Alert.alert('Error', error);
+      return;
+    }
+    setStep(step + 1);
   };
 
   const handleSubmit = () => {
-    // Antes de guardar, validar pasos previos
-    if (!validateStep(1) || !validateStep(2)) return;
+    const error = validateAll(formData);
+    if (error) {
+      Alert.alert('Error', error);
+      return;
+    }
 
     editarPublicacion(id, formData);
-    Alert.alert('¡Éxito!', 'La publicación fue actualizada correctamente.');
-    navigation.goBack(); // Volver a "Mis Publicaciones"
+    Alert.alert('¡Éxito!', 'La Publicación fue actualizada correctamente.');
+    router.back();
+  };
+
+  const renderError = (key: string) => {
+    if (!errors[key]) return null;
+    return <Text style={localStyles.errorText}>{errors[key]}</Text>;
   };
 
   return (
@@ -108,12 +112,20 @@ export default function EditAnimalScreen({ route, navigation }: any) {
           <View style={styles.formContainer}>
             <Text style={styles.label}>Nombre de la mascota <Text style={styles.asterisk}>*</Text></Text>
             <TextInput style={styles.input} value={formData.nombre} onChangeText={(t) => updateForm('nombre', t)} />
+            {renderError('nombre')}
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
             <TextInput style={styles.input} value={formData.fechaNacimiento} onChangeText={(t) => updateForm('fechaNacimiento', t)} />
+            {renderError('fechaNacimiento')}
 
             <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
-            <TextInput style={styles.input} value={formData.edad} onChangeText={(t) => updateForm('edad', t)} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={formData.edad}
+              onChangeText={(t) => updateForm('edad', sanitizeNumericInput(t))}
+            />
+            {renderError('edad')}
 
             <Text style={styles.label}>Tamaño <Text style={styles.asterisk}>*</Text></Text>
             <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'tamano' ? null : 'tamano')}>
@@ -136,6 +148,7 @@ export default function EditAnimalScreen({ route, navigation }: any) {
                 ))}
               </View>
             )}
+            {renderError('tamano')}
             
             <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
               <Text style={styles.primaryButtonText}>Continuar</Text>
@@ -150,9 +163,16 @@ export default function EditAnimalScreen({ route, navigation }: any) {
               <TextInput style={styles.inputFlex} value={formData.ubicacion} onChangeText={(t) => updateForm('ubicacion', t)} />
               <SearchIcon width={20} height={20} color="#555" />
             </View>
+            {renderError('ubicacion')}
 
             <Text style={styles.label}>Peso de la mascota <Text style={styles.asterisk}>*</Text></Text>
-            <TextInput style={styles.input} keyboardType="numeric" value={formData.peso} onChangeText={(t) => updateForm('peso', t)} />
+            <TextInput
+              style={styles.input}
+              keyboardType="decimal-pad"
+              value={formData.peso}
+              onChangeText={(t) => updateForm('peso', sanitizeNumericInput(t, true))}
+            />
+            {renderError('peso')}
 
             <Text style={styles.label}>Género <Text style={styles.asterisk}>*</Text></Text>
             <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'genero' ? null : 'genero')}>
@@ -175,6 +195,7 @@ export default function EditAnimalScreen({ route, navigation }: any) {
                 ))}
               </View>
             )}
+            {renderError('genero')}
 
             <Text style={styles.label}>Castrado <Text style={styles.asterisk}>*</Text></Text>
             <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'castrado' ? null : 'castrado')}>
@@ -197,6 +218,7 @@ export default function EditAnimalScreen({ route, navigation }: any) {
                 ))}
               </View>
             )}
+            {renderError('castrado')}
 
             <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
               <Text style={styles.primaryButtonText}>Continuar</Text>
@@ -208,7 +230,7 @@ export default function EditAnimalScreen({ route, navigation }: any) {
           <View style={styles.formContainer}>
             <Text style={styles.label}>Fotos</Text>
             <TouchableOpacity style={styles.imageUploadArea}>
-              <Text style={styles.uploadIcon}>📸</Text>
+              <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
               <Text style={styles.uploadTextBold}>Modificar imágenes</Text>
             </TouchableOpacity>
 
@@ -284,4 +306,13 @@ export const styles = StyleSheet.create({
   successCircle: { width: 140, height: 140, borderRadius: 70, backgroundColor: '#f39c12', justifyContent: 'center', alignItems: 'center', marginBottom: 32 },
   successTitle: { fontSize: 22, fontWeight: 'bold', color: '#000', textAlign: 'center' },
   successSubtitle: { fontSize: 14, color: '#555', marginTop: 8 },
+});
+
+const localStyles = StyleSheet.create({
+  errorText: {
+    color: '#e74c3c',
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
+  },
 });

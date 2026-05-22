@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,14 +7,17 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  Animated,
 } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
 
-// Importando los SVGs directamente
 import ChevronBack from '../../../assets/icons/buttons/chevronBack.svg';
 import Plus from '../../../assets/icons/buttons/plus.svg';
+import Trash from '../../../assets/icons/buttons/trash.svg';
 import Home from '../../../assets/icons/screens/home.svg';
 import Search from '../../../assets/icons/screens/search.svg';
 import Explore from '../../../assets/icons/screens/explore.svg';
@@ -23,71 +26,99 @@ import Location from '../../../assets/icons/location.svg';
 
 export function MisPublicacionesScreen() {
   const publicaciones = usePublicacionesStore((state) => state.publicaciones);
-  const navigation = useNavigation<any>();
+  const eliminarPublicacion = usePublicacionesStore((state) => state.eliminarPublicacion);
+  const router = useRouter();
+  const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const handleVolver = () => {
-    navigation.goBack();
+    router.back();
   };
 
   const handleEditar = (id: string) => {
-    navigation.navigate('EditAnimal', { id }); 
+    router.push('/(admin)/edit/' + id);
   };
 
- const handleAgregarNueva = () => {
-    navigation.navigate('CreateAnimal'); 
+  const handleAgregarNueva = () => {
+    router.push('/(admin)/create');
+  };
+
+  const handleSwipeOpen = (id: string) => {
+    setPendingDeleteId(id);
+  };
+
+  const handleConfirmDelete = () => {
+    if (pendingDeleteId) {
+      eliminarPublicacion(pendingDeleteId);
+      setPendingDeleteId(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    if (pendingDeleteId) {
+      swipeableRefs.current[pendingDeleteId]?.close();
+    }
+    setPendingDeleteId(null);
+  };
+
+  const renderRightActions = (_progress: Animated.AnimatedInterpolation<number>, _dragX: Animated.AnimatedInterpolation<number>) => {
+    return (
+      <View style={styles.deleteAction}>
+        <Trash width={28} height={28} color="#ffffff" />
+      </View>
+    );
   };
 
   const renderCardItem = ({ item }: { item: Publicacion }) => (
-    <View style={styles.card}>
-      {/* Contenido Izquierdo */}
-      <View style={styles.cardInfo}>
-        <View>
-          <Text style={styles.dogName}>{item.nombre}</Text>
-          {/* Reemplazamos tipo y raza por tamano y peso que sí existen en el store actual */}
-          <Text style={styles.dogDetails}>
-            {item.tamano ? `${item.tamano} · ` : ''}{item.peso ? `${item.peso} kg · ` : ''}{item.edad}
-          </Text>
-          
-          <View style={styles.locationContainer}>
-            <Location width={14} height={14} color="#666666" style={styles.locationIcon} />
-            <Text style={styles.locationText}>{item.ubicacion}</Text>
+    <Swipeable
+      ref={(ref) => { swipeableRefs.current[item.id] = ref; }}
+      renderRightActions={renderRightActions}
+      onSwipeableOpen={() => handleSwipeOpen(item.id)}
+      overshootRight={false}
+    >
+      <View style={styles.card}>
+        <View style={styles.cardInfo}>
+          <View>
+            <Text style={styles.dogName}>{item.nombre}</Text>
+            <Text style={styles.dogDetails}>
+              {item.tamano ? item.tamano + ' · ' : ''}{item.peso ? item.peso + ' kg · ' : ''}{item.edad}
+            </Text>
+            
+            <View style={styles.locationContainer}>
+              <Location width={14} height={14} color="#666666" style={styles.locationIcon} />
+              <Text style={styles.locationText}>{item.ubicacion}</Text>
+            </View>
           </View>
+
+          <View style={styles.tagContainer}>
+            <View style={styles.tag}>
+              <Text style={styles.tagText}>{item.genero}</Text>
+            </View>
+            <View style={styles.tag}>
+              <Text style={styles.tagText}>{item.castrado}</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.btnEditar} 
+            onPress={() => handleEditar(item.id)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.btnEditarText}>Editar</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Tags */}
-        <View style={styles.tagContainer}>
-          <View style={styles.tag}>
-            <Text style={styles.tagText}>{item.genero}</Text>
-          </View>
-          <View style={styles.tag}>
-            {/* Cambiamos estado por castrado según el nuevo formulario */}
-            <Text style={styles.tagText}>{item.castrado}</Text>
-          </View>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: item.imagen || 'https://via.placeholder.com/150' }} style={styles.dogImage} />
         </View>
-
-        {/* Botón Acción */}
-        <TouchableOpacity 
-          style={styles.btnEditar} 
-          onPress={() => handleEditar(item.id)}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.btnEditarText}>Editar</Text>
-        </TouchableOpacity>
       </View>
-
-      {/* Contenido Derecho (Imagen) */}
-      <View style={styles.imageContainer}>
-        {/* Validamos que haya imagen para que no crashee si viene vacío */}
-        <Image source={{ uri: item.imagen || 'https://via.placeholder.com/150' }} style={styles.dogImage} />
-      </View>
-    </View>
+    </Swipeable>
   );
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f3f3f3" />
       
-      {/* Header Area */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleVolver} activeOpacity={0.7}>
           <ChevronBack width={20} height={20} color="#ffffff" />
@@ -95,7 +126,6 @@ export function MisPublicacionesScreen() {
         <Text style={styles.headerTitle}>Mis Publicaciones</Text>
       </View>
 
-      {/* Listado Principal */}
       <FlatList
         data={publicaciones}
         keyExtractor={(item) => item.id}
@@ -104,7 +134,6 @@ export function MisPublicacionesScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* FAB (Floating Action Button) */}
       <TouchableOpacity 
         style={styles.fab} 
         onPress={handleAgregarNueva}
@@ -113,9 +142,18 @@ export function MisPublicacionesScreen() {
         <Plus width={32} height={32} color="#ffffff" />
       </TouchableOpacity>
 
-      {/* Bottom Custom TabBar */}
+      <ConfirmModal
+        visible={pendingDeleteId !== null}
+        title="Eliminar publicación"
+        message="¿Estás seguro de que querés eliminar esta publicación?"
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+
       <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navItem}>
+        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)')}>
           <Home width={24} height={24} color="#555555" />
           <Text style={styles.navText}>Inicio</Text>
         </TouchableOpacity>
@@ -226,6 +264,16 @@ const styles = StyleSheet.create({
     color: '#8e44ad',
     fontWeight: '600',
   },
+  deleteAction: {
+    backgroundColor: '#e74c3c',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopRightRadius: 24,
+    borderBottomRightRadius: 24,
+    marginBottom: 16,
+    height: 185,
+    width: 80,
+  },
   btnEditar: {
     backgroundColor: '#f39c12',
     borderRadius: 14,
@@ -303,3 +351,4 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 3,
   },
 });
+

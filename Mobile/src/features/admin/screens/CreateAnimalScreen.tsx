@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,12 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
 import Svg, { Path } from 'react-native-svg';
+import { useRouter } from 'expo-router';
+import { validateStep, validateAll, sanitizeNumericInput } from '../utils/validateAnimalForm';
 
-// Importando tus íconos según tu estructura (Ajustá la ruta si hace falta)
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
 
-// Check de éxito (como no lo vi en tus assets, te dejo el SVG nativo acá)
 const SuccessCheckIcon = () => (
   <Svg width="80" height="80" viewBox="0 0 24 24" fill="none">
     <Path d="M20 6L9 17l-5-5" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
@@ -39,7 +39,8 @@ type AnimalFormData = {
   imagen?: string;
 };
 
-export default function CreateAnimalScreen({ navigation }: any) {
+export default function CreateAnimalScreen() {
+  const router = useRouter();
   const agregarPublicacion = usePublicacionesStore((state) => state.agregarPublicacion);
   const [step, setStep] = useState(1);
 
@@ -56,41 +57,37 @@ export default function CreateAnimalScreen({ navigation }: any) {
     imagen: '',
   });
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
 
-  const updateForm = (key: keyof typeof formData, value: string) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
+  const setError = (key: string, msg: string | null) => {
+    setErrors((prev) => ({ ...prev, [key]: msg }));
   };
 
-  const validateStep = (s: number) => {
-    // Campos requeridos para cada paso. imagen y descripcion son opcionales.
-    if (s === 1) {
-      const { nombre, fechaNacimiento, edad, tamano } = formData;
-      if (!nombre.trim() || !fechaNacimiento.trim() || !edad.trim() || !tamano.trim()) {
-        Alert.alert('Error', 'Completá todos los campos requeridos del paso 1.');
-        return false;
-      }
-    }
-    if (s === 2) {
-      const { ubicacion, peso, genero, castrado } = formData;
-      if (!ubicacion.trim() || !peso.trim() || !genero.trim() || !castrado.trim()) {
-        Alert.alert('Error', 'Completá todos los campos requeridos del paso 2.');
-        return false;
-      }
-    }
-    return true;
+  const updateForm = (key: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [key]: value }));
+    setError(key, null);
   };
 
   const handleSiguiente = () => {
-    if (step < 3 && validateStep(step)) setStep(step + 1);
+    if (step >= 3) return;
+    const error = validateStep(formData, step);
+    if (error) {
+      Alert.alert('Error', error);
+      return;
+    }
+    setStep(step + 1);
   };
 
   const handleSubmit = () => {
-    // Antes de enviar, validar pasos previos
-    if (!validateStep(1) || !validateStep(2)) return;
+    const error = validateAll(formData);
+    if (error) {
+      Alert.alert('Error', error);
+      return;
+    }
 
     const payload: Omit<Publicacion, 'id'> = {
       nombre: formData.nombre,
@@ -109,6 +106,11 @@ export default function CreateAnimalScreen({ navigation }: any) {
     setStep(4);
   };
 
+  const renderError = (key: string) => {
+    if (!errors[key]) return null;
+    return <Text style={localStyles.errorText}>{errors[key]}</Text>;
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
@@ -122,12 +124,21 @@ export default function CreateAnimalScreen({ navigation }: any) {
             <View style={styles.formContainer}>
               <Text style={styles.label}>Nombre de la mascota <Text style={styles.asterisk}>*</Text></Text>
               <TextInput style={styles.input} placeholder="Nombre" value={formData.nombre} onChangeText={(t) => updateForm('nombre', t)} />
+              {renderError('nombre')}
 
               <Text style={styles.label}>Fecha de nacimiento</Text>
               <TextInput style={styles.input} placeholder="DD/MM/YYYY" value={formData.fechaNacimiento} onChangeText={(t) => updateForm('fechaNacimiento', t)} />
+              {renderError('fechaNacimiento')}
 
               <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
-              <TextInput style={styles.input} placeholder="Edad (puede ser aproximada)" value={formData.edad} onChangeText={(t) => updateForm('edad', t)} />
+              <TextInput
+                style={styles.input}
+                placeholder="Edad (puede ser aproximada)"
+                keyboardType="numeric"
+                value={formData.edad}
+                onChangeText={(t) => updateForm('edad', sanitizeNumericInput(t))}
+              />
+              {renderError('edad')}
 
               <Text style={styles.label}>Tamaño <Text style={styles.asterisk}>*</Text></Text>
               <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'tamano' ? null : 'tamano')}>
@@ -150,6 +161,7 @@ export default function CreateAnimalScreen({ navigation }: any) {
                   ))}
                 </View>
               )}
+              {renderError('tamano')}
               
               <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
                 <Text style={styles.primaryButtonText}>Continuar</Text>
@@ -164,9 +176,17 @@ export default function CreateAnimalScreen({ navigation }: any) {
                 <TextInput style={styles.inputFlex} placeholder="Nombre" value={formData.ubicacion} onChangeText={(t) => updateForm('ubicacion', t)} />
                 <SearchIcon width={20} height={20} color="#555" />
               </View>
+              {renderError('ubicacion')}
 
               <Text style={styles.label}>Peso de la mascota <Text style={styles.asterisk}>*</Text></Text>
-              <TextInput style={styles.input} placeholder="Peso en kg" keyboardType="numeric" value={formData.peso} onChangeText={(t) => updateForm('peso', t)} />
+              <TextInput
+                style={styles.input}
+                placeholder="Peso en kg"
+                keyboardType="decimal-pad"
+                value={formData.peso}
+                onChangeText={(t) => updateForm('peso', sanitizeNumericInput(t, true))}
+              />
+              {renderError('peso')}
 
               <Text style={styles.label}>Género <Text style={styles.asterisk}>*</Text></Text>
               <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'genero' ? null : 'genero')}>
@@ -189,6 +209,7 @@ export default function CreateAnimalScreen({ navigation }: any) {
                   ))}
                 </View>
               )}
+              {renderError('genero')}
 
               <Text style={styles.label}>Castrado <Text style={styles.asterisk}>*</Text></Text>
               <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'castrado' ? null : 'castrado')}>
@@ -211,6 +232,7 @@ export default function CreateAnimalScreen({ navigation }: any) {
                   ))}
                 </View>
               )}
+              {renderError('castrado')}
 
               <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
                 <Text style={styles.primaryButtonText}>Continuar</Text>
@@ -222,10 +244,10 @@ export default function CreateAnimalScreen({ navigation }: any) {
             <View style={styles.formContainer}>
               <Text style={styles.label}>Fotos</Text>
               <TouchableOpacity style={styles.imageUploadArea}>
-                <Text style={styles.uploadIcon}>📸</Text>
+                <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
                 <Text style={styles.uploadTextBold}>Adjuntá tus imágenes</Text>
                 <Text style={styles.uploadTextSmall}>(Máximo 3 fotos)</Text>
-                <Text style={styles.uploadTextSmall}>Peso máximo por foto 3mb</Text>
+                <Text style={styles.uploadTextSmall}>Peso Máximo por foto 3mb</Text>
               </TouchableOpacity>
 
               <Text style={styles.label}>Descripción</Text>
@@ -252,7 +274,7 @@ export default function CreateAnimalScreen({ navigation }: any) {
           <Text style={styles.successTitle}>Tu publicación se creó con éxito!</Text>
           <Text style={styles.successSubtitle}>Gracias por dejar tu huella</Text>
 
-          <TouchableOpacity style={[styles.primaryButton, { width: '100%', marginTop: 40 }]} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={[styles.primaryButton, { width: '100%', marginTop: 40 }]} onPress={() => router.push('/(admin)/mispublicaciones')}>
             <Text style={styles.primaryButtonText}>Ver mis publicaciones</Text>
           </TouchableOpacity>
         </View>
@@ -261,4 +283,11 @@ export default function CreateAnimalScreen({ navigation }: any) {
   );
 }
 
-// Estilos compartidos abajo
+const localStyles = StyleSheet.create({
+  errorText: {
+    color: '#e74c3c',
+    fontSize: 12,
+    marginTop: 4,
+    marginLeft: 4,
+  },
+});

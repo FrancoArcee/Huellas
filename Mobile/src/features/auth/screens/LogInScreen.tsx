@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
@@ -6,9 +6,10 @@ import { CustomInput } from '../../../shared/components/ui/CustomInput';
 import { Button } from '../../../shared/components/ui/Button';
 import LogoSvg from '../../../assets/images/logo.svg';
 import GoogleSvg from '../../../assets/icons/google.svg';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 export const LogInScreen = () => {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -51,8 +52,7 @@ export const LogInScreen = () => {
           title="Continuar con Google"
           icon={GoogleSvg}
           iconPosition='left'
-          onPress={() => { }}
-          disabled={true}
+          onPress={() => router.push('/(admin)/mispublicaciones')}
           style={styles.googleButton}
           textColor={theme.colors.black}
         />
@@ -73,3 +73,4 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4, borderWidth: 1, borderColor: theme.colors.gray400, marginHorizontal: 10 },
   googleButton: { backgroundColor: theme.colors.gray100, borderColor: theme.colors.gray400, borderWidth: 1 }
 });
+
