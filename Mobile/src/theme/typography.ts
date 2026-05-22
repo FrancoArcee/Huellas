@@ -12,8 +12,8 @@ export const typography = {
   variants: {
     hero: {
       fontFamily: "Poppins_600SemiBold",
-      fontSize: 38,
-      lineHeight: 46,
+      fontSize: 32,
+      lineHeight: 38,
     },
     h1: {
       fontFamily: "Poppins_700Bold",
@@ -53,5 +53,11 @@ export const typography = {
       fontSize: 12,
       lineHeight: 16,
     },
+    
+    semiCaption: {
+      fontFamily: "Poppins_400Regular",
+      fontSize: 20,
+      lineHeight: 22,
+    }
   },
 };

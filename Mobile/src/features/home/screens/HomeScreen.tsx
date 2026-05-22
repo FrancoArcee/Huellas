@@ -23,10 +23,10 @@ export const HomeScreen = () => {
       {/* Contenido principal con scroll */}
       {/* Título */}
       <View style={styles.titleSection}>
-        <CustomText variant="h4" color="textPrimary">
+        <CustomText variant="semiCaption" color="black">
           Adoptá
         </CustomText>
-        <CustomText variant="h1" color="black">
+        <CustomText variant="h3" color="black">
           tu próximo compañero
         </CustomText>
       </View>
