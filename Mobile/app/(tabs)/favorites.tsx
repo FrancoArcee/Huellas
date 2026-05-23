@@ -4,38 +4,18 @@ import { Stack, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CustomText } from '../../src/shared/components/ui/CustomText';
 import { PetHorizontalCard } from '../../src/shared/components/ui/PetHorizontalCard';
+import { animalMocks } from '../../src/mocks/animalsMocks';
 import { theme } from '../../src/theme';
 import BackIcon from '../../src/assets/icons/buttons/chevronBack.svg';
 
-const favoritePets = [
-  {
-    id: '1',
-    name: 'Rocky',
-    details: 'Perro · Beagle · 2 anos',
-    location: 'La Plata',
-    image:
-      'https://cdn.royalcanin-weshare-online.io/VEDiY40BRYZmsWpcthzo/v3/beagle-lying-on-the-green-grass-in-summer-4-3',
-    tags: ['Macho', 'Castrado'],
-  },
-  {
-    id: '2',
-    name: 'Snoopy',
-    details: 'Perro · 2 meses',
-    location: 'Ensenada',
-    image:
-      'https://images.unsplash.com/photo-1601979031925-424e53b6caaa?auto=format&fit=crop&w=700&q=85',
-    tags: ['Hembra'],
-  },
-  {
-    id: '3',
-    name: 'Pluton',
-    details: 'Gato · 2 anos',
-    location: 'Ensenada',
-    image:
-      'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=700&q=85',
-    tags: ['Macho'],
-  },
-];
+const favoritePets = animalMocks.map((animal) => ({
+  id: animal.id,
+  name: animal.name,
+  details: `${animal.type} · ${animal.gender} · ${animal.age}`,
+  location: `${animal.distanceKm} km`,
+  image: animal.photoUri,
+  tags: [animal.gender, `${animal.weightKg} KG`],
+}));
 
 export default function FavoritesRoute() {
   const insets = useSafeAreaInsets();
@@ -143,9 +123,10 @@ const styles = StyleSheet.create({
     paddingTop: 27,
   },
   petCard: {
-    width: '85%',
-    maxWidth: 320,
+    width: '92%',
+    maxWidth: 360,
+    height: 210,
     alignSelf: 'center',
-    marginBottom: 30,
+    marginBottom: 34,
   },
 });
