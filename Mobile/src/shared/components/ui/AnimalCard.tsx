@@ -34,7 +34,7 @@ export function AnimalCard({
         >
           <View style={styles.topRow}>
             <View style={styles.distanceBadge}>
-              <LocationIcon width={16} height={20} />
+              <LocationIcon width={16} height={20} color="#ffffff" />
               <Text style={styles.distanceText}>{distanceKm} km</Text>
             </View>
 
