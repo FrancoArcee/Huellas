@@ -2,17 +2,13 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Modal,
-  Pressable,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
-import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
 import ProfileSvg from '../../../assets/icons/screens/profile.svg';
 import PencilSvg from '../../../assets/icons/buttons/pencil.svg';
 import LogoutSvg from '../../../assets/icons/buttons/logout.svg';
@@ -44,11 +40,11 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <View style={[styles.screen, { paddingTop: insets.top }]}>
+    <View style={styles.screen}>
       {/* Header naranja con avatar */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + theme.spacing['3xl'] }]}>
         <View style={styles.avatarContainer}>
-          <ProfileSvg width={60} height={60} fill={theme.colors.primary} />
+          <ProfileSvg width={78} height={78} color={theme.colors.primary} />
         </View>
         <CustomText variant="h3" style={styles.headerName}>
           {MOCK_USER.name} {MOCK_USER.lastName}
@@ -56,13 +52,12 @@ export const ProfileScreen = () => {
       </View>
 
       {/* Contenido */}
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={[
+      <View
+        style={[
+          styles.content,
           styles.contentContainer,
           { paddingBottom: insets.bottom + 20 },
         ]}
-        showsVerticalScrollIndicator={false}
       >
         {/* Card de datos */}
         <View style={styles.dataCard}>
@@ -91,7 +86,7 @@ export const ProfileScreen = () => {
               WhatsApp
             </CustomText>
             <View style={styles.whatsappRow}>
-              <WhatsAppSvg width={20} height={20} style={styles.whatsappIcon} />
+              <WhatsAppSvg width={28} height={28} style={styles.whatsappIcon} />
               <CustomText variant="body" style={styles.fieldValue}>
                 {MOCK_USER.whatsapp}
               </CustomText>
@@ -134,7 +129,7 @@ export const ProfileScreen = () => {
             </CustomText>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
 
       {/* Modal de confirmación: Cerrar sesión */}
       <ConfirmModal
@@ -169,13 +164,12 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary,
     alignItems: 'center',
-    paddingTop: theme.spacing['2xl'],
     paddingBottom: theme.spacing['3xl'],
   },
   avatarContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 136,
+    height: 136,
+    borderRadius: 68,
     backgroundColor: theme.colors.white,
     alignItems: 'center',
     justifyContent: 'center',
@@ -213,11 +207,15 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     color: theme.colors.gray500,
-    marginBottom: 2,
+    fontSize: 15,
+    lineHeight: 20,
+    marginBottom: theme.spacing.xs,
   },
   fieldValue: {
     color: theme.colors.textPrimary,
     fontFamily: theme.typography.fontFamily.regular,
+    fontSize: 18,
+    lineHeight: 24,
   },
   separator: {
     height: 1,
@@ -229,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   whatsappIcon: {
-    marginRight: theme.spacing.xs,
+    marginRight: theme.spacing.sm,
   },
   editButton: {
     backgroundColor: theme.colors.primary,
@@ -239,6 +237,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: theme.spacing.xl,
     marginBottom: theme.spacing.lg,
   },
   editButtonText: {
@@ -269,7 +268,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   actionIcon: {
-    marginLeft: theme.spacing.xs,
+    marginLeft: theme.spacing.lg,
   },
   deleteButton: {
     flex: 1,
