@@ -8,6 +8,7 @@ import { SearchFilterChip } from '../components/searchFilterChip';
 import { animalSearchMocks } from '../.././../mocks/animalsMocks';
 import ChevronBack from '../../../assets/icons/buttons/chevronBack.svg';
 import { colors } from '../../../theme/index';
+import { FilterBottomSheet } from '../../home/components/FilterBottomSheet';
 
 interface FilterOption {
     id: string;
@@ -37,6 +38,7 @@ export function SearchResultsScreen() {
         [],
     );
     const [likedPets, setLikedPets] = useState<Record<string, boolean>>(initialLikes);
+    const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
 
     const handleFilterPress = (filterId: string) => {
         console.log('Filter pressed:', filterId);
@@ -65,7 +67,7 @@ export function SearchResultsScreen() {
             </View>
 
             <View style={styles.container}>
-                <SearchBar onFilterPress={() => console.log('open filters')} />
+                <SearchBar onFilterPress={() => setIsFilterSheetVisible(true)} />
 
                 <ScrollView
                     horizontal
@@ -105,6 +107,10 @@ export function SearchResultsScreen() {
                     )}
                 />
             </View>
+            <FilterBottomSheet
+                visible={isFilterSheetVisible}
+                onClose={() => setIsFilterSheetVisible(false)}
+            />
         </View>
     );
 }
