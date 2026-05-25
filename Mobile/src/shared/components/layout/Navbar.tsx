@@ -7,8 +7,9 @@ import HomeIcon from '../../../assets/icons/screens/home.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
 import ExploreIcon from '../../../assets/icons/screens/explore.svg';
 import LikeIcon from '../../../assets/icons/screens/like.svg';
+import ProfileIcon from '../../../assets/icons/screens/profile.svg';
 
-export type TabName = 'home' | 'search' | 'explore' | 'favorites';
+export type TabName = 'home' | 'search' | 'explore' | 'favorites' | 'cuenta';
 
 interface NavbarProps {
   activeTab: TabName;
@@ -20,6 +21,7 @@ const TABS: { name: TabName; label: string; Icon: React.FC<any> }[] = [
   { name: 'search', label: 'Búsqueda', Icon: SearchIcon },
   { name: 'explore', label: 'Explorar', Icon: ExploreIcon },
   { name: 'favorites', label: 'Favoritos', Icon: LikeIcon },
+  { name: 'cuenta', label: 'Cuenta', Icon: ProfileIcon },
 ];
 
 export const Navbar = ({ activeTab, onTabPress }: NavbarProps) => {

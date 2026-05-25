@@ -9,7 +9,7 @@ export default function ExploreRoute() {
       <Stack.Screen
         options={{
           headerShown: false,
-          title: 'Publicaciones',
+          title: 'Mascotas',
         }}
       />
       <View style={styles.container}>

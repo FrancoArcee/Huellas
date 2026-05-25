@@ -4,6 +4,7 @@ import HomeSvg from '../../src/assets/icons/screens/home.svg';
 import SearchSvg from '../../src/assets/icons/screens/search.svg';
 import ExploreSvg from '../../src/assets/icons/screens/explore.svg';
 import LikeSvg from '../../src/assets/icons/screens/like.svg';
+import ProfileSvg from '../../src/assets/icons/screens/profile.svg';
 
 export default function TabsLayout() {
   return (
@@ -42,7 +43,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="mypost"
         options={{
-          title: 'Publicaciones',
+          title: 'Mascotas',
           tabBarIcon: ({ color, size }) => (
             <ExploreSvg width={size} height={size} color={color} />
           ),
@@ -54,6 +55,15 @@ export default function TabsLayout() {
           title: 'Favoritos',
           tabBarIcon: ({ color, size }) => (
             <LikeSvg width={size} height={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Cuenta',
+          tabBarIcon: ({ color, size }) => (
+            <ProfileSvg width={size} height={size} color={color} />
           ),
         }}
       />
