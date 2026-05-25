@@ -32,3 +32,27 @@ export const animalMocks: Animal[] = [
     weightKg: 24,
   },
 ];
+
+
+export const animalSearchMocks: Animal[] = [
+  {
+    id: "1",
+    name: "Rocky",
+    photoUri: "https://cdn.royalcanin-weshare-online.io/VEDiY40BRYZmsWpcthzo/v3/beagle-lying-on-the-green-grass-in-summer-4-3",
+    distanceKm: 1.2,
+    type: "Perro",
+    gender: "Macho",
+    age: "2 años",
+    weightKg: 15,
+  },
+  {
+    id: "6",
+    name: "Snoopy",
+    photoUri: "https://i.ibb.co/N6KG5MJw/IMG-4343.jpg",
+    distanceKm: 1.8,
+    type: "Perro",
+    gender: "Hembra",
+    age: "3 meses",
+    weightKg: 3.5,
+  },
+];
