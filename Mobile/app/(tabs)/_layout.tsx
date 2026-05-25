@@ -10,11 +10,10 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.colors.primaryDark,
+        tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.gray700,
         tabBarStyle: {
-          backgroundColor: theme.colors.background,
-          borderTopColor: theme.colors.gray100,
+          backgroundColor: theme.colors.white,
         },
         tabBarLabelStyle: {
           fontFamily: theme.typography.fontFamily.medium,
