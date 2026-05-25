@@ -1,7 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
 
-export const SuccessCheckIcon = React.memo(() => {
+interface Props {
+  size?: number;
+}
+
+export const SuccessCheckIcon = React.memo(({ size = 350 }: Props) => {
   const animationRef = useRef<LottieView>(null);
 
   useEffect(() => {
@@ -17,7 +21,7 @@ export const SuccessCheckIcon = React.memo(() => {
       source={require('../../../assets/icons/notification/success.json')}
       loop={false}
       resizeMode="contain"
-      style={{ width: 350, height: 350 }}
+      style={{ width: size, height: size }}
     />
   );
-});
+});
