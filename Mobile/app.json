@@ -17,7 +17,8 @@
       "package": "com.huellas.app"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ]
   }
 }

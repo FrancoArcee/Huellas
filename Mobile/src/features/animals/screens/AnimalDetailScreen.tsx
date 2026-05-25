@@ -7,33 +7,17 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
+import ChevronBackSvg from '../../../assets/icons/buttons/chevronBack.svg';
+import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
 import WhatsAppSvg from '../../../assets/icons/whatsapp.svg';
 import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
+import { animalMocks } from '../../../mocks/animalsMocks';
 
 const WHATSAPP_PLACEHOLDER = '5492215550123';
-
-const animal = {
-  id: 'rocky',
-  name: 'Rocky',
-  species: 'Perro',
-  age: '2 años',
-  gender: 'Macho',
-  weight: '1.2 Kg',
-  status: 'Castrado',
-  location: 'La Plata',
-  ownerName: 'Jorge Visconti',
-  ownerRole: 'Dueño',
-  ownerInitials: 'JV',
-  whatsapp: WHATSAPP_PLACEHOLDER,
-  imageUrl:
-    'https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&w=900&q=85',
-  description:
-    'Soy un beagle curioso y muy compañero. Me encanta salir a pasear, olfatear todo y jugar. Soy sociable, cariñoso y disfruto estar acompañado. Necesito actividad diaria y un hogar donde me incluyan como parte de la familia',
-};
 
 const roundedFont = Platform.select({
   web: 'Nunito, Poppins, "Arial Rounded MT Bold", Arial, sans-serif',
@@ -56,12 +40,34 @@ interface Props {
 
 export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const router = useRouter();
+  const { id } = useLocalSearchParams<{ id?: string | string[] }>();
   const [liked, setLiked] = useState(false);
   const [contacting, setContacting] = useState(false);
   const [backHovered, setBackHovered] = useState(false);
   const [likeHovered, setLikeHovered] = useState(false);
   const [whatsappHovered, setWhatsappHovered] = useState(false);
   const { openWhatsApp } = useWhatsApp();
+
+  const animalId = Array.isArray(id) ? id[0] : id;
+  const selectedAnimal = animalMocks.find((item) => item.id === animalId) ?? animalMocks[0]!;
+
+  const animal = useMemo(
+    () => ({
+      ...selectedAnimal,
+      species: selectedAnimal.type,
+      weight: `${selectedAnimal.weightKg} Kg`,
+      status: 'Castrado',
+      location: `${selectedAnimal.distanceKm} km de distancia`,
+      ownerName: 'Jorge Visconti',
+      ownerRole: 'Dueño',
+      ownerInitials: 'JV',
+      whatsapp: WHATSAPP_PLACEHOLDER,
+      imageUrl: selectedAnimal.photoUri,
+      description:
+        'Es cariñoso, sociable y disfruta estar acompañado. Busca un hogar responsable donde pueda recibir cuidado, paseos y mucho afecto todos los días.',
+    }),
+    [selectedAnimal],
+  );
 
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return;
@@ -78,7 +84,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
 
   const whatsappMessage = useMemo(
     () => `Hola, vi a ${animal.name} en Huellas y quisiera consultar por su adopción.`,
-    [],
+    [animal.name],
   );
 
   const handleContact = async () => {
@@ -119,7 +125,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                   (pressed || backHovered) && styles.iconButtonActive,
                 ]}
               >
-                <CustomText style={styles.backIcon}>‹</CustomText>
+                <ChevronBackSvg width={11} height={14} />
               </Pressable>
 
               <Pressable
@@ -135,9 +141,12 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                   (pressed || likeHovered) && styles.iconButtonActive,
                 ]}
               >
-                <CustomText style={[styles.heartIcon, liked && styles.heartIconSelected]}>
-                  ♥
-                </CustomText>
+                <LikeIcon
+                  width={25}
+                  height={23}
+                  fill={liked ? '#ff6b8a' : 'none'}
+                  stroke={liked ? '#ff6b8a' : theme.colors.white}
+                />
               </Pressable>
             </View>
           </ImageBackground>
@@ -174,43 +183,43 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
             </View>
 
             <View style={styles.locationRow}>
-              <LocationSvg width={22} height={22} />
+              <LocationSvg width={22} height={22} color="#4E4A4A" />
               <CustomText variant="p" style={styles.locationText}>
                 {animal.location}
               </CustomText>
             </View>
+
+            <View style={styles.footerWrap}>
+              <View style={styles.footer}>
+                <View style={styles.avatar}>
+                  <CustomText style={styles.avatarText}>{animal.ownerInitials}</CustomText>
+                </View>
+                <CustomText variant="p" style={styles.ownerName} numberOfLines={1}>
+                  {animal.ownerName}
+                </CustomText>
+                <CustomText variant="p" style={styles.ownerRole}>
+                  {animal.ownerRole}
+                </CustomText>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Contactar por WhatsApp a ${animal.ownerName}`}
+                  accessibilityState={{ disabled: contacting }}
+                  disabled={contacting}
+                  onPress={handleContact}
+                  onHoverIn={() => setWhatsappHovered(true)}
+                  onHoverOut={() => setWhatsappHovered(false)}
+                  style={({ pressed }) => [
+                    styles.whatsappButton,
+                    (pressed || whatsappHovered) && !contacting && styles.whatsappButtonActive,
+                    contacting && styles.whatsappButtonDisabled,
+                  ]}
+                >
+                  <WhatsAppSvg width={44} height={44} />
+                </Pressable>
+              </View>
+            </View>
           </View>
         </ScrollView>
-
-        <View style={styles.footerWrap}>
-          <View style={styles.footer}>
-            <View style={styles.avatar}>
-              <CustomText style={styles.avatarText}>{animal.ownerInitials}</CustomText>
-            </View>
-            <CustomText variant="p" style={styles.ownerName} numberOfLines={1}>
-              {animal.ownerName}
-            </CustomText>
-            <CustomText variant="p" style={styles.ownerRole}>
-              {animal.ownerRole}
-            </CustomText>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Contactar por WhatsApp a ${animal.ownerName}`}
-              accessibilityState={{ disabled: contacting }}
-              disabled={contacting}
-              onPress={handleContact}
-              onHoverIn={() => setWhatsappHovered(true)}
-              onHoverOut={() => setWhatsappHovered(false)}
-              style={({ pressed }) => [
-                styles.whatsappButton,
-                (pressed || whatsappHovered) && !contacting && styles.whatsappButtonActive,
-                contacting && styles.whatsappButtonDisabled,
-              ]}
-            >
-              <WhatsAppSvg width={38} height={38} />
-            </Pressable>
-          </View>
-        </View>
       </View>
     </View>
   );
@@ -226,18 +235,17 @@ const styles = StyleSheet.create({
     position: 'relative',
     flex: 1,
     width: '100%',
-    maxWidth: 390,
     backgroundColor: theme.colors.background,
   },
   scroll: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 92,
+    paddingBottom: 28,
   },
   hero: {
     width: '100%',
-    height: 276,
+    height: 318,
   },
   heroImage: {
     width: '100%',
@@ -262,23 +270,6 @@ const styles = StyleSheet.create({
   },
   likeButtonSelected: {
     backgroundColor: 'rgba(52, 67, 27, 0.9)',
-  },
-  backIcon: {
-    marginTop: -3,
-    color: theme.colors.white,
-    fontFamily: roundedFont,
-    fontSize: 35,
-    lineHeight: 38,
-  },
-  heartIcon: {
-    color: '#FFB0B0',
-    fontFamily: roundedBold,
-    fontSize: 29,
-    fontWeight: '800',
-    lineHeight: 34,
-  },
-  heartIconSelected: {
-    color: '#FF6E82',
   },
   body: {
     width: '100%',
@@ -348,22 +339,22 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: theme.colors.black,
     fontFamily: roundedBold,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
-    lineHeight: 28,
+    lineHeight: 31,
   },
   description: {
     marginTop: 4,
     color: theme.colors.black,
     fontFamily: roundedFont,
-    fontSize: 17,
+    fontSize: 19,
     fontWeight: '400',
-    lineHeight: 26,
+    lineHeight: 29,
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 28,
+    marginTop: 18,
     paddingLeft: 38,
   },
   locationText: {
@@ -375,23 +366,20 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   footerWrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 20,
     alignItems: 'center',
+    marginTop: 18,
     paddingHorizontal: 16,
   },
   footer: {
-    width: '86%',
-    maxWidth: 326,
-    height: 50,
-    borderRadius: 27,
+    width: '90%',
+    maxWidth: 348,
+    height: 58,
+    borderRadius: 30,
     backgroundColor: theme.colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 17,
-    paddingRight: 7,
+    paddingLeft: 18,
+    paddingRight: 8,
     shadowColor: theme.colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.16,
@@ -399,9 +387,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 23,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFC36B',
@@ -409,32 +397,32 @@ const styles = StyleSheet.create({
   avatarText: {
     color: theme.colors.white,
     fontFamily: roundedSemiBold,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
-    lineHeight: 22,
+    lineHeight: 24,
   },
   ownerName: {
     flex: 1,
     marginLeft: 10,
     color: theme.colors.white,
     fontFamily: roundedFont,
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '400',
-    lineHeight: 24,
+    lineHeight: 26,
   },
   ownerRole: {
     marginLeft: 8,
     marginRight: 5,
     color: '#FFE0B0',
     fontFamily: roundedFont,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '400',
-    lineHeight: 24,
+    lineHeight: 25,
   },
   whatsappButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
