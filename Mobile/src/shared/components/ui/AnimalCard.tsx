@@ -3,6 +3,8 @@ import LocationIcon from "../../../assets/icons/location.svg";
 import LikeIcon from "../../../assets/icons/like.svg";
 import { Animal } from "../../../../../Shared/types/animal";
 import { Link } from 'expo-router';
+import { colors } from '../../../theme/index';
+
 interface AnimalCardProps extends Animal {
   isFavorite?: boolean;
   onFavoritePress?: () => void;
@@ -34,7 +36,7 @@ export function AnimalCard({
         >
           <View style={styles.topRow}>
             <View style={styles.distanceBadge}>
-              <LocationIcon width={16} height={20} />
+              <LocationIcon width={16} height={20} color={colors.white} />
               <Text style={styles.distanceText}>{distanceKm} km</Text>
             </View>
 

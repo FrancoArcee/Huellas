@@ -1,8 +1,9 @@
 export const colors = {
   //Colores principales
-  primary: "#FB7005",
-  primaryDark: "#FB7005",
+  primary: "#F19C2B",
+  primaryDark: "#F19C2B",
   secondary: "#9088E4",
+  secondaryLight: "#e3d7ff",
 
   //Escala de grises
   white: "#FFFFFF",

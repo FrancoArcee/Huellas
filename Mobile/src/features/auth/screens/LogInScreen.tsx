@@ -52,7 +52,7 @@ export const LogInScreen = () => {
           title="Continuar con Google"
           icon={GoogleSvg}
           iconPosition='left'
-          onPress={() => router.push('/(admin)/mispublicaciones')}
+          onPress={() => router.push('/(tabs)')}
           style={styles.googleButton}
           textColor={theme.colors.black}
         />

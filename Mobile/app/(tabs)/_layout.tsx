@@ -40,9 +40,9 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="mypost"
         options={{
-          title: 'Explorar',
+          title: 'Publicaciones',
           tabBarIcon: ({ color, size }) => (
             <ExploreSvg width={size} height={size} color={color} />
           ),

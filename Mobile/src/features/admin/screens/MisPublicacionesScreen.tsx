@@ -1,4 +1,4 @@
-﻿import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,15 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
 import { useRouter } from 'expo-router';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
-
 import ChevronBack from '../../../assets/icons/buttons/chevronBack.svg';
 import Plus from '../../../assets/icons/buttons/plus.svg';
 import Trash from '../../../assets/icons/buttons/trash.svg';
-import Home from '../../../assets/icons/screens/home.svg';
-import Search from '../../../assets/icons/screens/search.svg';
-import Explore from '../../../assets/icons/screens/explore.svg';
-import Like from '../../../assets/icons/screens/like.svg';
 import Location from '../../../assets/icons/location.svg';
+import { colors } from '../../../theme/index';
 
 export function MisPublicacionesScreen() {
   const publicaciones = usePublicacionesStore((state) => state.publicaciones);
@@ -30,10 +26,6 @@ export function MisPublicacionesScreen() {
   const router = useRouter();
   const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
-
-  const handleVolver = () => {
-    router.back();
-  };
 
   const handleEditar = (id: string) => {
     router.push('/(admin)/edit/' + id);
@@ -83,7 +75,7 @@ export function MisPublicacionesScreen() {
             <Text style={styles.dogDetails}>
               {item.tamano ? item.tamano + ' · ' : ''}{item.peso ? item.peso + ' kg · ' : ''}{item.edad}
             </Text>
-            
+
             <View style={styles.locationContainer}>
               <Location width={14} height={14} color="#666666" style={styles.locationIcon} />
               <Text style={styles.locationText}>{item.ubicacion}</Text>
@@ -99,8 +91,8 @@ export function MisPublicacionesScreen() {
             </View>
           </View>
 
-          <TouchableOpacity 
-            style={styles.btnEditar} 
+          <TouchableOpacity
+            style={styles.btnEditar}
             onPress={() => handleEditar(item.id)}
             activeOpacity={0.8}
           >
@@ -118,10 +110,10 @@ export function MisPublicacionesScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f3f3f3" />
-      
+
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleVolver} activeOpacity={0.7}>
-          <ChevronBack width={20} height={20} color="#ffffff" />
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+          <ChevronBack width={20} height={20} color={colors.white} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Mis Publicaciones</Text>
       </View>
@@ -134,12 +126,12 @@ export function MisPublicacionesScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      <TouchableOpacity 
-        style={styles.fab} 
+      <TouchableOpacity
+        style={styles.fab}
         onPress={handleAgregarNueva}
         activeOpacity={0.8}
       >
-        <Plus width={32} height={32} color="#ffffff" />
+        <Plus width={32} height={32} color={colors.white} />
       </TouchableOpacity>
 
       <ConfirmModal
@@ -152,28 +144,6 @@ export function MisPublicacionesScreen() {
         onCancel={handleCancelDelete}
       />
 
-      <View style={styles.navbar}>
-        <TouchableOpacity style={styles.navItem} onPress={() => router.push('/(tabs)')}>
-          <Home width={24} height={24} color="#555555" />
-          <Text style={styles.navText}>Inicio</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Search width={24} height={24} color="#555555" />
-          <Text style={styles.navText}>Búsqueda</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Explore width={24} height={24} color="#e67e22" />
-          <Text style={[styles.navText, styles.navTextActive]}>Explorar</Text>
-          <View style={styles.activeIndicator} />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.navItem}>
-          <Like width={24} height={24} color="#555555" />
-          <Text style={styles.navText}>Favoritos</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -181,7 +151,7 @@ export function MisPublicacionesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f3f3f3',
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 24,
@@ -192,25 +162,26 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#7f7f7f',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
   },
+
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000000',
+    color: colors.textPrimary,
     letterSpacing: -0.5,
   },
   listContent: {
     paddingHorizontal: 24,
     paddingTop: 12,
-    paddingBottom: 110, 
+    paddingBottom: 100,
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderRadius: 24,
     overflow: 'hidden',
     marginBottom: 16,
@@ -233,7 +204,7 @@ const styles = StyleSheet.create({
   },
   dogDetails: {
     fontSize: 12,
-    color: '#666666',
+    color: colors.gray500,
     marginTop: 2,
   },
   locationContainer: {
@@ -246,7 +217,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 12,
-    color: '#666666',
+    color: colors.gray500,
   },
   tagContainer: {
     flexDirection: 'row',
@@ -254,18 +225,18 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tag: {
-    backgroundColor: '#e3d7ff',
+    backgroundColor: colors.secondaryLight,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
   },
   tagText: {
     fontSize: 11,
-    color: '#8e44ad',
+    color: colors.secondary,
     fontWeight: '600',
   },
   deleteAction: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     borderTopRightRadius: 24,
@@ -275,7 +246,7 @@ const styles = StyleSheet.create({
     width: 80,
   },
   btnEditar: {
-    backgroundColor: '#f39c12',
+    backgroundColor: colors.primary,
     borderRadius: 14,
     paddingVertical: 8,
     alignItems: 'center',
@@ -297,9 +268,9 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 95,
+    bottom: 24,
     right: 24,
-    backgroundColor: '#f39c12',
+    backgroundColor: colors.primary,
     width: 64,
     height: 64,
     borderRadius: 32,
@@ -311,44 +282,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-  navbar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 75,
-    backgroundColor: '#ffffff',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#eeeeee',
-    paddingBottom: 12,
-  },
-  navItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    width: 65,
-    position: 'relative',
-  },
-  navText: {
-    fontSize: 10,
-    color: '#888888',
-    marginTop: 4,
-  },
-  navTextActive: {
-    color: '#e67e22',
-    fontWeight: '600',
-  },
-  activeIndicator: {
-    position: 'absolute',
-    top: 0,
-    width: 42,
-    height: 3,
-    backgroundColor: '#e67e22',
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 3,
-  },
+
 });
 
