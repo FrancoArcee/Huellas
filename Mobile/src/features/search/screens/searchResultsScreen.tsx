@@ -1,12 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
 import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
 import { SearchFilterChip } from '../components/searchFilterChip';
 import { animalSearchMocks } from '../.././../mocks/animalsMocks';
-import ChevronBack from '../../../assets/icons/buttons/chevronBack.svg';
 import { colors } from '../../../theme/index';
 import { FilterBottomSheet } from '../../home/components/FilterBottomSheet';
 
@@ -60,12 +59,6 @@ export function SearchResultsScreen() {
 
     return (
         <View style={styles.safeArea}>
-            <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-                    <ChevronBack width={20} height={20} />
-                </TouchableOpacity>
-            </View>
-
             <View style={styles.container}>
                 <SearchBar onFilterPress={() => setIsFilterSheetVisible(true)} />
 
@@ -123,20 +116,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 20,
-        paddingTop: 8,
-    },
-    header: {
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        marginBottom: 8,
-    },
-    backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        justifyContent: 'center',
-        alignItems: 'center',
+        paddingTop: 42,
     },
     filtersScroll: {
         marginTop: 16,

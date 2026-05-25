@@ -14,7 +14,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
 import { useRouter } from 'expo-router';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
-import ChevronBack from '../../../assets/icons/buttons/chevronBack.svg';
 import Plus from '../../../assets/icons/buttons/plus.svg';
 import Trash from '../../../assets/icons/buttons/trash.svg';
 import Location from '../../../assets/icons/location.svg';
@@ -112,11 +111,9 @@ export function MisPublicacionesScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#f3f3f3" />
 
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-          <ChevronBack width={20} height={20} color={colors.white} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mis Publicaciones</Text>
+        <Text style={styles.headerTitle}>Mis publicaciones</Text>
       </View>
+
 
       <FlatList
         data={publicaciones}
@@ -155,19 +152,9 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 24,
-    paddingTop: 16,
+    paddingTop: 42,
     marginBottom: 8,
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',

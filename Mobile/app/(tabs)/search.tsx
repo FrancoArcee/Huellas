@@ -1,6 +1,5 @@
 import { View, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
-import BackIcon from '../../src/assets/icons/buttons/chevronBack.svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SearchResultsScreen } from '../../src/features/search/screens/searchResultsScreen';
 import { theme } from '../../src/theme';

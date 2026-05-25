@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../src/theme';
 import HomeSvg from '../../src/assets/icons/screens/home.svg';
 import SearchSvg from '../../src/assets/icons/screens/search.svg';
@@ -7,6 +8,9 @@ import LikeSvg from '../../src/assets/icons/screens/like.svg';
 import ProfileSvg from '../../src/assets/icons/screens/profile.svg';
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, theme.spacing.sm);
+
   return (
     <Tabs
       screenOptions={{
@@ -14,6 +18,9 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: theme.colors.gray700,
         tabBarStyle: {
           backgroundColor: theme.colors.white,
+          height: 64 + bottomPadding,
+          paddingTop: theme.spacing.md,
+          paddingBottom: bottomPadding,
         },
         tabBarLabelStyle: {
           fontFamily: theme.typography.fontFamily.medium,

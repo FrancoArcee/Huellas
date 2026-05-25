@@ -1,12 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CustomText } from '../../src/shared/components/ui/CustomText';
 import { PetHorizontalCard } from '../../src/shared/components/ui/PetHorizontalCard';
 import { animalMocks } from '../../src/mocks/animalsMocks';
 import { theme } from '../../src/theme';
-import BackIcon from '../../src/assets/icons/buttons/chevronBack.svg';
 
 const favoritePets = animalMocks.map((animal) => ({
   id: animal.id,
@@ -44,19 +42,10 @@ export default function FavoritesRoute() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.screen}>
-        <View style={[styles.contentShell, { paddingTop: insets.top + 36 }]}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Volver"
-            onPress={() => router.back()}
-            style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
-          >
-            <BackIcon width={23} height={23} />
-          </Pressable>
-
-          <CustomText variant="h3" style={styles.title}>
-            Mis Favoritos
-          </CustomText>
+        <View style={[styles.contentShell, { paddingTop: insets.top }]}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Mis favoritos</Text>
+          </View>
 
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -98,29 +87,19 @@ const styles = StyleSheet.create({
     maxWidth: 390,
     backgroundColor: theme.colors.background,
   },
-  backButton: {
-    marginLeft: 27,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#767676',
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 42,
+    marginBottom: 8,
   },
-  pressed: {
-    transform: [{ scale: 0.96 }],
-    opacity: 0.88,
-  },
-  title: {
-    marginLeft: 27,
-    marginTop: 35,
-    color: theme.colors.black,
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 22,
-    lineHeight: 29,
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: theme.colors.textPrimary,
+    letterSpacing: -0.5,
   },
   listContent: {
-    paddingTop: 27,
+    paddingTop: 12,
   },
   petCard: {
     width: '92%',
