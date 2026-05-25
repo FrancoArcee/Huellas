@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,18 +13,12 @@ import { styles } from './EditAnimalScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
-import Svg, { Path } from 'react-native-svg';
 import { useRouter } from 'expo-router';
 import { validateStep, validateAll, sanitizeNumericInput } from '../utils/validateAnimalForm';
+import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
-
-const SuccessCheckIcon = () => (
-  <Svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-    <Path d="M20 6L9 17l-5-5" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-  </Svg>
-);
 
 type AnimalFormData = {
   nombre: string;
@@ -114,12 +108,12 @@ export default function CreateAnimalScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
-      
+
       {step < 4 ? (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <StepIndicator currentStep={step} />
           <Text style={styles.screenTitle}>Crear publicación</Text>
-          
+
           {step === 1 && (
             <View style={styles.formContainer}>
               <Text style={styles.label}>Nombre de la mascota <Text style={styles.asterisk}>*</Text></Text>
@@ -162,7 +156,7 @@ export default function CreateAnimalScreen() {
                 </View>
               )}
               {renderError('tamano')}
-              
+
               <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
                 <Text style={styles.primaryButtonText}>Continuar</Text>
               </TouchableOpacity>
@@ -251,13 +245,13 @@ export default function CreateAnimalScreen() {
               </TouchableOpacity>
 
               <Text style={styles.label}>Descripción</Text>
-              <TextInput 
-                style={styles.textArea} 
-                multiline 
-                numberOfLines={6} 
+              <TextInput
+                style={styles.textArea}
+                multiline
+                numberOfLines={6}
                 placeholder="Cuentanos sobre la mascota..."
-                value={formData.descripcion} 
-                onChangeText={(t) => updateForm('descripcion', t)} 
+                value={formData.descripcion}
+                onChangeText={(t) => updateForm('descripcion', t)}
               />
 
               <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
@@ -268,13 +262,13 @@ export default function CreateAnimalScreen() {
         </ScrollView>
       ) : (
         <View style={styles.successContainer}>
-          <View style={styles.successCircle}>
+          <View style={[styles.successCircle, { marginBottom: 0 }]}>
             <SuccessCheckIcon />
           </View>
-          <Text style={styles.successTitle}>Tu publicación se creó con éxito!</Text>
+          <Text style={[styles.successTitle, { marginTop: 100 }]}>Tu publicación se creó con éxito!</Text>
           <Text style={styles.successSubtitle}>Gracias por dejar tu huella</Text>
 
-          <TouchableOpacity style={[styles.primaryButton, { width: '100%', marginTop: 40 }]} onPress={() => router.push('/(admin)/mispublicaciones')}>
+          <TouchableOpacity style={[styles.primaryButton, { width: '100%', marginTop: 40 }]} onPress={() => router.push('/(tabs)/mypost')}>
             <Text style={styles.primaryButtonText}>Ver mis publicaciones</Text>
           </TouchableOpacity>
         </View>

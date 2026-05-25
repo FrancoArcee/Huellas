@@ -1,4 +1,4 @@
-﻿type FormData = {
+type FormData = {
   nombre: string;
   fechaNacimiento: string;
   edad: string;
@@ -37,9 +37,9 @@ export function validateField(key: string, value: string): FieldError {
       if (!trimmed) return null;
       const match = trimmed.match(DATE_REGEX);
       if (!match) return 'Formato inválido (DD/MM/YYYY)';
-      const d = parseInt(match[1], 10);
-      const m = parseInt(match[2], 10);
-      const y = parseInt(match[3], 10);
+      const d = parseInt(match[1]!, 10);
+      const m = parseInt(match[2]!, 10);
+      const y = parseInt(match[3]!, 10);
       if (m < 1 || m > 12) return 'Mes inválido (1-12)';
       if (d < 1 || d > 31) return 'Día inválido (1-31)';
       if (y < 1900 || y > 2100) return 'Año inválido';
