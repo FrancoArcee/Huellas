@@ -214,7 +214,7 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
 
         <Pressable
           accessibilityRole="button"
-          onPress={() => router.replace('/explore')}
+          onPress={() => router.replace('/(tabs)/mypost')}
           style={({ pressed }) => [
             styles.successButton,
             { marginBottom: bottomInset + 48 },
