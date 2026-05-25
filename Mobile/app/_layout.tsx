@@ -1,5 +1,6 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   useFonts,
   Poppins_300Light,
@@ -25,7 +26,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" />
 
       <Stack
@@ -38,8 +39,9 @@ export default function RootLayout() {
       >
         <Stack.Screen name="index" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(admin)" />
         <Stack.Screen name="(auth)" />
       </Stack>
-    </>
+    </GestureHandlerRootView>
   );
 }
