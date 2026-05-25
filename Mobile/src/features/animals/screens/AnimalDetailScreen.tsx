@@ -15,7 +15,7 @@ import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
 import WhatsAppSvg from '../../../assets/icons/whatsapp.svg';
 import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
-import { animalMocks } from '../../../mocks/animalsMocks';
+import { animalMocks, animalSearchMocks } from '../../../mocks/animalsMocks';
 
 const WHATSAPP_PLACEHOLDER = '5492215550123';
 
@@ -49,7 +49,8 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const { openWhatsApp } = useWhatsApp();
 
   const animalId = Array.isArray(id) ? id[0] : id;
-  const selectedAnimal = animalMocks.find((item) => item.id === animalId) ?? animalMocks[0]!;
+  const allAnimals = [...animalMocks, ...animalSearchMocks];
+  const selectedAnimal = allAnimals.find((item) => item.id === animalId) ?? animalMocks[0]!;
 
   const animal = useMemo(
     () => ({
