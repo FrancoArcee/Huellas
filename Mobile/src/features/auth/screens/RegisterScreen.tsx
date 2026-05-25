@@ -18,6 +18,7 @@ export const RegisterScreen = () => {
       <View style={styles.form}>
         <CustomInput label="Nombre" placeholder="Nombre" />
         <CustomInput label="Apellido" placeholder="Apellido" />
+        <CustomInput label="WhatsApp" placeholder="Número de WhatsApp" />
         <CustomInput label="Correo electrónico" placeholder="Correo electrónico" />
         <CustomInput label="Contraseña" placeholder="Contraseña" secureTextEntry />
 
