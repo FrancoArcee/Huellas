@@ -1,14 +1,13 @@
 // ───────────────────────────────────────────────
 //  Auth Middleware — Autenticación con Better Auth
 // ───────────────────────────────────────────────
-//  La instancia de Better Auth se inyecta en
-//  `app.locals.auth` desde el archivo de configuración
-//  que se creará posteriormente.
+//  La instancia de Better Auth se importa
+//  directamente desde config/auth.ts en lugar
+//  de depender de app.locals.
 // ───────────────────────────────────────────────
 
 import type { Request, Response, NextFunction } from "express";
-import type { betterAuth as BetterAuthFn } from "better-auth";
-type BetterAuth = ReturnType<typeof BetterAuthFn>;
+import { auth } from "../../../config/auth";
 import { sendError } from "../utils/response";
 
 // ─── Extensión de tipos Express ───────────────
@@ -25,12 +24,6 @@ declare global {
         updatedAt?: string;
       };
     }
-  }
-}
-
-declare module "express" {
-  interface Locals {
-    auth?: BetterAuth;
   }
 }
 
@@ -64,18 +57,6 @@ export function requireAuth(
   res: Response,
   next: NextFunction
 ): void {
-  const auth: BetterAuth | undefined = req.app.locals.auth;
-
-  if (!auth) {
-    sendError(
-      res,
-      500,
-      "AUTH_NOT_CONFIGURED",
-      "Authentication service is not configured"
-    );
-    return;
-  }
-
   const token = extractBearerToken(req);
   if (!token) {
     sendError(res, 401, "UNAUTHORIZED", "Missing or invalid Bearer token");
@@ -109,13 +90,6 @@ export function optionalAuth(
   res: Response,
   next: NextFunction
 ): void {
-  const auth: BetterAuth | undefined = req.app.locals.auth;
-
-  if (!auth) {
-    next();
-    return;
-  }
-
   const token = extractBearerToken(req);
   if (!token) {
     next();

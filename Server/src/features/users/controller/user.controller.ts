@@ -4,6 +4,7 @@
 
 import type { Request, Response, NextFunction } from "express";
 import { createUserSchema, updateUserSchema } from "@huellas/shared";
+import { auth } from "../../../config/auth";
 import { userService, UserNotFoundError, ForbiddenError } from "../service/user.service";
 
 // ─── Handlers ──────────────────────────────────
@@ -33,8 +34,6 @@ export async function createUser(
     const { name, email, password, contact, contactType, profilePictureUrl } = parsed.data;
 
     // 2. Use Better Auth sign-up to create the user
-    const auth = req.app.locals.auth as any;
-
     const newUser = await auth.api.signUpEmail({
       body: {
         name,
