@@ -22,7 +22,7 @@ model User {
   image          String?
   // ── Custom fields de la aplicación ──
   contact        String
-  contactType    String                        // "phone" | "email" | "whatsapp"
+  contactType    String                        // ContactType enum: "WhatsApp" | "Telegram" | "Instagram" | "Discord"
   profilePictureUrl String?
   // ── Relaciones ──
   createdAt      DateTime   @default(now())
