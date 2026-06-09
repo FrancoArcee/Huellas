@@ -7,7 +7,7 @@
 // ───────────────────────────────────────────────
 
 import type { Request, Response, NextFunction } from "express";
-import { auth } from "../../../config/auth";
+import { auth } from "../../config/auth";
 import { sendError } from "../utils/response";
 
 // ─── Extensión de tipos Express ───────────────
@@ -67,8 +67,8 @@ export function requireAuth(
     .getSession({
       headers: { authorization: `Bearer ${token}` },
     })
-    .then((session) => {
-      const user = mapSessionUser(session as any);
+    .then((session: any) => {
+      const user = mapSessionUser(session);
       if (!user) {
         sendError(res, 401, "UNAUTHORIZED", "Invalid or expired token");
         return;
@@ -100,8 +100,8 @@ export function optionalAuth(
     .getSession({
       headers: { authorization: `Bearer ${token}` },
     })
-    .then((session) => {
-      const user = mapSessionUser(session as any);
+    .then((session: any) => {
+      const user = mapSessionUser(session);
       if (user) {
         req.user = user;
       }
