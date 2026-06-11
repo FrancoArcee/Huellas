@@ -8,6 +8,7 @@ export enum ContactType {
   Telegram  = "Telegram",
   Instagram = "Instagram",
   Discord   = "Discord",
+  Facebook  = "Facebook",
 }
 
 /** Union type derivado del enum para uso en runtime */

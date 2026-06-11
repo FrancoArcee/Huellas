@@ -22,7 +22,7 @@ model User {
   image          String?
   // ── Custom fields de la aplicación ──
   contact        String
-  contactType    String                        // ContactType enum: "WhatsApp" | "Telegram" | "Instagram" | "Discord"
+  contactType    String                        // ContactType enum: "WhatsApp" | "Telegram" | "Instagram" | "Discord" | "Facebook"
   profilePictureUrl String?
   // ── Relaciones ──
   createdAt      DateTime   @default(now())
@@ -32,6 +32,8 @@ model User {
   accounts       Account[]
   posts          Post[]
   favorites      Favorite[]
+
+  @@unique([contact, contactType])              // No duplicar contacto+tipo entre usuarios
 }
 
 model Session {
