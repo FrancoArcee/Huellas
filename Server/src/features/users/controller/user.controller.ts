@@ -5,7 +5,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { createUserSchema, updateUserSchema } from "@huellas/shared";
 import { auth } from "../../../config/auth";
-import { userService, UserNotFoundError, ForbiddenError } from "../service/user.service";
+import { userService, UserNotFoundError, ForbiddenError, ContactAlreadyInUseError } from "../service/user.service";
 
 // ─── Handlers ──────────────────────────────────
 
@@ -59,6 +59,22 @@ export async function createUser(
       });
       return;
     }
+
+    // Handle Prisma unique constraint violation for (contact, contactType)
+    if (error?.code === "P2002") {
+      const targetFields: string[] = error?.meta?.target ?? [];
+      if (
+        targetFields.includes("contact") &&
+        targetFields.includes("contactType")
+      ) {
+        res.status(409).json({
+          success: false,
+          message: "El contacto ya está en uso por otro usuario",
+        });
+        return;
+      }
+    }
+
     next(error);
   }
 }
@@ -135,6 +151,10 @@ export async function updateUser(
     }
     if (error instanceof ForbiddenError) {
       res.status(403).json({ success: false, message: error.message });
+      return;
+    }
+    if (error instanceof ContactAlreadyInUseError) {
+      res.status(409).json({ success: false, message: error.message });
       return;
     }
     next(error);

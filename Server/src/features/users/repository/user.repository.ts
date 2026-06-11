@@ -54,6 +54,15 @@ export const userRepository = {
   },
 
   /**
+   * Find a user by the unique (contact, contactType) pair.
+   */
+  async findByContact(contact: string, contactType: string) {
+    return prisma.user.findUnique({
+      where: { contact_contactType: { contact, contactType } },
+    });
+  },
+
+  /**
    * Create a new user record.
    */
   async create(data: Prisma.UserCreateInput) {

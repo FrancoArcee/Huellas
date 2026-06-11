@@ -22,6 +22,14 @@ export class ForbiddenError extends Error {
   }
 }
 
+export class ContactAlreadyInUseError extends Error {
+  public statusCode: number = 409;
+  constructor(message: string = "Contact already in use") {
+    super(message);
+    this.name = "ContactAlreadyInUseError";
+  }
+}
+
 // ─── Service ───────────────────────────────────
 
 export const userService = {
@@ -48,6 +56,20 @@ export const userService = {
     const existing = await userRepository.findById(id);
     if (!existing) {
       throw new UserNotFoundError(`User with id "${id}" not found`);
+    }
+
+    // Check for (contact, contactType) uniqueness if either is being changed
+    const newContact = data.contact !== undefined ? String(data.contact) : existing.contact;
+    const newContactType = data.contactType !== undefined ? String(data.contactType) : existing.contactType;
+
+    if (
+      (data.contact !== undefined || data.contactType !== undefined) &&
+      (newContact !== existing.contact || newContactType !== existing.contactType)
+    ) {
+      const duplicate = await userRepository.findByContact(newContact, newContactType);
+      if (duplicate) {
+        throw new ContactAlreadyInUseError("El contacto ya está en uso por otro usuario");
+      }
     }
 
     return userRepository.update(id, data);

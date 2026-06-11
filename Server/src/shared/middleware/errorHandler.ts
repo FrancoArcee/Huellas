@@ -36,6 +36,14 @@ export function errorHandler(
     return;
   }
 
+  if (err.name === "ContactAlreadyInUseError") {
+    res.status(409).json({
+      success: false,
+      message: err.message,
+    });
+    return;
+  }
+
   console.error("Unhandled error:", err);
   res.status(500).json({
     success: false,
