@@ -12,6 +12,7 @@ import { apiLimiter } from "../shared/middleware/rateLimiter";
 import userRoutes from "../features/users/routes/user.routes";
 import favoriteRoutes from "../features/favorites/routes/favorite.routes";
 import animalRoutes from "../features/animals/routes/animal.routes";
+import requestRoutes from "../features/requests/routes/request.routes";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(apiLimiter);
 app.use("/users", userRoutes);
 app.use("/favorites", favoriteRoutes);
 app.use("/animals", animalRoutes);
+app.use("/requests", requestRoutes);
 
 // ─── Health check ───────────────────────────────
 app.get("/health", (_req, res) => {
