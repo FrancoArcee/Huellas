@@ -9,9 +9,13 @@
     "start": "node dist/server.js"
   },
   "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "@prisma/config": "^7.8.0",
+    "better-auth": "^1.6.15",
     "cors": "latest",
     "dotenv": "latest",
     "express": "latest",
+    "express-rate-limit": "latest",
     "multer": "latest",
     "zod": "latest"
   },
