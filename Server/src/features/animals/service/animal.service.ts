@@ -79,7 +79,7 @@ export const animalService = {
   },
 
   /**
-   * List posts with optional filters and pagination.
+   * List posts with optional filters, geolocation search, and pagination.
    */
   async listPosts(
     filters: {
@@ -87,6 +87,14 @@ export const animalService = {
       size?: string;
       location?: string;
       q?: string;
+      latitude?: number;
+      longitude?: number;
+      radius?: number;
+      minAge?: number;
+      maxAge?: number;
+      minWeight?: number;
+      maxWeight?: number;
+      userId?: string;
     },
     page?: number,
     limit?: number,

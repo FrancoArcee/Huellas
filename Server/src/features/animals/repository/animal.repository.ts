@@ -15,6 +15,50 @@ export interface PaginatedPosts {
   totalPages: number;
 }
 
+export interface PostFilters {
+  category?: string;
+  size?: string;
+  location?: string;
+  q?: string;
+  // ── Geolocation filters ──
+  latitude?: number;
+  longitude?: number;
+  radius?: number; // in kilometers
+  // ── Range filters ──
+  minAge?: number;
+  maxAge?: number;
+  minWeight?: number;
+  maxWeight?: number;
+  // ── User filter ──
+  userId?: string;
+}
+
+// ─── Haversine distance (km) via raw SQL ──────
+//  Returns post IDs that are within `radius` km
+//  of the given (lat, lng) point.
+
+async function findIdsWithinRadius(
+  latitude: number,
+  longitude: number,
+  radiusKm: number,
+): Promise<string[]> {
+  const rows: Array<{ id: string }> = await prisma.$queryRaw`
+    SELECT id FROM "Post"
+    WHERE (
+      6371 * acos(
+        LEAST(1.0,
+          cos(radians(${latitude}::float8))
+            * cos(radians(latitude))
+            * cos(radians(longitude) - radians(${longitude}::float8))
+          + sin(radians(${latitude}::float8))
+            * sin(radians(latitude))
+        )
+      )
+    ) <= ${radiusKm}::float8
+  `;
+  return rows.map((r: { id: string }) => r.id);
+}
+
 // ─── Repository ────────────────────────────────
 
 export const animalRepository = {
@@ -67,15 +111,15 @@ export const animalRepository = {
   },
 
   /**
-   * List posts with optional filters and pagination.
+   * List posts with optional filters, geolocation search, and pagination.
+   *
+   * When latitude + longitude + radius are provided, only posts within
+   * that radius (in km) are returned. The Haversine formula is used via
+   * a raw SQL query to find matching IDs, then Prisma fetches the full
+   * records with all other filters applied.
    */
   async list(
-    filters: {
-      category?: string;
-      size?: string;
-      location?: string;
-      q?: string;
-    },
+    filters: PostFilters,
     page: number = 1,
     limit: number = 20,
   ): Promise<PaginatedPosts> {
@@ -83,6 +127,21 @@ export const animalRepository = {
 
     const where: Prisma.PostWhereInput = {};
 
+    // ── Geolocation filter ───────────────────────
+    if (
+      filters.latitude !== undefined &&
+      filters.longitude !== undefined &&
+      filters.radius !== undefined
+    ) {
+      const ids = await findIdsWithinRadius(
+        filters.latitude,
+        filters.longitude,
+        filters.radius,
+      );
+      where.id = { in: ids };
+    }
+
+    // ── Text / category filters ───────────────────
     if (filters.category) {
       where.category = filters.category;
     }
@@ -94,6 +153,25 @@ export const animalRepository = {
     }
     if (filters.q) {
       where.name = { contains: filters.q, mode: "insensitive" };
+    }
+
+    // ── Range filters ────────────────────────────
+    if (filters.minAge !== undefined || filters.maxAge !== undefined) {
+      where.age = {
+        ...(filters.minAge !== undefined && { gte: filters.minAge }),
+        ...(filters.maxAge !== undefined && { lte: filters.maxAge }),
+      };
+    }
+    if (filters.minWeight !== undefined || filters.maxWeight !== undefined) {
+      where.weight = {
+        ...(filters.minWeight !== undefined && { gte: filters.minWeight }),
+        ...(filters.maxWeight !== undefined && { lte: filters.maxWeight }),
+      };
+    }
+
+    // ── User filter ──────────────────────────────
+    if (filters.userId) {
+      where.userId = filters.userId;
     }
 
     const [posts, total] = await Promise.all([
