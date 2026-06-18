@@ -1,0 +1,52 @@
+# ─────────────────────────────────────────────────────
+#  Huellas — Docker Compose (Backend + PostgreSQL)
+# ─────────────────────────────────────────────────────
+#  Usage:
+#    docker compose up -d          → start all services
+#    docker compose logs -f server → follow server logs
+#    docker compose down           → stop and remove containers
+# ─────────────────────────────────────────────────────
+
+services:
+  # ─── PostgreSQL ───────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: huellas-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: petapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d petapp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend Server ──────────────────────────────
+  server:
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
+    container_name: huellas-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://app:app@postgres:5432/petapp?schema=public
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-supersecretkey-change-in-production}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:3000}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma migrate deploy && node dist/server.js"
+
+volumes:
+  pgdata:
