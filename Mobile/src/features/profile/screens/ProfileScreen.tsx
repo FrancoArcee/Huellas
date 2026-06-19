@@ -12,7 +12,7 @@ import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
 import ProfileSvg from '../../../assets/icons/screens/profile.svg';
 import PencilSvg from '../../../assets/icons/buttons/pencil.svg';
 import LogoutSvg from '../../../assets/icons/buttons/logout.svg';
-import WhatsAppSvg from '../../../assets/icons/whatsapp.svg';
+import WhatsAppSvg from '../../../assets/icons/socialNetwork/whatsapp.svg';
 
 // Mock de datos del usuario
 const MOCK_USER = {

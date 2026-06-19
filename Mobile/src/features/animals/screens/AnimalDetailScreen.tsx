@@ -13,7 +13,7 @@ import { CustomText } from '../../../shared/components/ui/CustomText';
 import ChevronBackSvg from '../../../assets/icons/buttons/chevronBack.svg';
 import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
-import WhatsAppSvg from '../../../assets/icons/whatsapp.svg';
+import WhatsAppSvg from '../../../assets/icons/socialNetwork/whatsapp.svg';
 import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
 import { animalMocks, animalSearchMocks } from '../../../mocks/animalsMocks';
 
