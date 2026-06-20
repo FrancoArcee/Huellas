@@ -6,7 +6,7 @@ import { z } from "zod";
 
 // ─── Enums ─────────────────────────────────────
 
-export const contactTypeSchema = z.enum(["WhatsApp", "Telegram", "Instagram", "Discord", "Facebook"]);
+export const contactTypeSchema = z.enum(["WhatsApp", "Telegram", "Instagram", "Discord", "Facebook", "Messenger"]);
 export const petSizeSchema     = z.enum(["small", "medium", "large"]);
 export const petCategorySchema = z.enum(["dog", "cat", "other"]);
 
@@ -27,6 +27,8 @@ export function validateContactByType(contact: string, contactType: string): boo
       const urlRegex = /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9.]{5,50}$/;
       return usernameRegex.test(contact) || urlRegex.test(contact);
     }
+    case "Messenger":
+      return /^[a-zA-Z0-9.]{5,50}$/.test(contact);
     default:
       return false;
   }
@@ -38,6 +40,7 @@ const contactErrorMessages: Record<string, string> = {
   Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos; no puede empezar con punto ni tener dos puntos seguidos)",
   Discord:   "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos)",
   Facebook:  "El contacto de Facebook debe ser un username válido (5-50 caracteres) o una URL de facebook.com",
+  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres, letras y números)",
 };
 
 // ─── User Schemas ──────────────────────────────

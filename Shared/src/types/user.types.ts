@@ -4,11 +4,12 @@
 
 /** Tipos de contacto disponibles */
 export enum ContactType {
-  WhatsApp = "WhatsApp",
+  WhatsApp  = "WhatsApp",
   Telegram  = "Telegram",
   Instagram = "Instagram",
   Discord   = "Discord",
   Facebook  = "Facebook",
+  Messenger = "Messenger",
 }
 
 /** Union type derivado del enum para uso en runtime */
