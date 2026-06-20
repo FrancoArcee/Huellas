@@ -10,6 +10,8 @@ export const animalMocks: Animal[] = [
     gender: "Macho",
     age: "2 años",
     weightKg: 15,
+    latitude: -34.9180,
+    longitude: -57.9510,
   },
   {
     id: "2",
@@ -20,6 +22,8 @@ export const animalMocks: Animal[] = [
     gender: "Macho",
     age: "4 meses",
     weightKg: 2,
+    latitude: -34.9250,
+    longitude: -57.9600,
   },
   {
     id: "3",
@@ -30,6 +34,8 @@ export const animalMocks: Animal[] = [
     gender: "Macho",
     age: "2 años",
     weightKg: 24,
+    latitude: -34.9310,
+    longitude: -57.9470,
   },
 ];
 
@@ -44,6 +50,8 @@ export const animalSearchMocks: Animal[] = [
     gender: "Macho",
     age: "2 años",
     weightKg: 15,
+    latitude: -34.9180,
+    longitude: -57.9510,
   },
   {
     id: "6",
@@ -54,5 +62,7 @@ export const animalSearchMocks: Animal[] = [
     gender: "Hembra",
     age: "3 meses",
     weightKg: 3.5,
+    latitude: -34.9140,
+    longitude: -57.9580,
   },
 ];
