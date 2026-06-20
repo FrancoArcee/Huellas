@@ -44,8 +44,24 @@ export async function createPost(
 
 /**
  * GET /animals
- * List posts with optional filters and pagination.
+ * List posts with optional filters, geolocation search, and pagination.
  * Public endpoint (no authentication required).
+ *
+ * Query params:
+ *   q          – text search on pet name
+ *   category   – filter by pet category (dog, cat, other)
+ *   size       – filter by pet size (small, medium, large)
+ *   location   – text search on location description
+ *   latitude   – center latitude for geolocation search
+ *   longitude  – center longitude for geolocation search
+ *   radius     – search radius in km (requires latitude & longitude)
+ *   minAge     – minimum age filter
+ *   maxAge     – maximum age filter
+ *   minWeight  – minimum weight filter
+ *   maxWeight  – maximum weight filter
+ *   userId     – filter by author
+ *   page       – page number (default 1)
+ *   limit      – items per page (default 20, max 100)
  */
 export async function listPosts(
   req: Request,
@@ -63,9 +79,20 @@ export async function listPosts(
       return;
     }
 
-    const { q, category, size, location, page, limit } = parsed.data;
+    const {
+      q, category, size, location,
+      latitude, longitude, radius,
+      minAge, maxAge, minWeight, maxWeight,
+      userId, page, limit,
+    } = parsed.data;
+
     const result = await animalService.listPosts(
-      { q, category, size, location },
+      {
+        q, category, size, location,
+        latitude, longitude, radius,
+        minAge, maxAge, minWeight, maxWeight,
+        userId,
+      },
       page,
       limit,
     );
