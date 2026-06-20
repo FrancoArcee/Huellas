@@ -6,9 +6,12 @@ import FilterIcon from '../../../assets/icons/buttons/filter.svg';
 
 interface SearchBarProps {
   onFilterPress?: () => void;
+  value?: string;
+  onChangeText?: (text: string) => void;
+  placeholder?: string;
 }
 
-export const SearchBar = ({ onFilterPress }: SearchBarProps) => {
+export const SearchBar = ({ onFilterPress, value, onChangeText, placeholder }: SearchBarProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -18,9 +21,11 @@ export const SearchBar = ({ onFilterPress }: SearchBarProps) => {
         </TouchableOpacity>
         <TextInput
           style={styles.input}
-          placeholder="Buscá por raza, edad, ubicación...."
+          placeholder={placeholder ?? "Buscá por raza, edad, ubicación...."}
           placeholderTextColor={theme.colors.gray400}
           editable={true}
+          value={value}
+          onChangeText={onChangeText}
         />
       </View>
 

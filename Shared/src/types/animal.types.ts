@@ -11,4 +11,6 @@ export interface Animal {
   gender: string;
   age: string;
   weightKg: number;
+  latitude?: number;
+  longitude?: number;
 }

@@ -1,14 +1,15 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
-import { colors } from '../../../theme/index';
+import { Pressable, StyleSheet, Text, ViewStyle, TouchableOpacity } from 'react-native';
+import { theme } from '../../../theme/index';
 
 interface SearchFilterChipProps {
     label: string;
     onPress?: () => void;
+    onRemove?: () => void;
     style?: ViewStyle;
 }
 
-export function SearchFilterChip({ label, onPress, style }: SearchFilterChipProps) {
+export function SearchFilterChip({ label, onPress, onRemove, style }: SearchFilterChipProps) {
     return (
         <Pressable
             onPress={onPress}
@@ -17,7 +18,18 @@ export function SearchFilterChip({ label, onPress, style }: SearchFilterChipProp
             accessibilityLabel={`Filtro: ${label}`}
         >
             <Text style={styles.label}>{label}</Text>
-            <Text>x</Text>
+            {onRemove && (
+                <TouchableOpacity
+                    onPress={(e) => {
+                        e.stopPropagation();
+                        if (onRemove) onRemove();
+                    }}
+                    style={styles.removeButton}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                >
+                    <Text style={styles.removeText}>×</Text>
+                </TouchableOpacity>
+            )}
         </Pressable>
     );
 }
@@ -26,15 +38,15 @@ const styles = StyleSheet.create({
     chip: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: colors.gray200,
+        backgroundColor: theme.colors.white,
         borderRadius: 100,
         paddingHorizontal: 14,
         paddingVertical: 8,
-        gap: 5,
+        gap: 6,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.07,
-        shadowRadius: 3,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
         elevation: 2,
     },
     chipPressed: {
@@ -43,10 +55,18 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 13,
-        fontWeight: '500',
-        color: '#222222',
+        fontFamily: theme.typography.fontFamily.medium,
+        color: theme.colors.textPrimary,
     },
-    icon: {
-        marginTop: 1,
+    removeButton: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingLeft: 2,
+    },
+    removeText: {
+        fontSize: 16,
+        color: theme.colors.textSecondary,
+        fontFamily: theme.typography.fontFamily.bold,
+        lineHeight: 16,
     },
 });

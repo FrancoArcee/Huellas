@@ -40,7 +40,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Buscar',
+          title: 'Explorar',
           tabBarIcon: ({ color, size }) => (
             <SearchSvg width={size} height={size} color={color} />
           ),
