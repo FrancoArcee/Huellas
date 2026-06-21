@@ -1,78 +1,105 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import React from 'react';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
+import { Button } from '../../../shared/components/ui/Button';
 import { CategoryCarousel } from '../components/CategoryCarousel';
 import { AnimalsCarousel } from '../components/AnimalsCarousel';
 import { FilterBottomSheet } from '../components/FilterBottomSheet';
+import { useHomeData } from '../hooks/useHomeData';
 
 export const HomeScreen = () => {
-  const router = useRouter();
-  const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
+  const {
+    isFilterSheetVisible,
+    locationState,
+    animals,
+    loadingAnimals,
+    openFilterSheet,
+    closeFilterSheet,
+    handleSearchSubmit,
+    handleApplyFilters,
+    handleEnableLocation,
+    handleFavoriteToggle,
+  } = useHomeData();
 
-  const openFilterSheet = () => {
-    setIsFilterSheetVisible(true);
-  };
+  const renderCercaTuyo = () => {
+    if (locationState === 'loading' || (locationState === 'granted' && loadingAnimals)) {
+      return (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
+      );
+    }
 
-  const closeFilterSheet = () => {
-    setIsFilterSheetVisible(false);
-  };
+    if (locationState === 'denied') {
+      return (
+        <View style={styles.noLocationContainer}>
+          <CustomText variant="body" color="textSecondary" style={styles.noLocationText}>
+            Para ver resultados debes permitir el acceso a la ubicación del dispositivo
+          </CustomText>
+          <Button
+            title="Habilitar ubicación"
+            onPress={handleEnableLocation}
+            style={styles.enableLocationButton}
+          />
+        </View>
+      );
+    }
 
-  const handleSearchSubmit = (search: string) => {
-    router.push({
-      pathname: '/(tabs)/search',
-      params: { search, layout: 'list' },
-    });
-  };
+    if (animals.length === 0) {
+      return (
+        <View style={styles.noAnimalsContainer}>
+          <CustomText variant="body" color="textSecondary" style={styles.noAnimalsText}>
+            No hay publicaciones cerca tuyo
+          </CustomText>
+        </View>
+      );
+    }
 
-  const handleApplyFilters = (filters: { category: string; size: string; location: string }) => {
-    const params: Record<string, string> = { layout: 'map' };
-
-    if (filters.category) params.category = filters.category;
-    if (filters.size) params.size = filters.size;
-    if (filters.location) params.location = filters.location;
-
-    router.push({
-      pathname: '/(tabs)/search',
-      params,
-    });
+    return (
+      <AnimalsCarousel
+        animals={animals}
+        onFavoriteToggle={handleFavoriteToggle}
+      />
+    );
   };
 
   return (
     <View style={styles.screen}>
-      {/* Contenido principal con scroll */}
-      {/* Título */}
-      <View style={styles.titleSection}>
-        <CustomText variant="semiCaption" color="black">
-          Adoptá
-        </CustomText>
-        <CustomText variant="h3" color="black">
-          tu próximo compañero
-        </CustomText>
-      </View>
+      <View
+        style={styles.scroll}
+      >
+        {/* Título */}
+        <View style={styles.titleSection}>
+          <CustomText variant="semiCaption" color="black">
+            Adoptá
+          </CustomText>
+          <CustomText variant="h3" color="black">
+            tu próximo compañero
+          </CustomText>
+        </View>
 
-      {/* Barra de búsqueda + filtros */}
-      <View style={styles.section}>
-        <SearchBar onFilterPress={openFilterSheet} onSubmit={handleSearchSubmit} />
-      </View>
+        {/* Barra de búsqueda + filtros */}
+        <View style={styles.section}>
+          <SearchBar onFilterPress={openFilterSheet} onSubmit={handleSearchSubmit} />
+        </View>
 
-      {/* Categorías */}
-      <View style={styles.sectionWithTitle}>
-        <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
-          Categorias
-        </CustomText>
-        <CategoryCarousel />
-      </View>
+        {/* Categorías */}
+        <View style={styles.sectionWithTitle}>
+          <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
+            Categorias
+          </CustomText>
+          <CategoryCarousel />
+        </View>
 
-      {/* Sección "Cerca tuyo" — espacio reservado para las cards */}
-      <View style={styles.sectionWithTitle}>
-        <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
-          Cerca tuyo
-        </CustomText>
-        <AnimalsCarousel />
-        <View style={styles.cardsPlaceholder} />
+        {/* Sección "Cerca tuyo" */}
+        <View style={styles.sectionWithTitle}>
+          <CustomText variant="h4" color="textPrimary" style={styles.sectionTitle}>
+            Cerca tuyo
+          </CustomText>
+          {renderCercaTuyo()}
+        </View>
       </View>
 
       <FilterBottomSheet
@@ -93,7 +120,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: theme.spacing['6xl'],
     paddingBottom: theme.spacing['2xl'],
   },
   titleSection: {
@@ -112,8 +138,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing['2xl'],
     marginBottom: theme.spacing.lg,
   },
-  // Espacio en blanco reservado para las cards de animales
-  cardsPlaceholder: {
-    height: 260,
+  centerContainer: {
+    height: 180,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noLocationContainer: {
+    paddingHorizontal: theme.spacing['2xl'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing.md,
+    marginTop: theme.spacing.sm,
+  },
+  noLocationText: {
+    textAlign: 'center',
+    fontFamily: theme.typography.fontFamily.medium,
+    lineHeight: 20,
+  },
+  enableLocationButton: {
+    maxWidth: 240,
+    marginTop: theme.spacing.xs,
+  },
+  noAnimalsContainer: {
+    paddingHorizontal: theme.spacing['2xl'],
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 120,
+  },
+  noAnimalsText: {
+    textAlign: 'center',
+    fontFamily: theme.typography.fontFamily.medium,
+    color: theme.colors.textSecondary,
   },
 });
