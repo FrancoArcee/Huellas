@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
@@ -8,6 +9,7 @@ import { AnimalsCarousel } from '../components/AnimalsCarousel';
 import { FilterBottomSheet } from '../components/FilterBottomSheet';
 
 export const HomeScreen = () => {
+  const router = useRouter();
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
 
   const openFilterSheet = () => {
@@ -16,6 +18,26 @@ export const HomeScreen = () => {
 
   const closeFilterSheet = () => {
     setIsFilterSheetVisible(false);
+  };
+
+  const handleSearchSubmit = (search: string) => {
+    router.push({
+      pathname: '/(tabs)/search',
+      params: { search, layout: 'list' },
+    });
+  };
+
+  const handleApplyFilters = (filters: { category: string; size: string; location: string }) => {
+    const params: Record<string, string> = { layout: 'map' };
+
+    if (filters.category) params.category = filters.category;
+    if (filters.size) params.size = filters.size;
+    if (filters.location) params.location = filters.location;
+
+    router.push({
+      pathname: '/(tabs)/search',
+      params,
+    });
   };
 
   return (
@@ -33,7 +55,7 @@ export const HomeScreen = () => {
 
       {/* Barra de búsqueda + filtros */}
       <View style={styles.section}>
-        <SearchBar onFilterPress={openFilterSheet} />
+        <SearchBar onFilterPress={openFilterSheet} onSubmit={handleSearchSubmit} />
       </View>
 
       {/* Categorías */}
@@ -53,7 +75,11 @@ export const HomeScreen = () => {
         <View style={styles.cardsPlaceholder} />
       </View>
 
-      <FilterBottomSheet visible={isFilterSheetVisible} onClose={closeFilterSheet} />
+      <FilterBottomSheet
+        visible={isFilterSheetVisible}
+        onClose={closeFilterSheet}
+        onApply={handleApplyFilters}
+      />
     </View>
   );
 };

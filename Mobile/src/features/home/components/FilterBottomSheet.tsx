@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -23,6 +23,7 @@ interface FilterBottomSheetProps {
   onClose: () => void;
   onApply?: (filters: FilterValues) => void;
   onClear?: () => void;
+  initialValues?: FilterValues;
 }
 
 const initialFilters: FilterValues = {
@@ -31,13 +32,38 @@ const initialFilters: FilterValues = {
   location: '',
 };
 
+const categoryOptions = [
+  { label: 'Perros', value: 'dog' },
+  { label: 'Gatos', value: 'cat' },
+  { label: 'Otros', value: 'other' },
+];
+
+const sizeOptions = [
+  { label: 'Pequeño', value: 'small' },
+  { label: 'Mediano', value: 'medium' },
+  { label: 'Grande', value: 'large' },
+];
+
+const getOptionLabel = (options: { label: string; value: string }[], value: string) => {
+  return options.find((option) => option.value === value)?.label ?? '';
+};
+
 export const FilterBottomSheet = ({
   visible,
   onClose,
   onApply,
   onClear,
+  initialValues = initialFilters,
 }: FilterBottomSheetProps) => {
-  const [filters, setFilters] = useState<FilterValues>(initialFilters);
+  const [filters, setFilters] = useState<FilterValues>(initialValues);
+  const [openSelect, setOpenSelect] = useState<keyof Pick<FilterValues, 'category' | 'size'> | null>(null);
+
+  useEffect(() => {
+    if (visible) {
+      setFilters(initialValues);
+      setOpenSelect(null);
+    }
+  }, [initialValues.category, initialValues.location, initialValues.size, visible]);
 
   const updateFilter = <Key extends keyof FilterValues>(
     key: Key,
@@ -50,12 +76,17 @@ export const FilterBottomSheet = ({
   };
 
   const handleApply = () => {
-    onApply?.(filters);
+    onApply?.({
+      category: filters.category.trim(),
+      size: filters.size.trim(),
+      location: filters.location.trim(),
+    });
     onClose();
   };
 
   const handleClear = () => {
     setFilters(initialFilters);
+    setOpenSelect(null);
     onClear?.();
   };
 
@@ -85,24 +116,76 @@ export const FilterBottomSheet = ({
               <CustomText variant="p" color="textPrimary" style={styles.label}>
                 Categoría
               </CustomText>
-              <TouchableOpacity activeOpacity={0.8} style={styles.selectControl}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setOpenSelect((current) => (current === 'category' ? null : 'category'))}
+                style={styles.selectControl}
+              >
                 <CustomText variant="body" color="textPrimary" style={styles.controlText}>
-                  {filters.category || 'Seleccionar'}
+                  {getOptionLabel(categoryOptions, filters.category) || 'Seleccionar'}
                 </CustomText>
                 <ChevronDownIcon width={14} height={14} />
               </TouchableOpacity>
+              {openSelect === 'category' && (
+                <View style={styles.dropdown}>
+                  {categoryOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        updateFilter('category', option.value);
+                        setOpenSelect(null);
+                      }}
+                      style={[
+                        styles.dropdownOption,
+                        filters.category === option.value && styles.dropdownOptionSelected,
+                      ]}
+                    >
+                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
+                        {option.label}
+                      </CustomText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             <View style={styles.fieldGroup}>
               <CustomText variant="p" color="textPrimary" style={styles.label}>
                 Tamaño
               </CustomText>
-              <TouchableOpacity activeOpacity={0.8} style={styles.selectControl}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setOpenSelect((current) => (current === 'size' ? null : 'size'))}
+                style={styles.selectControl}
+              >
                 <CustomText variant="body" color="textPrimary" style={styles.controlText}>
-                  {filters.size || 'Seleccionar'}
+                  {getOptionLabel(sizeOptions, filters.size) || 'Seleccionar'}
                 </CustomText>
                 <ChevronDownIcon width={14} height={14} />
               </TouchableOpacity>
+              {openSelect === 'size' && (
+                <View style={styles.dropdown}>
+                  {sizeOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        updateFilter('size', option.value);
+                        setOpenSelect(null);
+                      }}
+                      style={[
+                        styles.dropdownOption,
+                        filters.size === option.value && styles.dropdownOptionSelected,
+                      ]}
+                    >
+                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
+                        {option.label}
+                      </CustomText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             <View style={styles.fieldGroup}>
@@ -211,6 +294,23 @@ const styles = StyleSheet.create({
   controlText: {
     flex: 1,
     color: theme.colors.gray500,
+  },
+  dropdown: {
+    marginTop: theme.spacing.xs,
+    borderRadius: 16,
+    backgroundColor: theme.colors.background,
+    overflow: 'hidden',
+  },
+  dropdownOption: {
+    minHeight: 40,
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.lg,
+  },
+  dropdownOptionSelected: {
+    backgroundColor: '#FFE5C1',
+  },
+  dropdownOptionText: {
+    color: theme.colors.textPrimary,
   },
   inputControl: {
     height: 44,
