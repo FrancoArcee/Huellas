@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Modal,
   Pressable,
@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
@@ -48,6 +50,9 @@ const getOptionLabel = (options: { label: string; value: string }[], value: stri
   return options.find((option) => option.value === value)?.label ?? '';
 };
 
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const SHEET_HEIGHT = SCREEN_HEIGHT * 0.6;
+
 export const FilterBottomSheet = ({
   visible,
   onClose,
@@ -58,12 +63,44 @@ export const FilterBottomSheet = ({
   const [filters, setFilters] = useState<FilterValues>(initialValues);
   const [openSelect, setOpenSelect] = useState<keyof Pick<FilterValues, 'category' | 'size'> | null>(null);
 
+  const slideAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
+  const backdropAnim = useRef(new Animated.Value(0)).current;
+  const [shouldRender, setShouldRender] = useState(visible);
+
   useEffect(() => {
     if (visible) {
       setFilters(initialValues);
       setOpenSelect(null);
+      setShouldRender(true);
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(backdropAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: SHEET_HEIGHT,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.timing(backdropAnim, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setShouldRender(false);
+      });
     }
-  }, [initialValues.category, initialValues.location, initialValues.size, visible]);
+  }, [visible, initialValues.category, initialValues.location, initialValues.size]);
 
   const updateFilter = <Key extends keyof FilterValues>(
     key: Key,
@@ -91,11 +128,23 @@ export const FilterBottomSheet = ({
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={shouldRender} transparent animationType="none" onRequestClose={onClose}>
       <View style={styles.modalRoot}>
-        <Pressable style={styles.backdrop} />
+        <Animated.View
+          style={[
+            styles.backdrop,
+            {
+              opacity: backdropAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 0.55],
+              }),
+            },
+          ]}
+        >
+          <Pressable style={styles.backdropPressable} onPress={onClose} />
+        </Animated.View>
 
-        <View style={styles.sheet}>
+        <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="Cerrar filtros"
@@ -218,7 +267,7 @@ export const FilterBottomSheet = ({
               </CustomText>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -232,7 +281,9 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: theme.colors.black,
-    opacity: 0.55,
+  },
+  backdropPressable: {
+    flex: 1,
   },
   sheet: {
     maxHeight: '60%',

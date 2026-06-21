@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ScrollView, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
-import DogIcon     from '../../../assets/icons/categories/dog.svg';
-import CatIcon     from '../../../assets/icons/categories/cat.svg';
-import BirdIcon    from '../../../assets/icons/categories/bird.svg';
-import RabbitIcon  from '../../../assets/icons/categories/rabbit.svg';
-import TurtleIcon  from '../../../assets/icons/categories/turtle.svg';
+import DogIcon from '../../../assets/icons/categories/dog.svg';
+import CatIcon from '../../../assets/icons/categories/cat.svg';
+import BirdIcon from '../../../assets/icons/categories/bird.svg';
+import RabbitIcon from '../../../assets/icons/categories/rabbit.svg';
+import TurtleIcon from '../../../assets/icons/categories/turtle.svg';
 import HamsterIcon from '../../../assets/icons/categories/hamster.svg';
-import FishIcon    from '../../../assets/icons/categories/fish.svg';
+import FishIcon from '../../../assets/icons/categories/fish.svg';
 
 type CategoryId = 'dog' | 'cat' | 'bird' | 'rabbit' | 'turtle' | 'hamster' | 'fish';
 
 const CATEGORIES: { id: CategoryId; label: string; Icon: React.FC<any> }[] = [
-  { id: 'dog',     label: 'Perros',   Icon: DogIcon },
-  { id: 'cat',     label: 'Gatos',    Icon: CatIcon },
-  { id: 'bird',    label: 'Aves',     Icon: BirdIcon },
-  { id: 'rabbit',  label: 'Conejos',  Icon: RabbitIcon },
-  { id: 'turtle',  label: 'Tortugas', Icon: TurtleIcon },
+  { id: 'dog', label: 'Perros', Icon: DogIcon },
+  { id: 'cat', label: 'Gatos', Icon: CatIcon },
+  { id: 'bird', label: 'Aves', Icon: BirdIcon },
+  { id: 'rabbit', label: 'Conejos', Icon: RabbitIcon },
+  { id: 'turtle', label: 'Tortugas', Icon: TurtleIcon },
   { id: 'hamster', label: 'Hamsters', Icon: HamsterIcon },
-  { id: 'fish',    label: 'Peces',    Icon: FishIcon },
+  { id: 'fish', label: 'Peces', Icon: FishIcon },
 ];
 
 export const CategoryCarousel = () => {
-  const [selected, setSelected] = useState<CategoryId | null>(null);
+  const router = useRouter();
 
   return (
     <ScrollView
@@ -32,12 +33,18 @@ export const CategoryCarousel = () => {
       contentContainerStyle={styles.scrollContent}
     >
       {CATEGORIES.map(({ id, label, Icon }) => {
-        const isSelected = selected === id;
+        const isSelected = false;
         return (
           <TouchableOpacity
             key={id}
             style={styles.item}
-            onPress={() => setSelected(isSelected ? null : id)}
+            onPress={() => {
+              const backendCategory = id === 'dog' ? 'dog' : id === 'cat' ? 'cat' : 'other';
+              router.push({
+                pathname: '/(tabs)/search',
+                params: { category: backendCategory, layout: 'list' },
+              });
+            }}
             activeOpacity={0.7}
           >
             <View

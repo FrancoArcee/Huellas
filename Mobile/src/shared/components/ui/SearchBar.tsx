@@ -22,7 +22,7 @@ export const SearchBar = ({ onFilterPress, onSubmit, value, onChangeText, placeh
         </TouchableOpacity>
         <TextInput
           style={styles.input}
-          placeholder={placeholder ?? "Buscá por raza, edad, ubicación...."}
+          placeholder={placeholder ?? "Buscá por raza, edad, ubicación"}
           placeholderTextColor={theme.colors.gray400}
           editable={true}
           value={value}

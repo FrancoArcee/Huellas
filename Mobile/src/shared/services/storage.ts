@@ -59,4 +59,24 @@ export const storage = {
     await AsyncStorage.removeItem(TOKEN_KEY);
     await AsyncStorage.removeItem(USER_KEY);
   },
+
+  /**
+   * Guarda la ubicación del usuario.
+   */
+  async setLocation(latitude: number, longitude: number): Promise<void> {
+    await AsyncStorage.setItem('user_latitude', String(latitude));
+    await AsyncStorage.setItem('user_longitude', String(longitude));
+  },
+
+  /**
+   * Obtiene la ubicación del usuario guardada.
+   */
+  async getLocationCoords(): Promise<{ latitude: number; longitude: number } | null> {
+    const lat = await AsyncStorage.getItem('user_latitude');
+    const lng = await AsyncStorage.getItem('user_longitude');
+    if (lat && lng) {
+      return { latitude: parseFloat(lat), longitude: parseFloat(lng) };
+    }
+    return null;
+  },
 };

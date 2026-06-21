@@ -1,18 +1,24 @@
 import { StyleSheet, ScrollView } from "react-native";
-import { useState } from "react";
 import { AnimalCard } from "../../../shared/components/ui/AnimalCard";
-import { animalMocks } from "../../../mocks/animalsMocks";
+import { Animal } from "../../../../../Shared/types/animal";
 
-export function AnimalsCarousel({ }) {
-  const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
+interface ExtendedAnimal extends Animal {
+  isFavorite?: boolean;
+}
 
+interface AnimalsCarouselProps {
+  animals: ExtendedAnimal[];
+  onFavoriteToggle?: (id: string) => void;
+}
+
+export function AnimalsCarousel({ animals, onFavoriteToggle }: AnimalsCarouselProps) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.container}
     >
-      {animalMocks.map((animal) => (
+      {animals.map((animal) => (
         <AnimalCard
           key={animal.id}
           id={animal.id}
@@ -23,11 +29,8 @@ export function AnimalsCarousel({ }) {
           gender={animal.gender}
           age={animal.age}
           weightKg={animal.weightKg}
-          isFavorite={favorites[animal.id] || false}
-          onFavoritePress={() => setFavorites(prev => ({
-            ...prev,
-            [animal.id]: !prev[animal.id]
-          }))}
+          isFavorite={animal.isFavorite || false}
+          onFavoritePress={() => onFavoriteToggle?.(animal.id)}
         />
       ))}
     </ScrollView>
