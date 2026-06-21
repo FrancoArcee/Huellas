@@ -25,6 +25,10 @@ export function AnimalCard({
   const imageSource =
     typeof photoUri === "string" ? { uri: photoUri } : photoUri;
 
+  const formattedDistance = distanceKm < 1
+    ? `${Math.round(distanceKm * 1000)} m`
+    : `${distanceKm.toFixed(1)} km`;
+
   return (
     <Link href={`/animals/${id}`} asChild>
       <Pressable style={styles.card}>
@@ -37,7 +41,7 @@ export function AnimalCard({
           <View style={styles.topRow}>
             <View style={styles.distanceBadge}>
               <LocationIcon width={16} height={20} color={colors.white} />
-              <Text style={styles.distanceText}>{distanceKm} km</Text>
+              <Text style={styles.distanceText}>{formattedDistance}</Text>
             </View>
 
             <TouchableOpacity
