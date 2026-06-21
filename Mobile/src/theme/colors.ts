@@ -21,6 +21,7 @@ export const colors = {
 
   background: "#F1EEEE",
   like: "#FFB0B0",
+  danger: "#EF4444",
 
   //Texto
   textPrimary: "#111827",
