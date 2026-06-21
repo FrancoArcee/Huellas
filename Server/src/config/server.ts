@@ -1,14 +1,11 @@
-// ───────────────────────────────────────────────
-//  Server — Express app setup and startup
-// ───────────────────────────────────────────────
-
 import express from "express";
 import cors from "cors";
 import { env } from "./env";
 import { errorHandler } from "../shared/middleware/errorHandler";
 import { apiLimiter } from "../shared/middleware/rateLimiter";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./auth";
 
-// Routes (lazy imports to avoid circular deps)
 import userRoutes from "../features/users/routes/user.routes";
 import favoriteRoutes from "../features/favorites/routes/favorite.routes";
 import animalRoutes from "../features/animals/routes/animal.routes";
@@ -16,9 +13,9 @@ import requestRoutes from "../features/requests/routes/request.routes";
 
 const app = express();
 
-// ─── Global middleware ──────────────────────────
 app.use(cors());
 app.use(express.json());
+app.use("/api/auth", toNodeHandler(auth));
 app.use(apiLimiter);
 
 // ─── API routes ─────────────────────────────────
@@ -27,12 +24,9 @@ app.use("/favorites", favoriteRoutes);
 app.use("/animals", animalRoutes);
 app.use("/requests", requestRoutes);
 
-// ─── Health check ───────────────────────────────
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
-
-// ─── Error handler (must be last) ──────────────
 app.use(errorHandler);
 
 // ─── Start server ──────────────────────────────
