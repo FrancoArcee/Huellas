@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   ImageBackground,
   Platform,
   Pressable,
@@ -15,9 +16,8 @@ import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
 import WhatsAppSvg from '../../../assets/icons/socialNetwork/whatsapp.svg';
 import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
-import { animalMocks, animalSearchMocks } from '../../../mocks/animalsMocks';
-
-const WHATSAPP_PLACEHOLDER = '5492215550123';
+import { useAuthStore } from '../../../shared/store/authStore';
+import { animalService, type AnimalPost } from '../services/animalService';
 
 const roundedFont = Platform.select({
   web: 'Nunito, Poppins, "Arial Rounded MT Bold", Arial, sans-serif',
@@ -38,44 +38,60 @@ interface Props {
   topInset?: number;
 }
 
+function getOwnerInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((w) => w[0] ?? '')
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
-  const [liked, setLiked] = useState(false);
+  const { user } = useAuthStore();
+  const { openWhatsApp } = useWhatsApp();
+
+  const animalId = Array.isArray(id) ? id[0] : id;
+
+  const [post, setPost] = useState<AnimalPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [favoriteId, setFavoriteId] = useState<string | null>(null);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [contacting, setContacting] = useState(false);
   const [backHovered, setBackHovered] = useState(false);
   const [likeHovered, setLikeHovered] = useState(false);
   const [whatsappHovered, setWhatsappHovered] = useState(false);
-  const { openWhatsApp } = useWhatsApp();
 
-  const animalId = Array.isArray(id) ? id[0] : id;
-  const allAnimals = [...animalMocks, ...animalSearchMocks];
-  const selectedAnimal = allAnimals.find((item) => item.id === animalId) ?? animalMocks[0]!;
+  const isOwner = user != null && post != null && user.id === post.userId;
+  const liked = favoriteId !== null;
 
-  const animal = useMemo(
-    () => ({
-      ...selectedAnimal,
-      species: selectedAnimal.type,
-      weight: `${selectedAnimal.weightKg} Kg`,
-      status: 'Castrado',
-      location: `${selectedAnimal.distanceKm} km de distancia`,
-      ownerName: 'Jorge Visconti',
-      ownerRole: 'Dueño',
-      ownerInitials: 'JV',
-      whatsapp: WHATSAPP_PLACEHOLDER,
-      imageUrl: selectedAnimal.photoUri,
-      description:
-        'Es cariñoso, sociable y disfruta estar acompañado. Busca un hogar responsable donde pueda recibir cuidado, paseos y mucho afecto todos los días.',
-    }),
-    [selectedAnimal],
-  );
+  useEffect(() => {
+    if (!animalId) return;
+
+    const load = async () => {
+      try {
+        const [postData, favData] = await Promise.all([
+          animalService.getAnimalDetail(animalId),
+          user ? animalService.checkFavorite(animalId) : Promise.resolve(null),
+        ]);
+        setPost(postData);
+        setFavoriteId(favData?.id ?? null);
+      } catch (err) {
+        console.error('Error cargando detalle del animal:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [animalId, user]);
 
   useEffect(() => {
     if (Platform.OS !== 'web' || typeof document === 'undefined') return;
-
     const fontId = 'huellas-nunito-font';
     if (document.getElementById(fontId)) return;
-
     const link = document.createElement('link');
     link.id = fontId;
     link.rel = 'stylesheet';
@@ -84,21 +100,61 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   }, []);
 
   const whatsappMessage = useMemo(
-    () => `Hola, vi a ${animal.name} en Huellas y quisiera consultar por su adopción.`,
-    [animal.name],
+    () => (post ? `Hola, vi a ${post.name} en Huellas y quisiera consultar por su adopción.` : ''),
+    [post],
   );
 
+  const handleToggleFavorite = async () => {
+    if (!post || favoriteLoading) return;
+    setFavoriteLoading(true);
+    try {
+      if (liked && favoriteId) {
+        await animalService.removeFavorite(favoriteId);
+        setFavoriteId(null);
+      } else {
+        const fav = await animalService.addFavorite(post.id);
+        setFavoriteId(fav.id);
+      }
+    } catch (err) {
+      console.error('Error al cambiar favorito:', err);
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
+
   const handleContact = async () => {
+    if (!post) return;
     try {
       setContacting(true);
       await openWhatsApp({
-        phoneNumber: animal.whatsapp,
+        phoneNumber: post.user.contact,
         message: whatsappMessage,
       });
     } finally {
       setContacting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  if (!post) {
+    return (
+      <View style={styles.centered}>
+        <CustomText variant="p">No se pudo cargar la publicación.</CustomText>
+      </View>
+    );
+  }
+
+  const ownerInitials = getOwnerInitials(post.user.name);
+  const imageUrl = post.photosUrl?.[0] ?? '';
+  const weightLabel = `${post.weight} Kg`;
+  const ageLabel = `${post.age} ${post.age === 1 ? 'año' : 'años'}`;
 
   return (
     <View style={styles.screen}>
@@ -109,7 +165,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
           showsVerticalScrollIndicator={false}
         >
           <ImageBackground
-            source={{ uri: animal.imageUrl }}
+            source={{ uri: imageUrl }}
             style={styles.hero}
             imageStyle={styles.heroImage}
             resizeMode="cover"
@@ -129,94 +185,102 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 <ChevronBackSvg width={11} height={14} />
               </Pressable>
 
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-                accessibilityState={{ selected: liked }}
-                onPress={() => setLiked((current) => !current)}
-                onHoverIn={() => setLikeHovered(true)}
-                onHoverOut={() => setLikeHovered(false)}
-                style={({ pressed }) => [
-                  styles.iconButton,
-                  liked && styles.likeButtonSelected,
-                  (pressed || likeHovered) && styles.iconButtonActive,
-                ]}
-              >
-                <LikeIcon
-                  width={25}
-                  height={23}
-                  fill={liked ? '#ff6b8a' : 'none'}
-                  stroke={liked ? '#ff6b8a' : theme.colors.white}
-                />
-              </Pressable>
+              {!isOwner && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={liked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                  accessibilityState={{ selected: liked, busy: favoriteLoading }}
+                  onPress={handleToggleFavorite}
+                  disabled={favoriteLoading}
+                  onHoverIn={() => setLikeHovered(true)}
+                  onHoverOut={() => setLikeHovered(false)}
+                  style={({ pressed }) => [
+                    styles.iconButton,
+                    liked && styles.likeButtonSelected,
+                    (pressed || likeHovered) && styles.iconButtonActive,
+                    favoriteLoading && styles.iconButtonDisabled,
+                  ]}
+                >
+                  <LikeIcon
+                    width={25}
+                    height={23}
+                    fill={liked ? '#ff6b8a' : 'none'}
+                    stroke={liked ? '#ff6b8a' : theme.colors.white}
+                  />
+                </Pressable>
+              )}
             </View>
           </ImageBackground>
 
           <View style={styles.body}>
             <View style={styles.titleCard}>
               <CustomText variant="h1" style={styles.title}>
-                {animal.name}
+                {post.name}
               </CustomText>
               <CustomText variant="p" style={styles.subtitle}>
-                {animal.species} · {animal.age}
+                {post.category} · {ageLabel}
               </CustomText>
             </View>
 
             <View style={styles.tagsRow}>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{animal.gender}</CustomText>
+                <CustomText style={styles.tagText}>{post.gender}</CustomText>
               </View>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{animal.weight}</CustomText>
+                <CustomText style={styles.tagText}>{weightLabel}</CustomText>
               </View>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{animal.status}</CustomText>
+                <CustomText style={styles.tagText}>{post.size}</CustomText>
               </View>
             </View>
 
             <View style={styles.about}>
               <CustomText variant="h4" style={styles.sectionTitle}>
-                Sobre {animal.name}
+                Sobre {post.name}
               </CustomText>
               <CustomText variant="p" style={styles.description}>
-                {animal.description}
+                {post.description}
               </CustomText>
             </View>
 
-            <View style={styles.locationRow}>
-              <LocationSvg width={22} height={22} color="#4E4A4A" />
-              <CustomText variant="p" style={styles.locationText}>
-                {animal.location}
-              </CustomText>
-            </View>
+            {post.location ? (
+              <View style={styles.locationRow}>
+                <LocationSvg width={22} height={22} color="#4E4A4A" />
+                <CustomText variant="p" style={styles.locationText}>
+                  {post.location}
+                </CustomText>
+              </View>
+            ) : null}
 
             <View style={styles.footerWrap}>
               <View style={styles.footer}>
                 <View style={styles.avatar}>
-                  <CustomText style={styles.avatarText}>{animal.ownerInitials}</CustomText>
+                  <CustomText style={styles.avatarText}>{ownerInitials}</CustomText>
                 </View>
                 <CustomText variant="p" style={styles.ownerName} numberOfLines={1}>
-                  {animal.ownerName}
+                  {post.user.name}
                 </CustomText>
                 <CustomText variant="p" style={styles.ownerRole}>
-                  {animal.ownerRole}
+                  Dueño
                 </CustomText>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`Contactar por WhatsApp a ${animal.ownerName}`}
-                  accessibilityState={{ disabled: contacting }}
-                  disabled={contacting}
-                  onPress={handleContact}
-                  onHoverIn={() => setWhatsappHovered(true)}
-                  onHoverOut={() => setWhatsappHovered(false)}
-                  style={({ pressed }) => [
-                    styles.whatsappButton,
-                    (pressed || whatsappHovered) && !contacting && styles.whatsappButtonActive,
-                    contacting && styles.whatsappButtonDisabled,
-                  ]}
-                >
-                  <WhatsAppSvg width={44} height={44} />
-                </Pressable>
+                {!isOwner && (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={`Contactar por WhatsApp a ${post.user.name}`}
+                    accessibilityState={{ disabled: contacting }}
+                    disabled={contacting}
+                    onPress={handleContact}
+                    onHoverIn={() => setWhatsappHovered(true)}
+                    onHoverOut={() => setWhatsappHovered(false)}
+                    style={({ pressed }) => [
+                      styles.whatsappButton,
+                      (pressed || whatsappHovered) && !contacting && styles.whatsappButtonActive,
+                      contacting && styles.whatsappButtonDisabled,
+                    ]}
+                  >
+                    <WhatsAppSvg width={44} height={44} />
+                  </Pressable>
+                )}
               </View>
             </View>
           </View>
@@ -236,6 +300,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     flex: 1,
     width: '100%',
+    backgroundColor: theme.colors.background,
+  },
+  centered: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: theme.colors.background,
   },
   scroll: {
@@ -268,6 +338,9 @@ const styles = StyleSheet.create({
   iconButtonActive: {
     transform: [{ scale: 0.96 }],
     opacity: 0.88,
+  },
+  iconButtonDisabled: {
+    opacity: 0.5,
   },
   likeButtonSelected: {
     backgroundColor: 'rgba(52, 67, 27, 0.9)',

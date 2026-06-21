@@ -45,4 +45,8 @@ export const FavoriteService = {
   async listUserFavorites(userId: string, page?: number, limit?: number) {
     return FavoriteRepository.listByUser(userId, page, limit);
   },
+
+  async getByUserAndPost(postId: string, userId: string) {
+    return FavoriteRepository.findByUserAndPost(userId, postId);
+  },
 };

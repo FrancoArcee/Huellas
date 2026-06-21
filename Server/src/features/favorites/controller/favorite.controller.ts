@@ -41,6 +41,21 @@ export const FavoriteController = {
   },
 
   /**
+   * GET /favorites/check/:postId
+   * Retorna el registro de favorito del usuario autenticado para un post, o null si no existe.
+   */
+  async checkFavoriteByPost(req: Request, res: Response, next: NextFunction) {
+    try {
+      const postId = String(req.params.postId);
+      const userId = req.user!.id;
+      const favorite = await FavoriteService.getByUserAndPost(postId, userId);
+      sendSuccess(res, favorite ?? null);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
    * DELETE /favorites/:id
    * Elimina un favorito (autenticado + dueño).
    */
