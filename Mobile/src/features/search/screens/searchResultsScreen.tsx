@@ -1,15 +1,39 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Image, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+    ActivityIndicator,
+    FlatList,
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
 import Svg, { Circle, Polygon, Path, G, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
-import { SearchFilterChip } from '../components/searchFilterChip';
 import { FilterBottomSheet } from '../../home/components/FilterBottomSheet';
-import { animalMocks, animalSearchMocks } from '../../../mocks/animalsMocks';
+import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
 import { theme } from '../../../theme';
-import { Animal } from '../../../../../Shared/types/animal';
+import { AnimalDTO } from '../schemas/animalSchema';
+import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
+
+type FilterOption = { id: string; label: string };
+type LayoutMode = 'list' | 'map';
+
+const categoryLabels: Record<string, string> = {
+    dog: 'Perros',
+    cat: 'Gatos',
+    other: 'Otros',
+};
+
+const sizeLabels: Record<string, string> = {
+    small: 'Pequeño',
+    medium: 'Mediano',
+    large: 'Grande',
+};
 
 interface CustomMarkerPinProps {
     isSelected: boolean;
@@ -62,90 +86,108 @@ function CustomMarkerPin({ isSelected }: CustomMarkerPinProps) {
     );
 }
 
+const getParamValue = (value: string | string[] | undefined) => {
+    if (Array.isArray(value)) return value[0] ?? '';
+    return value ?? '';
+};
+
+const buildFilters = (params: FetchAnimalsParams): FilterOption[] => {
+    const filters: FilterOption[] = [];
+    if (params.category) filters.push({ id: 'category', label: categoryLabels[params.category] ?? params.category });
+    if (params.location) filters.push({ id: 'location', label: params.location });
+    if (params.size) filters.push({ id: 'size', label: sizeLabels[params.size] ?? params.size });
+    return filters;
+};
+
+const AppliedFilterBadge = ({
+    label,
+    onRemove,
+}: {
+    label: string;
+    onRemove: () => void;
+}) => (
+    <TouchableOpacity activeOpacity={0.85} onPress={onRemove} style={styles.filterBadge}>
+        <Text numberOfLines={1} style={styles.filterBadgeText}>
+            {label}
+        </Text>
+        <Text style={styles.filterBadgeRemove}>×</Text>
+    </TouchableOpacity>
+);
+
 export function SearchResultsScreen() {
     const insets = useSafeAreaInsets();
     const router = useRouter();
     const mapRef = useRef<MapView>(null);
+    const params = useLocalSearchParams<{
+        search?: string;
+        category?: string;
+        size?: string;
+        location?: string;
+        layout?: string;
+    }>();
+
+    const initialSearch = getParamValue(params.search);
+    const initialCategory = getParamValue(params.category);
+    const initialSize = getParamValue(params.size);
+    const initialLocation = getParamValue(params.location);
+    const initialLayout = getParamValue(params.layout);
+    const initialFetchParams = useMemo<FetchAnimalsParams>(() => ({
+        search: initialSearch,
+        category: initialCategory,
+        size: initialSize,
+        location: initialLocation,
+    }), [initialCategory, initialLocation, initialSearch, initialSize]);
 
     const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
-    const [searchText, setSearchText] = useState('');
-    const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+    const [searchText, setSearchText] = useState(initialSearch);
+    const [layoutMode, setLayoutMode] = useState<LayoutMode>(
+        initialSearch || initialLayout === 'list' ? 'list' : 'map',
+    );
+    const [animals, setAnimals] = useState<AnimalDTO[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedAnimal, setSelectedAnimal] = useState<AnimalDTO | null>(null);
     const [hiddenMarkerId, setHiddenMarkerId] = useState<string | null>(null);
-    const [activeFilters, setActiveFilters] = useState<FilterOption[]>([
-        { id: 'type', label: 'Perros' },
-        { id: 'location', label: 'La Plata' },
-    ]);
+    const [fetchParams, setFetchParams] = useState<FetchAnimalsParams>(initialFetchParams);
 
-    // Merge animalMocks and animalSearchMocks to have all mock data available with coordinates
-    const allAnimals = useMemo(() => {
-        const merged = [...animalSearchMocks];
-        animalMocks.forEach((animal) => {
-            if (!merged.some((a) => a.id === animal.id)) {
-                merged.push(animal);
-            }
-        });
-        return merged;
-    }, []);
+    const mapAnimals = useMemo(
+        () => animals.filter((animal) => animal.latitude !== undefined && animal.longitude !== undefined),
+        [animals],
+    );
 
-    // Filter animals based on searchText and activeFilters
-    const filteredAnimals = useMemo(() => {
-        return allAnimals.filter((animal) => {
-            // Text Search filter
-            if (searchText) {
-                const searchLower = searchText.toLowerCase();
-                const matchName = animal.name.toLowerCase().includes(searchLower);
-                const matchType = animal.type.toLowerCase().includes(searchLower);
-                const matchAge = animal.age.toLowerCase().includes(searchLower);
-                const matchGender = animal.gender.toLowerCase().includes(searchLower);
-                if (!matchName && !matchType && !matchAge && !matchGender) {
-                    return false;
-                }
-            }
+    const activeFilters = useMemo(() => buildFilters(fetchParams), [fetchParams]);
 
-            // Category/Type filter
-            const typeFilter = activeFilters.find((f) => f.id === 'type');
-            if (typeFilter) {
-                const filterLabel = typeFilter.label.toLowerCase();
-                const animalType = animal.type.toLowerCase();
-                if (filterLabel.startsWith('perro') && !animalType.startsWith('perro')) return false;
-                if (filterLabel.startsWith('gato') && !animalType.startsWith('gato')) return false;
-                if (!filterLabel.startsWith('perro') && !filterLabel.startsWith('gato') && !animalType.includes(filterLabel)) {
-                    return false;
-                }
-            }
+    useEffect(() => {
+        setSearchText(initialSearch);
+        setLayoutMode(initialSearch || initialLayout === 'list' ? 'list' : 'map');
+        setSelectedAnimal(null);
+        setFetchParams(initialFetchParams);
+    }, [initialFetchParams, initialLayout, initialSearch]);
 
-            // Location filter
-            const locationFilter = activeFilters.find((f) => f.id === 'location');
-            if (locationFilter) {
-                const filterLabel = locationFilter.label.toLowerCase();
-                if (filterLabel !== 'la plata' && !animal.distanceKm.toString().includes(filterLabel)) {
-                    return false;
-                }
-            }
+    const loadAnimals = useCallback(async () => {
+        setLoading(true);
+        try {
+            const nextAnimals = await fetchAnimals(fetchParams);
+            setAnimals(nextAnimals);
+        } catch (error) {
+            console.warn('Error loading animals', error);
+            setAnimals([]);
+        } finally {
+            setLoading(false);
+        }
+    }, [fetchParams]);
 
-            // Size filter
-            const sizeFilter = activeFilters.find((f) => f.id === 'size');
-            if (sizeFilter) {
-                const filterLabel = sizeFilter.label.toLowerCase();
-                if (filterLabel === 'pequeño' && animal.weightKg > 10) return false;
-                if (filterLabel === 'grande' && animal.weightKg < 20) return false;
-                if (filterLabel === 'mediano' && (animal.weightKg <= 10 || animal.weightKg >= 20)) return false;
-            }
-
-            return true;
-        });
-    }, [allAnimals, searchText, activeFilters]);
+    useEffect(() => {
+        loadAnimals();
+    }, [loadAnimals]);
 
     // Fit map coordinates when filtered animals list changes
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-        if (filteredAnimals.length > 0 && mapRef.current) {
-            const coordinates = filteredAnimals
-                .filter((a) => a.latitude !== undefined && a.longitude !== undefined)
-                .map((a) => ({
-                    latitude: a.latitude!,
-                    longitude: a.longitude!,
-                }));
+        if (layoutMode === 'map' && mapAnimals.length > 0 && mapRef.current) {
+            const coordinates = mapAnimals.map((a) => ({
+                latitude: a.latitude!,
+                longitude: a.longitude!,
+            }));
 
             if (coordinates.length > 0) {
                 timer = setTimeout(() => {
@@ -159,14 +201,13 @@ export function SearchResultsScreen() {
         return () => {
             if (timer) clearTimeout(timer);
         };
-    }, [filteredAnimals]);
+    }, [layoutMode, mapAnimals]);
 
-    // When the selected animal is filtered out, clear selection
     useEffect(() => {
-        if (selectedAnimal && !filteredAnimals.some((a) => a.id === selectedAnimal.id)) {
+        if (selectedAnimal && !animals.some((a) => a.id === selectedAnimal.id)) {
             setSelectedAnimal(null);
         }
-    }, [filteredAnimals, selectedAnimal]);
+    }, [animals, selectedAnimal]);
 
     const handleCloseCard = (animalId: string) => {
         setSelectedAnimal(null);
@@ -176,27 +217,154 @@ export function SearchResultsScreen() {
         }, 500);
     };
 
+    const handleSearchSubmit = (search: string) => {
+        setLayoutMode('list');
+        setSearchText(search);
+        setSelectedAnimal(null);
+        setFetchParams((current) => ({ ...current, search }));
+    };
+
     const handleRemoveFilter = (filterId: string) => {
-        setActiveFilters((current) => current.filter((f) => f.id !== filterId));
+        setFetchParams((current) => ({ ...current, [filterId]: undefined }));
     };
 
     const handleApplyFilters = (values: { category: string; size: string; location: string }) => {
-        const newFilters: FilterOption[] = [];
-        if (values.category) {
-            newFilters.push({ id: 'type', label: values.category === 'Perro' ? 'Perros' : values.category === 'Gato' ? 'Gatos' : values.category });
-        }
-        if (values.location) {
-            newFilters.push({ id: 'location', label: values.location });
-        }
-        if (values.size) {
-            newFilters.push({ id: 'size', label: values.size });
-        }
-        setActiveFilters(newFilters);
+        const nextParams: FetchAnimalsParams = {
+            search: searchText,
+            category: values.category,
+            location: values.location,
+            size: values.size,
+        };
+        setLayoutMode('map');
+        setSelectedAnimal(null);
+        setFetchParams(nextParams);
     };
+
+    const handleClearFilters = () => {
+        setFetchParams({ search: searchText });
+    };
+
+    const renderFloatingOverlay = () => (
+        <View style={[styles.floatingOverlay, { paddingTop: insets.top + 16 }]}>
+            <SearchBar
+                value={searchText}
+                onChangeText={setSearchText}
+                onSubmit={handleSearchSubmit}
+                onFilterPress={() => setIsFilterSheetVisible(true)}
+            />
+
+            <View style={styles.overlayActions}>
+                <TouchableOpacity
+                    activeOpacity={0.85}
+                    onPress={() => {
+                        setSelectedAnimal(null);
+                        setLayoutMode((current) => (current === 'list' ? 'map' : 'list'));
+                    }}
+                    style={styles.layoutToggle}
+                >
+                    <Text style={styles.layoutToggleText}>
+                        {layoutMode === 'list' ? 'Ver mapa' : 'Ver lista'}
+                    </Text>
+                </TouchableOpacity>
+
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.filtersContainer}
+                    style={styles.filtersScroll}
+                >
+                    {activeFilters.map((item) => (
+                        <AppliedFilterBadge
+                            key={item.id}
+                            label={item.label}
+                            onRemove={() => handleRemoveFilter(item.id)}
+                        />
+                    ))}
+                </ScrollView>
+            </View>
+        </View>
+    );
+
+    const renderFilterSheet = () => (
+        <FilterBottomSheet
+            visible={isFilterSheetVisible}
+            onClose={() => setIsFilterSheetVisible(false)}
+            onApply={handleApplyFilters}
+            onClear={handleClearFilters}
+            initialValues={{
+                category: fetchParams.category ?? '',
+                size: fetchParams.size ?? '',
+                location: fetchParams.location ?? '',
+            }}
+        />
+    );
+
+    if (loading) {
+        return (
+            <View style={styles.centeredContainer}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
+            </View>
+        );
+    }
+
+    if (animals.length === 0 && layoutMode === 'list') {
+        return (
+            <View style={styles.container}>
+                {renderFloatingOverlay()}
+                <View style={styles.emptyState}>
+                    <Text style={styles.emptyTitle}>No encontramos resultados</Text>
+                    <Text style={styles.emptyText}>Probá con otros filtros o buscá de nuevo.</Text>
+                    <TouchableOpacity activeOpacity={0.85} onPress={loadAnimals} style={styles.retryButton}>
+                        <Text style={styles.retryButtonText}>Reintentar</Text>
+                    </TouchableOpacity>
+                </View>
+                {renderFilterSheet()}
+            </View>
+        );
+    }
+
+    if (layoutMode === 'list') {
+        return (
+            <View style={styles.container}>
+                <FlatList
+                    data={animals}
+                    keyExtractor={(item) => item.id}
+                    numColumns={1}
+                    contentContainerStyle={[
+                        styles.listContent,
+                        { paddingTop: insets.top + 130, paddingBottom: insets.bottom + 24 },
+                    ]}
+                    renderItem={({ item }) => (
+                        <PetHorizontalCard
+                            name={item.name}
+                            details={[item.type, item.gender, item.age].filter(Boolean).join(' · ')}
+                            location={`${item.distanceKm} km`}
+                            image={item.photoUri}
+                            tags={[item.gender, `${item.weightKg} KG`].filter(Boolean)}
+                            onPress={() => {
+                                router.push({
+                                    pathname: '/animals/[id]',
+                                    params: { id: item.id },
+                                });
+                            }}
+                            onButtonPress={() => {
+                                router.push({
+                                    pathname: '/animals/[id]',
+                                    params: { id: item.id },
+                                });
+                            }}
+                            style={styles.petCard}
+                        />
+                    )}
+                />
+                {renderFloatingOverlay()}
+                {renderFilterSheet()}
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            {/* Map Background */}
             <MapView
                 ref={mapRef}
                 style={styles.map}
@@ -208,9 +376,7 @@ export function SearchResultsScreen() {
                 }}
                 mapType="none" // Disable native tiles to show CARTO Voyager tiles
                 onPress={() => {
-                    if (selectedAnimal) {
-                        handleCloseCard(selectedAnimal.id);
-                    }
+                    setSelectedAnimal(null);
                 }}
             >
                 <UrlTile
@@ -219,16 +385,15 @@ export function SearchResultsScreen() {
                     tileSize={256}
                 />
 
-                {filteredAnimals.map((animal) => {
-                    if (animal.latitude === undefined || animal.longitude === undefined) return null;
+                {mapAnimals.map((animal) => {
                     if (hiddenMarkerId === animal.id) return null;
                     const isSelected = selectedAnimal?.id === animal.id;
                     return (
                         <Marker
                             key={animal.id}
                             coordinate={{
-                                latitude: animal.latitude,
-                                longitude: animal.longitude,
+                                latitude: animal.latitude!,
+                                longitude: animal.longitude!,
                             }}
                             anchor={{ x: 0.5, y: 0.976 }}
                             onPress={(e) => {
@@ -254,39 +419,9 @@ export function SearchResultsScreen() {
                 })}
             </MapView>
 
-            {/* Floating Top Panel */}
-            <View style={[styles.floatingOverlay, { paddingTop: insets.top + 16 }]}>
-                <SearchBar
-                    value={searchText}
-                    onChangeText={setSearchText}
-                    onFilterPress={() => setIsFilterSheetVisible(true)}
-                />
+            {renderFloatingOverlay()}
+            {renderFilterSheet()}
 
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.filtersContainer}
-                    style={styles.filtersScroll}
-                >
-                    {activeFilters.map((filter) => (
-                        <SearchFilterChip
-                            key={filter.id}
-                            label={filter.label}
-                            onRemove={() => handleRemoveFilter(filter.id)}
-                        />
-                    ))}
-                </ScrollView>
-            </View>
-
-            {/* Bottom Filter Sheet */}
-            <FilterBottomSheet
-                visible={isFilterSheetVisible}
-                onClose={() => setIsFilterSheetVisible(false)}
-                onApply={handleApplyFilters}
-                onClear={() => setActiveFilters([])}
-            />
-
-            {/* Floating Bottom Card */}
             {selectedAnimal && (
                 <TouchableOpacity
                     activeOpacity={0.9}
@@ -335,6 +470,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: theme.colors.background,
     },
+    centeredContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.colors.background,
+    },
     map: {
         ...StyleSheet.absoluteFillObject,
     },
@@ -346,15 +487,112 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         zIndex: 10,
     },
-    filtersScroll: {
+    overlayActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
         marginTop: 12,
+    },
+    filtersScroll: {
         flexGrow: 0,
+        flex: 1,
     },
     filtersContainer: {
         flexDirection: 'row',
         gap: 8,
         paddingRight: 4,
-        paddingBottom: 8, // padding for shadow visibility
+        paddingBottom: 8,
+    },
+    layoutToggle: {
+        height: 34,
+        paddingHorizontal: 14,
+        borderRadius: 17,
+        backgroundColor: theme.colors.primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    layoutToggleText: {
+        color: theme.colors.white,
+        fontSize: 12,
+        fontFamily: theme.typography.fontFamily.semiBold,
+    },
+    filterBadge: {
+        height: 34,
+        maxWidth: 132,
+        paddingHorizontal: 12,
+        borderRadius: 17,
+        backgroundColor: theme.colors.secondary,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    filterBadgeText: {
+        color: theme.colors.white,
+        fontSize: 12,
+        fontFamily: theme.typography.fontFamily.semiBold,
+        maxWidth: 92,
+    },
+    filterBadgeRemove: {
+        color: theme.colors.white,
+        fontSize: 16,
+        fontFamily: theme.typography.fontFamily.bold,
+        lineHeight: 16,
+    },
+    emptyState: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 32,
+    },
+    emptyTitle: {
+        fontSize: 18,
+        fontFamily: theme.typography.fontFamily.bold,
+        color: theme.colors.textPrimary,
+        textAlign: 'center',
+        marginBottom: 8,
+    },
+    emptyText: {
+        fontSize: 14,
+        fontFamily: theme.typography.fontFamily.regular,
+        color: theme.colors.textSecondary,
+        textAlign: 'center',
+        marginBottom: 18,
+    },
+    retryButton: {
+        height: 42,
+        paddingHorizontal: 18,
+        borderRadius: 21,
+        backgroundColor: theme.colors.primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    retryButtonText: {
+        color: theme.colors.white,
+        fontSize: 14,
+        fontFamily: theme.typography.fontFamily.semiBold,
+    },
+    listContent: {
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        gap: 16,
+    },
+    petCard: {
+        width: '92%',
+        maxWidth: 360,
+        height: 210,
+        alignSelf: 'center',
+        marginBottom: 18,
     },
 
     markerContainer: {

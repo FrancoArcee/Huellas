@@ -6,12 +6,13 @@ import FilterIcon from '../../../assets/icons/buttons/filter.svg';
 
 interface SearchBarProps {
   onFilterPress?: () => void;
+  onSubmit?: (text: string) => void;
   value?: string;
   onChangeText?: (text: string) => void;
   placeholder?: string;
 }
 
-export const SearchBar = ({ onFilterPress, value, onChangeText, placeholder }: SearchBarProps) => {
+export const SearchBar = ({ onFilterPress, onSubmit, value, onChangeText, placeholder }: SearchBarProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -26,6 +27,7 @@ export const SearchBar = ({ onFilterPress, value, onChangeText, placeholder }: S
           editable={true}
           value={value}
           onChangeText={onChangeText}
+          onSubmitEditing={(event) => onSubmit?.(event.nativeEvent.text)}
         />
       </View>
 

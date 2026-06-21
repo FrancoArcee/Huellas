@@ -39,3 +39,24 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      const [{ storage: dynamicStorage }, { useAuthStore }] = await Promise.all([
+        import('./storage'),
+        import('../store/authStore'),
+      ]);
+
+      await dynamicStorage.clear();
+      useAuthStore.setState({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      });
+    }
+
+    return Promise.reject(error);
+  }
+);
