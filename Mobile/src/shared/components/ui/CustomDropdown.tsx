@@ -16,9 +16,10 @@ interface Props {
   options: DropdownOption[];
   selectedValue?: string;
   onSelect: (value: string) => void;
+  error?: string | undefined;
 }
 
-export const CustomDropdown = ({ label, placeholder, options, selectedValue, onSelect }: Props) => {
+export const CustomDropdown = ({ label, placeholder, options, selectedValue, onSelect, error }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedOption = options.find(o => o.value === selectedValue);
@@ -31,7 +32,10 @@ export const CustomDropdown = ({ label, placeholder, options, selectedValue, onS
         {label}
       </CustomText>
       <TouchableOpacity
-        style={styles.input}
+        style={[
+          styles.input,
+          error ? { borderColor: theme.colors.danger, borderWidth: 1 } : {}
+        ]}
         onPress={() => setIsOpen(true)}
         activeOpacity={0.7}
       >
@@ -81,6 +85,11 @@ export const CustomDropdown = ({ label, placeholder, options, selectedValue, onS
           </View>
         </Pressable>
       </Modal>
+      {error && (
+        <CustomText variant="caption" color="danger" style={styles.errorText}>
+          {error}
+        </CustomText>
+      )}
     </View>
   );
 };
@@ -123,5 +132,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  errorText: {
+    marginTop: 4,
+    paddingHorizontal: 16,
   },
 });
