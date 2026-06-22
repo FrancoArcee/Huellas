@@ -20,6 +20,7 @@ export const colors = {
   gray900: "#111827",
 
   background: "#F1EEEE",
+  cream: "#FFF4E6",
   like: "#FFB0B0",
   danger: "#EF4444",
 
