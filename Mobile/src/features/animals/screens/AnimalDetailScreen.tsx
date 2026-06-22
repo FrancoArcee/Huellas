@@ -24,6 +24,7 @@ import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
 import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { openContactApp } from '../../../shared/utils/contact-apps';
+import { translateCategory, translateGender, translateSize } from '../../../shared/utils/translations';
 import { animalService, type AnimalPost } from '../services/animalService';
 
 const roundedFont = Platform.select({
@@ -288,19 +289,19 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 {post.name}
               </CustomText>
               <CustomText variant="p" style={styles.subtitle}>
-                {post.category} · {ageLabel}
+                {translateCategory(post.category)} · {ageLabel}
               </CustomText>
             </View>
 
             <View style={styles.tagsRow}>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{post.gender}</CustomText>
+                <CustomText style={styles.tagText}>{translateGender(post.gender)}</CustomText>
               </View>
               <View style={styles.tag}>
                 <CustomText style={styles.tagText}>{weightLabel}</CustomText>
               </View>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{post.size}</CustomText>
+                <CustomText style={styles.tagText}>{translateSize(post.size)}</CustomText>
               </View>
             </View>
 

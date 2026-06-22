@@ -20,8 +20,12 @@ import {
 } from '../../home/components/FilterBottomSheet';
 import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
 import { theme } from '../../../theme';
+import { useAuthStore } from '../../../shared/store/authStore';
+import { storage } from '../../../shared/services/storage';
+import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
+import { translateCategory, translateGender, formatAge, formatDistance } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
 type LayoutMode = 'list' | 'map';
@@ -128,6 +132,7 @@ export function SearchResultsScreen() {
     const insets = useSafeAreaInsets();
     const router = useRouter();
     const mapRef = useRef<MapView>(null);
+    const currentUserId = useAuthStore((state) => state.user?.id);
     const params = useLocalSearchParams<{
         search?: string;
         category?: string;
@@ -175,6 +180,7 @@ export function SearchResultsScreen() {
     const [selectedAnimal, setSelectedAnimal] = useState<AnimalDTO | null>(null);
     const [hiddenMarkerId, setHiddenMarkerId] = useState<string | null>(null);
     const [fetchParams, setFetchParams] = useState<FetchAnimalsParams>(initialFetchParams);
+    const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
 
     const mapAnimals = useMemo(
         () => animals.filter((animal) => animal.latitude !== undefined && animal.longitude !== undefined),
@@ -194,18 +200,43 @@ export function SearchResultsScreen() {
         setLoading(true);
         try {
             const nextAnimals = await fetchAnimals(fetchParams);
-            setAnimals(nextAnimals);
+            const filtered = nextAnimals.filter((a) => a.userId !== currentUserId);
+
+            const lat = fetchParams.latitude ?? userCoords?.latitude;
+            const lng = fetchParams.longitude ?? userCoords?.longitude;
+
+            const withDistance = filtered.map((a) => {
+                if (lat !== undefined && lng !== undefined && a.latitude !== undefined && a.longitude !== undefined) {
+                    const dist = getDistanceKm(lat, lng, a.latitude, a.longitude);
+                    return { ...a, distanceKm: dist };
+                }
+                return a;
+            });
+
+            setAnimals(withDistance);
         } catch (error) {
             console.warn('Error loading animals', error);
             setAnimals([]);
         } finally {
             setLoading(false);
         }
-    }, [fetchParams]);
+    }, [fetchParams, currentUserId, userCoords]);
 
     useEffect(() => {
         loadAnimals();
     }, [loadAnimals]);
+
+    useEffect(() => {
+        const loadLocation = async () => {
+            const coords = await storage.getLocationCoords();
+            if (coords) {
+                setUserCoords(coords);
+            }
+        };
+        if (!fetchParams.latitude && !fetchParams.longitude) {
+            loadLocation();
+        }
+    }, []);
 
     // Fit map coordinates when filtered animals list changes
     useEffect(() => {
@@ -385,28 +416,35 @@ export function SearchResultsScreen() {
                         styles.listContent,
                         { paddingTop: insets.top + 130, paddingBottom: insets.bottom + 24 },
                     ]}
-                    renderItem={({ item }) => (
-                        <PetHorizontalCard
-                            name={item.name}
-                            details={[item.type, item.gender, item.age].filter(Boolean).join(' · ')}
-                            location={`${item.distanceKm} km`}
-                            image={item.photoUri}
-                            tags={[item.gender, `${item.weightKg} KG`].filter(Boolean)}
-                            onPress={() => {
-                                router.push({
-                                    pathname: '/animals/[id]',
-                                    params: { id: item.id },
-                                });
-                            }}
-                            onButtonPress={() => {
-                                router.push({
-                                    pathname: '/animals/[id]',
-                                    params: { id: item.id },
-                                });
-                            }}
-                            style={styles.petCard}
-                        />
-                    )}
+                    renderItem={({ item }) => {
+                        const type = translateCategory(item.type);
+                        const gender = translateGender(item.gender);
+                        const age = formatAge(parseInt(item.age, 10) || undefined);
+                        const details = [type, gender, age].filter(Boolean).join(' · ');
+                        const distText = formatDistance(item.distanceKm);
+                        return (
+                            <PetHorizontalCard
+                                name={item.name}
+                                details={details}
+                                location={distText}
+                                image={item.photoUri}
+                                tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
+                                onPress={() => {
+                                    router.push({
+                                        pathname: '/animals/[id]',
+                                        params: { id: item.id },
+                                    });
+                                }}
+                                onButtonPress={() => {
+                                    router.push({
+                                        pathname: '/animals/[id]',
+                                        params: { id: item.id },
+                                    });
+                                }}
+                                style={styles.petCard}
+                            />
+                        );
+                    }}
                 />
                 {renderFloatingOverlay()}
                 {renderFilterSheet()}
@@ -504,10 +542,10 @@ export function SearchResultsScreen() {
                             </TouchableOpacity>
                         </View>
                         <Text numberOfLines={1} style={styles.inlineCardInfo}>
-                            {selectedAnimal.type} · {selectedAnimal.gender}
+                            {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)}
                         </Text>
                         <Text numberOfLines={1} style={styles.inlineCardMeta}>
-                            {selectedAnimal.age} · {selectedAnimal.weightKg} kg
+                            {formatAge(parseInt(selectedAnimal.age, 10) || undefined)} · {selectedAnimal.weightKg} kg
                         </Text>
                     </View>
                 </TouchableOpacity>

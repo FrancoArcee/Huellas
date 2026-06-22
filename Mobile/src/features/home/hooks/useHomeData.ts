@@ -7,6 +7,7 @@ import { animalService } from '../../animals/services/animalService';
 import { getDistanceKm } from '../../../shared/utils/distance';
 import * as Location from 'expo-location';
 import { useAuthStore } from '../../../shared/store/authStore';
+import { translateCategory, translateGender, formatAge } from '../../../shared/utils/translations';
 import type { FilterValues } from '../components/FilterBottomSheet';
 
 export const useHomeData = () => {
@@ -60,6 +61,7 @@ export const useHomeData = () => {
       const posts = response.data?.data?.posts ?? response.data?.posts ?? [];
 
       const nearbyPosts = posts.filter((post: any) => {
+        if (post.userId === userId) return false;
         if (post.latitude === undefined || post.longitude === undefined) return false;
         const dist = getDistanceKm(lat, lng, post.latitude, post.longitude);
         return dist <= 10;
@@ -87,9 +89,9 @@ export const useHomeData = () => {
               name: detail.name,
               photoUri: detail.photosUrl?.[0] || '',
               distanceKm: dist,
-              type: detail.category,
-              gender: (detail as any).gender || 'Macho',
-              age: detail.age ? `${detail.age} ${detail.age === 1 ? 'año' : 'años'}` : '',
+              type: translateCategory(detail.category),
+              gender: translateGender((detail as any).gender),
+              age: formatAge(detail.age),
               weightKg: detail.weight || 0,
               isFavorite: !!favRecord,
             };
