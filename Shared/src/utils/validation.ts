@@ -119,7 +119,7 @@ export const createPostSchema = z.object({
   location: z.string().min(1).max(200),
   placeId: z.string().min(1).max(500).optional(),
   birthDate: z.string().datetime().optional(),
-  description: z.string().max(255, "La descripción no puede superar los 300 caracteres").optional(),
+  description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl: z.array(z.string().url()).optional(),
 });
 
@@ -136,7 +136,7 @@ export const updatePostSchema = z.object({
   location: z.string().min(1).max(200).optional(),
   placeId: z.string().min(1).max(500).optional(),
   birthDate: z.string().datetime().optional(),
-  description: z.string().max(300, "La descripción no puede superar los 300 caracteres").optional(),
+  description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl: z.array(z.string().url()).optional(),
 });
 
