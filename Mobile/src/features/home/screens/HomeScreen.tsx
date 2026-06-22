@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
@@ -21,7 +22,14 @@ export const HomeScreen = () => {
     handleApplyFilters,
     handleEnableLocation,
     handleFavoriteToggle,
+    syncFavorites,
   } = useHomeData();
+
+  useFocusEffect(
+    useCallback(() => {
+      syncFavorites();
+    }, [syncFavorites])
+  );
 
   const renderCercaTuyo = () => {
     if (locationState === 'loading' || (locationState === 'granted' && loadingAnimals)) {

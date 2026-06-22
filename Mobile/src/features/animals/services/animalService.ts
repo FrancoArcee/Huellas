@@ -56,4 +56,9 @@ export const animalService = {
   async removeFavorite(favoriteId: string): Promise<void> {
     await api.delete(`/favorites/${favoriteId}`);
   },
+
+  async getUserFavorites(userId: string): Promise<any[]> {
+    const res = await api.get(`/favorites/user/${userId}`);
+    return res.data.data;
+  },
 };

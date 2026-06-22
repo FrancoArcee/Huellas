@@ -41,6 +41,24 @@ export const FavoriteController = {
   },
 
   /**
+   * GET /favorites/user/:userId
+   * Obtiene todos los favoritos de un usuario.
+   */
+  async getFavoritesByUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = String(req.params.userId);
+      const result = await FavoriteService.listUserFavorites(userId, 1, 100);
+      const posts = result.data.map((fav: any) => ({
+        ...fav.post,
+        favoriteId: fav.id,
+      }));
+      sendSuccess(res, posts);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /**
    * GET /favorites/check/:postId
    * Retorna el registro de favorito del usuario autenticado para un post, o null si no existe.
    */
