@@ -16,6 +16,7 @@ const router = Router();
  */
 router.post("/", requireAuth, FavoriteController.createFavorite);
 router.get("/check/:postId", requireAuth, FavoriteController.checkFavoriteByPost);
+router.get("/user/:userId", requireAuth, FavoriteController.getFavoritesByUser);
 router.get("/:id", requireAuth, FavoriteController.getFavorite);
 router.delete("/:id", requireAuth, FavoriteController.deleteFavorite);
 
