@@ -31,6 +31,8 @@ import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutoco
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 
+const MAX_IMAGENES = 3;
+
 export default function CreateAnimalScreen() {
   const router = useRouter();
   const agregarPublicacion = usePublicacionesStore((state) => state.agregarPublicacion);
@@ -59,6 +61,33 @@ export default function CreateAnimalScreen() {
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
 
+  const agregarImagen = async () => {
+    if (imagenes.length >= MAX_IMAGENES) return;
+
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsMultipleSelection: false,
+      mediaTypes: ['images'],
+      quality: 1,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
+    });
+
+    if (result.canceled || !result.assets[0]) return;
+
+    setImagenes(prev => [...prev, result.assets[0]]);
+    setErrors(prev => ({ ...prev, imagenes: undefined }));
+  };
+
+  const eliminarImagen = (index: number) => {
+    setImagenes(prev => prev.filter((_, i) => i !== index));
+  };
+
   const updateForm = (key: AnimalFormField, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
     const error = validateField(key, value);
@@ -76,31 +105,6 @@ export default function CreateAnimalScreen() {
       return;
     }
     setStep(step + 1);
-  };
-
-  const handlePickImages = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: true,
-      mediaTypes: ['images'],
-      quality: 1,
-      selectionLimit: 3,
-      preferredAssetRepresentationMode:
-        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
-    });
-    if (result.canceled) return;
-
-    const parsed = animalPhotosSchema.safeParse(result.assets);
-    setErrors((prev) => ({
-      ...prev,
-      imagenes: parsed.success ? undefined : parsed.error.issues[0]?.message,
-    }));
-    if (parsed.success) setImagenes(result.assets);
   };
 
   const handleSubmit = async () => {
@@ -139,7 +143,6 @@ export default function CreateAnimalScreen() {
   };
 
   return (
-
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
 
@@ -282,28 +285,41 @@ export default function CreateAnimalScreen() {
           {step === 3 && (
             <View style={styles.formContainer}>
               <Text style={styles.label}>Fotos</Text>
-              <TouchableOpacity style={styles.imageUploadArea} onPress={handlePickImages}>
-                <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
-                <Text style={styles.uploadTextBold}>Adjuntá tus imágenes</Text>
-                <Text style={styles.uploadTextSmall}>(Máximo 3 fotos)</Text>
-                <Text style={styles.uploadTextSmall}>Peso Máximo por foto 3mb</Text>
-              </TouchableOpacity>
-              {imagenes.length > 0 && (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.photoPreviewList}
-                >
-                  {imagenes.map((image, index) => (
-                    <Image
-                      key={`${image.uri}-${index}`}
-                      source={{ uri: image.uri }}
-                      resizeMode="cover"
-                      style={styles.photoPreview}
-                    />
-                  ))}
-                </ScrollView>
-              )}
+
+              <View style={styles.photoSection}>
+                {imagenes.length > 0 && (
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.photoPreviewList}
+                  >
+                    {imagenes.map((image, index) => (
+                      <View key={`${image.uri}-${index}`} style={styles.photoPreviewWrapper}>
+                        <Image
+                          source={{ uri: image.uri }}
+                          resizeMode="cover"
+                          style={styles.photoPreview}
+                        />
+                        <TouchableOpacity
+                          style={styles.deleteButton}
+                          onPress={() => eliminarImagen(index)}
+                        >
+                          <Text style={styles.deleteButtonText}>✕</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                  </ScrollView>
+                )}
+
+                {imagenes.length < MAX_IMAGENES && (
+                  <TouchableOpacity style={styles.addPhotoButton} onPress={agregarImagen}>
+                    <Text style={styles.addPhotoText}>
+                      + Agregar foto ({imagenes.length}/{MAX_IMAGENES})
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+
               {renderError('imagenes')}
 
               <Text style={styles.label}>Descripción</Text>
