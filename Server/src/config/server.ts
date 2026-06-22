@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import { env } from "./env";
 import { errorHandler } from "../shared/middleware/errorHandler";
 import { apiLimiter } from "../shared/middleware/rateLimiter";
@@ -15,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads/user", express.static(path.join(process.cwd(), "uploads/user")));
 app.use("/api/auth", toNodeHandler(auth));
 app.use(apiLimiter);
 
