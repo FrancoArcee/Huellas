@@ -83,6 +83,57 @@ export const updateUserSchema = z.object({
 
 // ─── Post Schemas ──────────────────────────────
 
+function calculateAgeFromBirthDate(value: string, today = new Date()): number | null {
+  const birthDate = new Date(value);
+  if (Number.isNaN(birthDate.getTime())) return null;
+
+  const hadBirthdayThisYear =
+    today.getUTCMonth() > birthDate.getUTCMonth() ||
+    (
+      today.getUTCMonth() === birthDate.getUTCMonth() &&
+      today.getUTCDate() >= birthDate.getUTCDate()
+    );
+
+  return today.getUTCFullYear() - birthDate.getUTCFullYear() - (hadBirthdayThisYear ? 0 : 1);
+}
+
+function validateBirthDateAndAge(
+  data: { age?: number; birthDate?: string },
+  ctx: z.RefinementCtx,
+): void {
+  if (!data.birthDate) return;
+
+  const birthDate = new Date(data.birthDate);
+  if (birthDate > new Date()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["birthDate"],
+      message: "El campo birthDate no puede ser una fecha futura",
+    });
+    return;
+  }
+
+  const expectedAge = calculateAgeFromBirthDate(data.birthDate);
+  if (expectedAge === null) return;
+
+  if (expectedAge > 50) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["birthDate"],
+      message: "El campo birthDate no puede ser una fecha futura",
+    });
+  }
+
+  if (data.age !== undefined && data.age !== expectedAge) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["age"],
+      message: `El campo age debe ser consistente con birthDate (debería ser ${expectedAge} años)`,
+    });
+  }
+}
+
+
 export const createPostSchema = z.object({
   name:       z.string().min(1).max(100),
   age:        z.number().int().min(0).max(50),
@@ -98,6 +149,8 @@ export const createPostSchema = z.object({
   birthDate:  z.string().datetime().optional(),
   description: z.string().max(1000).optional(),
   photosUrl:  z.array(z.string().url()).optional(),
+  }).superRefine((data, ctx) => {
+  validateBirthDateAndAge(data, ctx);
 });
 
 export const updatePostSchema = z.object({
@@ -115,6 +168,8 @@ export const updatePostSchema = z.object({
   birthDate:  z.string().datetime().optional(),
   description: z.string().max(1000).optional(),
   photosUrl:   z.array(z.string().url()).optional(),
+  }).superRefine((data, ctx) => {
+  validateBirthDateAndAge(data, ctx);
 });
 
 // ─── Search Schema ─────────────────────────────

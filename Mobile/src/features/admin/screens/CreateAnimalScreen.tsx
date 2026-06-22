@@ -7,13 +7,15 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { styles } from './EditAnimalScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
+import { BirthDatePicker } from '../components/BirthDatePicker';
 import { useRouter } from 'expo-router';
 import {
   animalPhotosSchema,
@@ -137,6 +139,7 @@ export default function CreateAnimalScreen() {
   };
 
   return (
+
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar barStyle="dark-content" backgroundColor="#f6f6f6" />
 
@@ -152,7 +155,7 @@ export default function CreateAnimalScreen() {
               {renderError('nombre')}
 
               <Text style={styles.label}>Fecha de nacimiento</Text>
-              <TextInput style={styles.input} placeholder="DD/MM/YYYY" value={formData.fechaNacimiento} onChangeText={(t) => updateForm('fechaNacimiento', t)} />
+              <BirthDatePicker value={formData.fechaNacimiento} onChange={(value) => updateForm('fechaNacimiento', value)} />
               {renderError('fechaNacimiento')}
 
               <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
@@ -285,6 +288,22 @@ export default function CreateAnimalScreen() {
                 <Text style={styles.uploadTextSmall}>(Máximo 3 fotos)</Text>
                 <Text style={styles.uploadTextSmall}>Peso Máximo por foto 3mb</Text>
               </TouchableOpacity>
+              {imagenes.length > 0 && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.photoPreviewList}
+                >
+                  {imagenes.map((image, index) => (
+                    <Image
+                      key={`${image.uri}-${index}`}
+                      source={{ uri: image.uri }}
+                      resizeMode="cover"
+                      style={styles.photoPreview}
+                    />
+                  ))}
+                </ScrollView>
+              )}
               {renderError('imagenes')}
 
               <Text style={styles.label}>Descripción</Text>
