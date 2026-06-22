@@ -3,7 +3,6 @@ import {
   Modal,
   Pressable,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
   Animated,
@@ -11,13 +10,16 @@ import {
 } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
-import SearchIcon from '../../../assets/icons/screens/search.svg';
 import ChevronDownIcon from '../../../assets/icons/buttons/chevronDown.svg';
+import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 
-type FilterValues = {
+export type FilterValues = {
   category: string;
   size: string;
   location: string;
+  latitude?: number;
+  longitude?: number;
+  radius: number;
 };
 
 interface FilterBottomSheetProps {
@@ -32,6 +34,7 @@ const initialFilters: FilterValues = {
   category: '',
   size: '',
   location: '',
+  radius: 25,
 };
 
 const categoryOptions = [
@@ -46,12 +49,21 @@ const sizeOptions = [
   { label: 'Grande', value: 'large' },
 ];
 
-const getOptionLabel = (options: { label: string; value: string }[], value: string) => {
+const radiusOptions = [
+  { label: '10 km', value: 10 },
+  { label: '25 km', value: 25 },
+  { label: '50 km', value: 50 },
+];
+
+const getOptionLabel = (
+  options: { label: string; value: string | number }[],
+  value: string | number,
+) => {
   return options.find((option) => option.value === value)?.label ?? '';
 };
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-const SHEET_HEIGHT = SCREEN_HEIGHT * 0.6;
+const SHEET_HEIGHT = SCREEN_HEIGHT * 0.75;
 
 export const FilterBottomSheet = ({
   visible,
@@ -61,7 +73,9 @@ export const FilterBottomSheet = ({
   initialValues = initialFilters,
 }: FilterBottomSheetProps) => {
   const [filters, setFilters] = useState<FilterValues>(initialValues);
-  const [openSelect, setOpenSelect] = useState<keyof Pick<FilterValues, 'category' | 'size'> | null>(null);
+  const [openSelect, setOpenSelect] = useState<
+    keyof Pick<FilterValues, 'category' | 'size' | 'radius'> | null
+  >(null);
 
   const slideAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
@@ -100,7 +114,13 @@ export const FilterBottomSheet = ({
         setShouldRender(false);
       });
     }
-  }, [visible, initialValues.category, initialValues.location, initialValues.size]);
+  }, [
+    visible,
+    initialValues.category,
+    initialValues.location,
+    initialValues.radius,
+    initialValues.size,
+  ]);
 
   const updateFilter = <Key extends keyof FilterValues>(
     key: Key,
@@ -117,6 +137,9 @@ export const FilterBottomSheet = ({
       category: filters.category.trim(),
       size: filters.size.trim(),
       location: filters.location.trim(),
+      radius: filters.radius,
+      ...(filters.latitude !== undefined ? { latitude: filters.latitude } : {}),
+      ...(filters.longitude !== undefined ? { longitude: filters.longitude } : {}),
     });
     onClose();
   };
@@ -241,16 +264,61 @@ export const FilterBottomSheet = ({
               <CustomText variant="p" color="textPrimary" style={styles.label}>
                 Localidad
               </CustomText>
-              <View style={styles.inputControl}>
-                <TextInput
-                  value={filters.location}
-                  onChangeText={(value) => updateFilter('location', value)}
-                  placeholder="Nombre"
-                  placeholderTextColor={theme.colors.gray100}
-                  style={styles.input}
-                />
-                <SearchIcon width={20} height={20} />
-              </View>
+              <AddressAutocomplete
+                value={filters.location}
+                onChangeText={(value) => updateFilter('location', value)}
+                onSelect={(location) => {
+                  setFilters((current) => {
+                    const { latitude: _latitude, longitude: _longitude, ...rest } = current;
+                    return location
+                      ? {
+                          ...rest,
+                          latitude: location.latitude,
+                          longitude: location.longitude,
+                        }
+                      : rest;
+                  });
+                }}
+                placeholder="Localidad o dirección"
+              />
+            </View>
+
+            <View style={styles.fieldGroup}>
+              <CustomText variant="p" color="textPrimary" style={styles.label}>
+                Distancia
+              </CustomText>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setOpenSelect((current) => (current === 'radius' ? null : 'radius'))}
+                style={styles.selectControl}
+              >
+                <CustomText variant="body" color="textPrimary" style={styles.controlText}>
+                  {getOptionLabel(radiusOptions, filters.radius)}
+                </CustomText>
+                <ChevronDownIcon width={14} height={14} />
+              </TouchableOpacity>
+              {openSelect === 'radius' && (
+                <View style={styles.dropdown}>
+                  {radiusOptions.map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        updateFilter('radius', option.value);
+                        setOpenSelect(null);
+                      }}
+                      style={[
+                        styles.dropdownOption,
+                        filters.radius === option.value && styles.dropdownOptionSelected,
+                      ]}
+                    >
+                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
+                        {option.label}
+                      </CustomText>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
           </View>
 
@@ -286,8 +354,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheet: {
-    maxHeight: '60%',
-    minHeight: '60%',
+    maxHeight: '75%',
+    minHeight: '75%',
     backgroundColor: theme.colors.white,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,

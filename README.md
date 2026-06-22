@@ -57,3 +57,19 @@ Una vez que Expo se esté ejecutando en la terminal, podés:
 * Presionar **`a`** para abrir en un emulador de Android.
 * Presionar **`i`** para abrir en un simulador de iOS.
 * Presionar **`w`** para abrir la versión web en tu navegador.
+
+## Autocompletado de direcciones
+
+La app consulta la API oficial y gratuita **Georef Argentina** desde el backend.
+No requiere API key ni una cuenta de facturación.
+
+Para preparar la base de datos, aplicá las migraciones y regenerá Prisma:
+
+```bash
+npm run prisma:migrate --workspace=@huellas/server
+npm run prisma:generate --workspace=@huellas/server
+```
+
+El autocompletado está restringido a Argentina. Combina direcciones y
+localidades; cuando Georef no cuenta con el punto exacto de una calle, utiliza
+el centroide oficial de la localidad y lo indica como ubicación aproximada.

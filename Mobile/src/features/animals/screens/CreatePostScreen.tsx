@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 import Svg, { Path } from 'react-native-svg';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
+import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 
 const TOTAL_STEPS = 3;
 const ORANGE = '#FA9D24';
@@ -47,6 +48,9 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
     gender: '',
     castrated: '',
     description: '',
+    latitude: null as number | null,
+    longitude: null as number | null,
+    placeId: undefined as string | undefined,
   });
 
   const buttonTitle = step === TOTAL_STEPS ? 'Crear publicación' : 'Continuar';
@@ -77,6 +81,8 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
       mediaTypes: ['images'],
       quality: 1,
       selectionLimit: 3,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
 
     if (!result.canceled) {
@@ -121,14 +127,21 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
     if (step === 2) {
       return (
         <>
-          <LabeledInput
-            label="Ubicación"
-            required
-            placeholder="Nombre"
-            value={form.location}
-            onChangeText={(value) => updateField('location', value)}
-            trailing="search"
-          />
+          <View style={styles.field}>
+            <Label text="Ubicación" required />
+            <AddressAutocomplete
+              value={form.location}
+              onChangeText={(value) => updateField('location', value)}
+              onSelect={(location) => {
+                setForm((current) => ({
+                  ...current,
+                  latitude: location?.latitude ?? null,
+                  longitude: location?.longitude ?? null,
+                  placeId: location?.placeId,
+                }));
+              }}
+            />
+          </View>
           <LabeledInput
             label="Peso de la mascota"
             required

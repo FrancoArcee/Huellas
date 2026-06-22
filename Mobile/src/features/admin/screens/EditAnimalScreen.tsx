@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
-import SearchIcon from '../../../assets/icons/screens/search.svg';
+import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   animalPhotosSchema,
@@ -42,6 +42,9 @@ export default function EditAnimalScreen() {
     genero: '',
     castrado: '',
     descripcion: '',
+    latitude: null,
+    longitude: null,
+    placeId: undefined,
   });
   const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [existingPhotosUrl, setExistingPhotosUrl] = useState<string[]>([]);
@@ -66,6 +69,9 @@ export default function EditAnimalScreen() {
         genero: pub.genero,
         castrado: pub.castrado,
         descripcion: pub.descripcion,
+        latitude: pub.latitude === 0 ? null : pub.latitude,
+        longitude: pub.longitude === 0 ? null : pub.longitude,
+        placeId: pub.placeId,
       });
       setExistingPhotosUrl(pub.imagenes);
     } else {
@@ -83,6 +89,9 @@ export default function EditAnimalScreen() {
   const handleSiguiente = () => {
     if (step >= 3) return;
     const stepErrors = validateStep(formData, step);
+    if (step === 2 && (formData.latitude === null || formData.longitude === null)) {
+      stepErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+    }
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
       return;
@@ -102,6 +111,8 @@ export default function EditAnimalScreen() {
       mediaTypes: ['images'],
       quality: 1,
       selectionLimit: 3,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
     if (result.canceled) return;
 
@@ -115,6 +126,9 @@ export default function EditAnimalScreen() {
 
   const handleSubmit = async () => {
     const formErrors = validateAll(formData);
+    if (formData.latitude === null || formData.longitude === null) {
+      formErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+    }
     const photosResult = animalPhotosSchema.safeParse(imagenes);
     if (!photosResult.success) {
       formErrors.imagenes = photosResult.error.issues[0]?.message;
@@ -134,9 +148,13 @@ export default function EditAnimalScreen() {
       );
       Alert.alert('¡Éxito!', 'La Publicación fue actualizada correctamente.');
       router.back();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al editar la publicación:', error);
-      Alert.alert('Error', 'No se pudo actualizar la publicación. Intentá nuevamente.');
+      Alert.alert(
+        'Error',
+        error.response?.data?.message ??
+          'No se pudo actualizar la publicación. Intentá nuevamente.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -205,10 +223,21 @@ export default function EditAnimalScreen() {
         {step === 2 && (
           <View style={styles.formContainer}>
             <Text style={styles.label}>Ubicación <Text style={styles.asterisk}>*</Text></Text>
-            <View style={styles.inputWithIcon}>
-              <TextInput style={styles.inputFlex} value={formData.ubicacion} onChangeText={(t) => updateForm('ubicacion', t)} />
-              <SearchIcon width={20} height={20} color="#555" />
-            </View>
+            <AddressAutocomplete
+              value={formData.ubicacion}
+              onChangeText={(text) => updateForm('ubicacion', text)}
+              onSelect={(location) => {
+                setFormData((current) => ({
+                  ...current,
+                  latitude: location?.latitude ?? null,
+                  longitude: location?.longitude ?? null,
+                  placeId: location?.placeId,
+                }));
+                if (location) {
+                  setErrors((current) => ({ ...current, ubicacion: undefined }));
+                }
+              }}
+            />
             {renderError('ubicacion')}
 
             <Text style={styles.label}>Peso de la mascota <Text style={styles.asterisk}>*</Text></Text>

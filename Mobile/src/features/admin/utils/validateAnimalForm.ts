@@ -67,12 +67,21 @@ export const animalPhotosSchema = z
   .array(
     z.object({
       fileSize: z.number().optional(),
+      mimeType: z.string().nullable().optional(),
     }).passthrough(),
   )
   .max(3, 'Podés adjuntar hasta 3 fotos')
   .refine(
     (photos) => photos.every((photo) => !photo.fileSize || photo.fileSize <= 3 * 1024 * 1024),
     'Cada foto debe pesar como máximo 3 MB',
+  )
+  .refine(
+    (photos) => photos.every((photo) =>
+      !photo.mimeType ||
+      ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/x-png', 'image/webp']
+        .includes(photo.mimeType.toLowerCase()),
+    ),
+    'Usá imágenes JPEG, PNG o WebP',
   );
 
 export type AnimalFormData = z.infer<typeof animalFormSchema>;

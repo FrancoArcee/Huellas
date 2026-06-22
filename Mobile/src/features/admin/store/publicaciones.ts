@@ -19,6 +19,9 @@ export interface Publicacion {
   descripcion: string;
   imagen: string;
   imagenes: string[];
+  latitude: number;
+  longitude: number;
+  placeId: string | undefined;
 }
 
 export interface PublicacionForm {
@@ -31,6 +34,9 @@ export interface PublicacionForm {
   genero: string;
   castrado: string;
   descripcion: string;
+  latitude: number | null;
+  longitude: number | null;
+  placeId: string | undefined;
 }
 
 function formatBirthDate(value: string | null): string {
@@ -70,6 +76,9 @@ function toPublicacion(post: AnimalPostRecord): Publicacion {
     descripcion: post.description ?? '',
     imagen: post.photosUrl[0] ?? '',
     imagenes: post.photosUrl,
+    latitude: post.latitude,
+    longitude: post.longitude,
+    placeId: post.placeId ?? undefined,
   };
 }
 
@@ -89,9 +98,10 @@ function toPayload(form: PublicacionForm): AnimalPostPayload {
     category: 'dog',
     gender: form.genero === 'Hembra' ? 'female' : 'male',
     neutered: form.castrado === 'Si',
-    latitude: 0,
-    longitude: 0,
+    latitude: form.latitude!,
+    longitude: form.longitude!,
     location: form.ubicacion.trim(),
+    ...(form.placeId ? { placeId: form.placeId } : {}),
     ...(birthDate ? { birthDate } : {}),
     ...(form.descripcion.trim() ? { description: form.descripcion.trim() } : {}),
   };

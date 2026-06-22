@@ -14,6 +14,7 @@ export interface AnimalPostRecord {
   latitude: number;
   longitude: number;
   location: string;
+  placeId: string | null;
   birthDate: string | null;
   description: string | null;
   photosUrl: string[];
@@ -32,6 +33,7 @@ export interface AnimalPostPayload {
   latitude: number;
   longitude: number;
   location: string;
+  placeId?: string;
   birthDate?: string;
   description?: string;
 }

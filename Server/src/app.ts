@@ -10,6 +10,7 @@ import userRoutes from "./features/users/routes/user.routes";
 import favoriteRoutes from "./features/favorites/routes/favorite.routes";
 import animalRoutes from "./features/animals/routes/animal.routes";
 import requestRoutes from "./features/requests/routes/request.routes";
+import locationRoutes from "./features/locations/routes/location.routes";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 app.use("/api/auth", toNodeHandler(auth));
+app.use("/locations", locationRoutes);
 app.use(apiLimiter);
 
 app.use("/users", userRoutes);

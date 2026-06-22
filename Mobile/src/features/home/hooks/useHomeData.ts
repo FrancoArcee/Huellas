@@ -7,6 +7,7 @@ import { animalService } from '../../animals/services/animalService';
 import { getDistanceKm } from '../../../shared/utils/distance';
 import * as Location from 'expo-location';
 import { useAuthStore } from '../../../shared/store/authStore';
+import type { FilterValues } from '../components/FilterBottomSheet';
 
 export const useHomeData = () => {
   const router = useRouter();
@@ -34,12 +35,17 @@ export const useHomeData = () => {
     });
   };
 
-  const handleApplyFilters = (filters: { category: string; size: string; location: string }) => {
+  const handleApplyFilters = (filters: FilterValues) => {
     const params: Record<string, string> = { layout: 'map' };
 
     if (filters.category) params.category = filters.category;
     if (filters.size) params.size = filters.size;
     if (filters.location) params.location = filters.location;
+    if (filters.latitude !== undefined && filters.longitude !== undefined) {
+      params.latitude = String(filters.latitude);
+      params.longitude = String(filters.longitude);
+      params.radius = String(filters.radius);
+    }
 
     router.push({
       pathname: '/(tabs)/search',

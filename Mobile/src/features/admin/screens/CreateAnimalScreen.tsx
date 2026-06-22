@@ -25,9 +25,9 @@ import {
   type AnimalFormField,
 } from '../utils/validateAnimalForm';
 import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
+import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
-import SearchIcon from '../../../assets/icons/screens/search.svg';
 
 export default function CreateAnimalScreen() {
   const router = useRouter();
@@ -44,6 +44,9 @@ export default function CreateAnimalScreen() {
     genero: '',
     castrado: '',
     descripcion: '',
+    latitude: null,
+    longitude: null,
+    placeId: undefined,
   });
   const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,6 +66,9 @@ export default function CreateAnimalScreen() {
   const handleSiguiente = () => {
     if (step >= 3) return;
     const stepErrors = validateStep(formData, step);
+    if (step === 2 && (formData.latitude === null || formData.longitude === null)) {
+      stepErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+    }
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
       return;
@@ -82,6 +88,8 @@ export default function CreateAnimalScreen() {
       mediaTypes: ['images'],
       quality: 1,
       selectionLimit: 3,
+      preferredAssetRepresentationMode:
+        ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
     if (result.canceled) return;
 
@@ -95,6 +103,9 @@ export default function CreateAnimalScreen() {
 
   const handleSubmit = async () => {
     const formErrors = validateAll(formData);
+    if (formData.latitude === null || formData.longitude === null) {
+      formErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+    }
     const photosResult = animalPhotosSchema.safeParse(imagenes);
     if (!photosResult.success) {
       formErrors.imagenes = photosResult.error.issues[0]?.message;
@@ -108,9 +119,13 @@ export default function CreateAnimalScreen() {
     try {
       await agregarPublicacion(formData, imagenes);
       setStep(4);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al crear la publicación:', error);
-      Alert.alert('Error', 'No se pudo crear la publicación. Intentá nuevamente.');
+      Alert.alert(
+        'Error',
+        error.response?.data?.message ??
+          'No se pudo crear la publicación. Intentá nuevamente.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -182,10 +197,21 @@ export default function CreateAnimalScreen() {
           {step === 2 && (
             <View style={styles.formContainer}>
               <Text style={styles.label}>Ubicación <Text style={styles.asterisk}>*</Text></Text>
-              <View style={styles.inputWithIcon}>
-                <TextInput style={styles.inputFlex} placeholder="Nombre" value={formData.ubicacion} onChangeText={(t) => updateForm('ubicacion', t)} />
-                <SearchIcon width={20} height={20} color="#555" />
-              </View>
+              <AddressAutocomplete
+                value={formData.ubicacion}
+                onChangeText={(text) => updateForm('ubicacion', text)}
+                onSelect={(location) => {
+                  setFormData((current) => ({
+                    ...current,
+                    latitude: location?.latitude ?? null,
+                    longitude: location?.longitude ?? null,
+                    placeId: location?.placeId,
+                  }));
+                  if (location) {
+                    setErrors((current) => ({ ...current, ubicacion: undefined }));
+                  }
+                }}
+              />
               {renderError('ubicacion')}
 
               <Text style={styles.label}>Peso de la mascota <Text style={styles.asterisk}>*</Text></Text>

@@ -95,6 +95,7 @@ model Post {
   latitude    Float
   longitude   Float
   location    String                        // Descripción textual (ej: "Parque Centenario, CABA")
+  placeId     String?
   // ── Opcionales ──
   birthDate   DateTime?
   description String?

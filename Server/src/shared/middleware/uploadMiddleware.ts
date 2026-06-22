@@ -6,13 +6,17 @@ import { randomUUID } from "crypto";
 import { mkdirSync, unlinkSync } from "fs";
 import path from "path";
 import multer from "multer";
+import { HttpError } from "../errors/HttpError";
 
 export const animalUploadDirectory = path.resolve(process.cwd(), "uploads", "animal");
 mkdirSync(animalUploadDirectory, { recursive: true });
 
 const extensionByMimeType: Record<string, string> = {
   "image/jpeg": ".jpg",
+  "image/jpg": ".jpg",
+  "image/pjpeg": ".jpg",
   "image/png": ".png",
+  "image/x-png": ".png",
   "image/webp": ".webp",
 };
 
@@ -30,11 +34,20 @@ export const upload = multer({
     files: 3,
   },
   fileFilter: (_req, file, cb) => {
-    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    const allowed = [
+      "image/jpeg",
+      "image/jpg",
+      "image/pjpeg",
+      "image/png",
+      "image/x-png",
+      "image/webp",
+    ];
     if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only JPEG, PNG and WebP images are allowed"));
+      cb(HttpError.badRequest(
+        `Formato de imagen no compatible (${file.mimetype || "desconocido"}). Usá JPEG, PNG o WebP.`,
+      ));
     }
   },
 });
