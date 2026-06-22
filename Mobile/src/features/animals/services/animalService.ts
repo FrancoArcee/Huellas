@@ -1,4 +1,5 @@
 import { api } from '../../../shared/services/api';
+import type { ContactTypeValues } from '@huellas/shared';
 
 export interface AnimalPost {
   id: string;
@@ -19,7 +20,7 @@ export interface AnimalPost {
     name: string;
     image: string | null;
     contact: string;
-    contactType: string;
+    contactType: ContactTypeValues;
   };
   _count: { favorites: number };
   createdAt: string;

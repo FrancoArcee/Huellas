@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,23 +8,37 @@ import {
   FlatList,
   StatusBar,
   Animated,
+  Alert,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
 import Plus from '../../../assets/icons/buttons/plus.svg';
 import Trash from '../../../assets/icons/buttons/trash.svg';
 import Location from '../../../assets/icons/location.svg';
 import { colors } from '../../../theme/index';
+import { useAuthStore } from '../../../shared/store/authStore';
 
 export function MisPublicacionesScreen() {
   const publicaciones = usePublicacionesStore((state) => state.publicaciones);
+  const cargarPublicaciones = usePublicacionesStore((state) => state.cargarPublicaciones);
   const eliminarPublicacion = usePublicacionesStore((state) => state.eliminarPublicacion);
+  const userId = useAuthStore((state) => state.user?.id);
   const router = useRouter();
   const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      cargarPublicaciones(userId).catch((error) => {
+        console.error('Error al cargar publicaciones:', error);
+        Alert.alert('Error', 'No se pudieron cargar tus publicaciones.');
+      });
+    }, [cargarPublicaciones, userId]),
+  );
 
   const handleEditar = (id: string) => {
     router.push('/(admin)/edit/' + id);
@@ -38,10 +52,15 @@ export function MisPublicacionesScreen() {
     setPendingDeleteId(id);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (pendingDeleteId) {
-      eliminarPublicacion(pendingDeleteId);
-      setPendingDeleteId(null);
+      try {
+        await eliminarPublicacion(pendingDeleteId);
+        setPendingDeleteId(null);
+      } catch (error) {
+        console.error('Error al eliminar la publicación:', error);
+        Alert.alert('Error', 'No se pudo eliminar la publicación. Intentá nuevamente.');
+      }
     }
   };
 

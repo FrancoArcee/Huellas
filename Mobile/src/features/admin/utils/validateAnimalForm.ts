@@ -1,118 +1,141 @@
-type FormData = {
-  nombre: string;
-  fechaNacimiento: string;
-  edad: string;
-  tamano: string;
-  ubicacion: string;
-  peso: string;
-  genero: string;
-  castrado: string;
-  descripcion?: string;
-};
+import { z } from 'zod';
 
-type FieldError = string | null;
+const dateSchema = z.string().superRefine((value, ctx) => {
+  if (!value) return;
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+  if (!match) {
+    ctx.addIssue({ code: 'custom', message: 'Formato inválido (DD/MM/YYYY)' });
+    return;
+  }
 
-const DATE_REGEX = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-const NUMERIC_REGEX = /^[0-9]*$/;
-const DECIMAL_REGEX = /^[0-9]*\.?[0-9]*$/;
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  const isValid =
+    date.getUTCFullYear() === year &&
+    date.getUTCMonth() === month - 1 &&
+    date.getUTCDate() === day;
+
+  if (!isValid) {
+    ctx.addIssue({ code: 'custom', message: 'La fecha no es válida' });
+  } else if (date > new Date()) {
+    ctx.addIssue({ code: 'custom', message: 'La fecha no puede ser futura' });
+  }
+});
+
+export const animalFormSchema = z.object({
+  nombre: z
+    .string()
+    .trim()
+    .min(1, 'El nombre es obligatorio')
+    .min(2, 'El nombre debe tener al menos 2 caracteres')
+    .max(100, 'El nombre no puede superar los 100 caracteres'),
+  fechaNacimiento: dateSchema,
+  edad: z
+    .string()
+    .min(1, 'La edad es obligatoria')
+    .regex(/^\d+$/, 'Debe ser un número entero')
+    .refine((value) => Number(value) <= 50, 'La edad no puede ser mayor a 50 años'),
+  tamano: z.enum(['Chico', 'Mediano', 'Grande'], {
+    message: 'Seleccioná un tamaño válido',
+  }),
+  ubicacion: z
+    .string()
+    .trim()
+    .min(1, 'La ubicación es obligatoria')
+    .min(3, 'La ubicación debe tener al menos 3 caracteres')
+    .max(200, 'La ubicación no puede superar los 200 caracteres'),
+  peso: z
+    .string()
+    .min(1, 'El peso es obligatorio')
+    .regex(/^\d+(\.\d+)?$/, 'Debe ser un número válido (ej: 12.5)')
+    .refine((value) => Number(value) > 0, 'El peso debe ser mayor a 0')
+    .refine((value) => Number(value) <= 200, 'El peso no puede ser mayor a 200 kg'),
+  genero: z.enum(['Macho', 'Hembra'], {
+    message: 'Seleccioná un género válido',
+  }),
+  castrado: z.enum(['Si', 'No'], {
+    message: 'Seleccioná una opción válida',
+  }),
+  descripcion: z
+    .string()
+    .max(1000, 'La descripción no puede superar los 1000 caracteres'),
+});
+
+export const animalPhotosSchema = z
+  .array(
+    z.object({
+      fileSize: z.number().optional(),
+      mimeType: z.string().nullable().optional(),
+    }).passthrough(),
+  )
+  .max(3, 'Podés adjuntar hasta 3 fotos')
+  .refine(
+    (photos) => photos.every((photo) => !photo.fileSize || photo.fileSize <= 3 * 1024 * 1024),
+    'Cada foto debe pesar como máximo 3 MB',
+  )
+  .refine(
+    (photos) => photos.every((photo) =>
+      !photo.mimeType ||
+      ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/x-png', 'image/webp']
+        .includes(photo.mimeType.toLowerCase()),
+    ),
+    'Usá imágenes JPEG, PNG o WebP',
+  );
+
+export type AnimalFormData = z.infer<typeof animalFormSchema>;
+export type AnimalFormField = keyof AnimalFormData;
+export type AnimalFormErrors = Partial<Record<AnimalFormField | 'imagenes', string | undefined>>;
+export type AnimalFormValues = Record<AnimalFormField, string>;
 
 export function sanitizeNumericInput(value: string, allowDecimal = false): string {
-  if (allowDecimal) {
-    const parts = value.match(DECIMAL_REGEX);
-    return parts ? parts[0] : '';
-  }
-  return value.replace(/\D/g, '');
+  if (!allowDecimal) return value.replace(/\D/g, '');
+  const normalized = value.replace(',', '.');
+  return /^\d*\.?\d*$/.test(normalized) ? normalized : '';
 }
 
-export function validateField(key: string, value: string): FieldError {
-  const trimmed = value.trim();
-
-  switch (key) {
-    case 'nombre':
-      if (!trimmed) return 'El nombre es obligatorio';
-      if (trimmed.length < 2) return 'El nombre debe tener al menos 2 caracteres';
-      return null;
-
-    case 'fechaNacimiento':
-      if (!trimmed) return null;
-      const match = trimmed.match(DATE_REGEX);
-      if (!match) return 'Formato inválido (DD/MM/YYYY)';
-      const d = parseInt(match[1]!, 10);
-      const m = parseInt(match[2]!, 10);
-      const y = parseInt(match[3]!, 10);
-      if (m < 1 || m > 12) return 'Mes inválido (1-12)';
-      if (d < 1 || d > 31) return 'Día inválido (1-31)';
-      if (y < 1900 || y > 2100) return 'Año inválido';
-      return null;
-
-    case 'edad':
-      if (!trimmed) return 'La edad es obligatoria';
-      if (!/^\d+$/.test(trimmed)) return 'Debe ser un número entero';
-      const age = parseInt(trimmed, 10);
-      if (age < 0) return 'La edad no puede ser negativa';
-      if (age > 100) return 'La edad no puede ser mayor a 100 años';
-      return null;
-
-    case 'tamano':
-      if (!trimmed) return 'El tamaño es obligatorio';
-      if (!['Chico', 'Mediano', 'Grande'].includes(trimmed)) return 'Seleccioná un tamaño válido';
-      return null;
-
-    case 'ubicacion':
-      if (!trimmed) return 'La ubicación es obligatoria';
-      if (trimmed.length < 3) return 'La ubicación debe tener al menos 3 caracteres';
-      return null;
-
-    case 'peso':
-      if (!trimmed) return 'El peso es obligatorio';
-      if (!/^\d+(\.\d+)?$/.test(trimmed)) return 'Debe ser un número válido (ej: 12.5)';
-      const weight = parseFloat(trimmed);
-      if (weight <= 0) return 'El peso debe ser mayor a 0';
-      if (weight > 50) return 'El peso no puede ser mayor a 50 kg';
-      return null;
-
-    case 'genero':
-      if (!trimmed) return 'El género es obligatorio';
-      if (!['Macho', 'Hembra'].includes(trimmed)) return 'Seleccioná un género válido';
-      return null;
-
-    case 'castrado':
-      if (!trimmed) return 'Este campo es obligatorio';
-      if (!['Si', 'No'].includes(trimmed)) return 'Seleccioná una opción válida';
-      return null;
-
-    case 'descripcion':
-      return null;
-
-    default:
-      return null;
-  }
+export function validateField(
+  key: AnimalFormField,
+  value: string,
+): string | undefined {
+  const result = animalFormSchema.shape[key].safeParse(value);
+  return result.success ? undefined : result.error.issues[0]?.message;
 }
 
-export function validateStep(formData: FormData, step: number): FieldError {
+export function validateFields(
+  formData: AnimalFormValues,
+  fields: AnimalFormField[],
+): AnimalFormErrors {
+  const errors: AnimalFormErrors = {};
+  for (const field of fields) {
+    const error = validateField(field, formData[field]);
+    if (error) errors[field] = error;
+  }
+  return errors;
+}
+
+export function validateStep(
+  formData: AnimalFormValues,
+  step: number,
+): AnimalFormErrors {
   if (step === 1) {
-    for (const field of ['nombre', 'edad', 'tamano'] as const) {
-      const error = validateField(field, formData[field]);
-      if (error) return error;
-    }
-    const fechaError = validateField('fechaNacimiento', formData.fechaNacimiento);
-    if (fechaError) return fechaError;
-    return null;
+    return validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
   }
-
   if (step === 2) {
-    for (const field of ['ubicacion', 'peso', 'genero', 'castrado'] as const) {
-      const error = validateField(field, formData[field]);
-      if (error) return error;
-    }
-    return null;
+    return validateFields(formData, ['ubicacion', 'peso', 'genero', 'castrado']);
   }
-
-  return null;
+  return validateFields(formData, ['descripcion']);
 }
 
-export function validateAll(formData: FormData): FieldError {
-  const step1 = validateStep(formData, 1);
-  if (step1) return step1;
-  return validateStep(formData, 2);
+export function validateAll(formData: AnimalFormValues): AnimalFormErrors {
+  const result = animalFormSchema.safeParse(formData);
+  if (result.success) return {};
+
+  const errors: AnimalFormErrors = {};
+  for (const issue of result.error.issues) {
+    const field = issue.path[0] as AnimalFormField | undefined;
+    if (field && !errors[field]) errors[field] = issue.message;
+  }
+  return errors;
 }

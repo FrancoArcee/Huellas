@@ -3,6 +3,7 @@
 // ───────────────────────────────────────────────
 
 import type { Request, Response, NextFunction } from "express";
+import multer from "multer";
 import { HttpError } from "../errors/HttpError";
 
 export function errorHandler(
@@ -16,6 +17,20 @@ export function errorHandler(
       success: false,
       error: err.code,
       message: err.message,
+    });
+    return;
+  }
+
+  if (err instanceof multer.MulterError) {
+    const message = err.code === "LIMIT_FILE_SIZE"
+      ? "Cada imagen puede pesar como máximo 3 MB."
+      : err.code === "LIMIT_FILE_COUNT"
+        ? "Podés adjuntar hasta 3 imágenes."
+        : "No se pudieron procesar las imágenes adjuntas.";
+    res.status(400).json({
+      success: false,
+      error: err.code,
+      message,
     });
     return;
   }

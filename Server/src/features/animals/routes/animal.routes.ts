@@ -4,6 +4,7 @@
 
 import { Router } from "express";
 import { requireAuth } from "../../../shared/middleware/authMiddleware";
+import { upload } from "../../../shared/middleware/uploadMiddleware";
 import {
   createPost,
   listPosts,
@@ -34,13 +35,13 @@ router.get("/:id", getPost);
  * POST /animals
  * Create a new post (animal publication).
  */
-router.post("/", requireAuth, createPost);
+router.post("/", requireAuth, upload.array("photos", 3), createPost);
 
 /**
  * PUT /animals/:id
  * Update a post (owner only).
  */
-router.put("/:id", requireAuth, updatePost);
+router.put("/:id", requireAuth, upload.array("photos", 3), updatePost);
 
 /**
  * DELETE /animals/:id
