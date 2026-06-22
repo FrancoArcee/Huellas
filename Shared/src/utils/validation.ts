@@ -14,33 +14,56 @@ export const petCategorySchema = z.enum(["dog", "cat", "other"]);
 
 export function validateContactByType(contact: string, contactType: string): boolean {
   switch (contactType) {
-    case "WhatsApp":
-      return /^\+?\d{8,15}$/.test(contact);
-    case "Telegram":
-      return /^@[a-zA-Z0-9_]{5,32}$/.test(contact);
-    case "Instagram":
-      return /^[a-zA-Z0-9]([a-zA-Z0-9._]*[a-zA-Z0-9])?$/.test(contact) && contact.length <= 30;
-    case "Discord":
-      return /^[a-zA-Z0-9._]{2,32}$/.test(contact);
-    case "Facebook": {
-      const usernameRegex = /^[a-zA-Z0-9.]{5,50}$/;
-      const urlRegex = /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9.]{5,50}$/;
-      return usernameRegex.test(contact) || urlRegex.test(contact);
+    case "WhatsApp": {
+      const clean = contact.replace(/[\s\-()]/g, "");
+      return /^\+?\d{8,15}$/.test(clean);
     }
-    case "Messenger":
-      return /^[a-zA-Z0-9.]{5,50}$/.test(contact);
+    case "Telegram":
+      return /^@[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(contact);
+    case "Instagram": {
+      const len = contact.length;
+      const isFormatValid = /^[a-zA-Z0-9._]+$/.test(contact) && !contact.includes("..") && !contact.startsWith(".") && !contact.endsWith(".");
+      return len >= 1 && len <= 30 && isFormatValid;
+    }
+    case "Discord": {
+      const isNewUsername = /^[a-zA-Z0-9._]{2,32}$/.test(contact) && !contact.includes("..");
+      const isLegacyUsername = /^[^#@:]{2,32}#\d{4}$/.test(contact);
+      return isNewUsername || isLegacyUsername;
+    }
+    case "Facebook": {
+      let fbUser = contact;
+      if (contact.includes("facebook.com/")) {
+        fbUser = contact.split("facebook.com/")[1] || "";
+        if (fbUser.endsWith("/")) {
+          fbUser = fbUser.slice(0, -1);
+        }
+      }
+      return /^[a-zA-Z0-9.]{5,50}$/.test(fbUser) && !fbUser.startsWith(".") && !fbUser.endsWith(".") && !fbUser.includes("..");
+    }
+    case "Messenger": {
+      let msgUser = contact;
+      if (contact.includes("m.me/")) {
+        msgUser = contact.split("m.me/")[1] || "";
+      } else if (contact.includes("messenger.com/t/")) {
+        msgUser = contact.split("messenger.com/t/")[1] || "";
+      }
+      if (msgUser.endsWith("/")) {
+        msgUser = msgUser.slice(0, -1);
+      }
+      return /^[a-zA-Z0-9.]{5,50}$/.test(msgUser) && !msgUser.startsWith(".") && !msgUser.endsWith(".") && !msgUser.includes("..");
+    }
     default:
       return false;
   }
 }
 
-const contactErrorMessages: Record<string, string> = {
+export const contactErrorMessages: Record<string, string> = {
   WhatsApp:  "El contacto de WhatsApp debe ser un número de teléfono válido (8-15 dígitos, puede incluir + al inicio)",
-  Telegram:  "El contacto de Telegram debe empezar con @ seguido de 5-32 caracteres alfanuméricos o guiones bajos",
-  Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos; no puede empezar con punto ni tener dos puntos seguidos)",
-  Discord:   "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos)",
-  Facebook:  "El contacto de Facebook debe ser un username válido (5-50 caracteres) o una URL de facebook.com",
-  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres, letras y números)",
+  Telegram:  "El contacto de Telegram debe empezar con @ seguido de un username válido de 5-32 caracteres (comenzando con una letra)",
+  Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos; no puede empezar/terminar con punto ni tener dos puntos seguidos)",
+  Discord:   "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos; sin puntos consecutivos o formato legacy usuario#1234)",
+  Facebook:  "El contacto de Facebook debe ser un username válido (5-50 caracteres, sin guiones bajos) o una URL de facebook.com",
+  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres) o una URL de m.me / messenger.com",
 };
 
 // ─── User Schemas ──────────────────────────────

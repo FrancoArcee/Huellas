@@ -227,8 +227,16 @@ export async function uploadProfilePicture(
     const filename = `${crypto.randomUUID()}${ext}`;
     const filepath = path.join(uploadsDir, filename);
 
-    // Save the file from the memory buffer to disk
-    fs.writeFileSync(filepath, req.file.buffer);
+    try {
+      fs.renameSync(req.file.path, filepath);
+    } catch (err: any) {
+      if (err.code === "EXDEV") {
+        fs.copyFileSync(req.file.path, filepath);
+        fs.unlinkSync(req.file.path);
+      } else {
+        throw err;
+      }
+    }
 
     // Construct public URL
     const host = req.get("host");
