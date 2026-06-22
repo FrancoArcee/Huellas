@@ -4,72 +4,97 @@ Plataforma móvil para centralizar y facilitar la adopción de animales, conecta
 
 ## Estructura del monorepo
 
+El proyecto está estructurado como un monorepo gestionado con **npm workspaces**:
+
 ```
-Adopta/
-├── Mobile/     # App React Native con Expo (adoptantes y admin)
-├── Server/     # API REST con Node.js + Express
-└── Shared/     # Tipos TypeScript y utilidades compartidas
+Huellas/
+├── Mobile/     # App React Native con Expo
+├── Server/     # API REST construida con Node.js + Express
+└── Shared/     # Tipos TypeScript y esquemas de validación Zod compartidos entre frontend y backend
 ```
 
 ## Tecnologías principales
 
-| Capa   | Stack                                   |
-| ------ | --------------------------------------- |
-| Mobile | React Native, Expo, TypeScript, Zustand |
-| Server | Node.js, Express, TypeScript            |
-| Shared | TypeScript puro                         |
+| Capa | Stack tecnológico |
+| :--- | :--- |
+| **Mobile** | React Native, Expo (SDK 54), Expo Router, Zustand (gestión de estado), Axios, React Native Maps, Expo Location, Lucide React Native, Lottie React Native, Zod |
+| **Server** | Node.js, Express, TypeScript, Prisma ORM, Better-Auth (autenticación), PostgreSQL, Multer (subida de imágenes local) |
+| **Shared** | TypeScript puro, esquemas de validación Zod comunes |
+
+---
 
 ## Inicio rápido
 
-Para configurar y ejecutar el proyecto localmente en tu entorno de desarrollo:
+Seguí estos pasos para configurar y ejecutar el entorno de desarrollo local:
 
 ### 1. Requisitos previos
 
-Tener instalado:
+Asegurate de tener instalado:
 
 * [Node.js](https://nodejs.org/) (versión 18 o superior recomendada)
 * [npm](https://www.npmjs.com/) (incluido con Node.js)
-* Un emulador de Android (Android Studio), simulador de iOS (Xcode, solo macOS) o la aplicación **Expo Go** en tu dispositivo móvil para probar la app.
+* [Docker](https://www.docker.com/) y Docker Compose (para la base de datos)
+* Un emulador de Android (Android Studio), simulador de iOS (Xcode, solo macOS) o la aplicación **Expo Go** en tu dispositivo físico para probar la app.
 
-### 2. Instalación de dependencias
+### 2. Configuración de Variables de Entorno
 
-El proyecto utiliza **npm workspaces** para gestionar el monorepo. Podes instalar todas las dependencias (tanto de la raíz como de los subproyectos `Mobile`, `Server` y `Shared`) con un solo comando ejecutado desde la raíz del repositorio:
+Creá los archivos `.env` basándote en los ejemplos provistos:
+
+1. Copiá el archivo `.env.example` de la raíz a un nuevo archivo `.env` en la raíz.
+2. Copiá el archivo `Server/.env.example` a `Server/.env`.
+3. Verificá y configurá las variables según tu entorno local:
+   * `DATABASE_URL`: URL de conexión a la base de datos (por defecto apunta al contenedor PostgreSQL de Docker).
+   * `BETTER_AUTH_SECRET`: Clave secreta para la sesión y encriptación de Better Auth.
+   * `BETTER_AUTH_URL`: URL base del backend server (ej: `http://localhost:3000`).
+   * `EXPO_PUBLIC_API_URL`: URL del backend expuesta a la app móvil (ej: `http://localhost:3000` o la IP local de tu red si usás un dispositivo físico).
+
+### 3. Instalación de dependencias
+
+Instalá todas las dependencias del monorepo (raíz y subproyectos `Mobile`, `Server` y `Shared`) ejecutando desde la raíz:
 
 ```bash
 npm install
 ```
 
-### 3. Ejecución del proyecto
+### 4. Preparación de la base de datos
 
-Podés iniciar cada parte del proyecto de manera independiente utilizando los scripts definidos en la raíz:
+1. Levantá el servicio de PostgreSQL utilizando Docker Compose:
+   ```bash
+   docker compose up -d
+   ```
+2. Ejecutá las migraciones de Prisma para crear las tablas de base de datos e iniciar Better Auth:
+   ```bash
+   npm run prisma:migrate --workspace=@huellas/server
+   ```
+3. Generá el cliente de Prisma:
+   ```bash
+   npm run prisma:generate --workspace=@huellas/server
+   ```
+
+### 5. Ejecución del proyecto
+
+Podés iniciar el backend y la app móvil de forma independiente desde la raíz del monorepo:
+
+#### Iniciar el Servidor Backend (Node.js + Express)
+```bash
+npm run server
+```
+El servidor se ejecutará por defecto en el puerto `3000`.
 
 #### Iniciar la Aplicación Móvil (React Native + Expo)
-
-Para iniciar el servidor de desarrollo de Expo, ejecuta:
-
 ```bash
 npm run mobile
 ```
+Una vez que Expo inicie en tu terminal, podés:
+* Escanear el código QR con la cámara (iOS) o la app **Expo Go** (Android) para correrla en tu celular físico (asegurate de configurar `EXPO_PUBLIC_API_URL` con la IP local de tu computadora en lugar de `localhost`).
+* Presionar **`a`** para iniciar en un emulador de Android.
+* Presionar **`i`** para iniciar en un simulador de iOS.
+* Presionar **`w`** para correr la versión web en tu navegador.
 
-Una vez que Expo se esté ejecutando en la terminal, podés:
-
-* Escanear el código QR con la cámara (iOS) o con la app **Expo Go** (Android) para correr la app directamente en tu dispositivo físico.
-* Presionar **`a`** para abrir en un emulador de Android.
-* Presionar **`i`** para abrir en un simulador de iOS.
-* Presionar **`w`** para abrir la versión web en tu navegador.
+---
 
 ## Autocompletado de direcciones
 
-La app consulta la API oficial y gratuita **Georef Argentina** desde el backend.
-No requiere API key ni una cuenta de facturación.
-
-Para preparar la base de datos, aplicá las migraciones y regenerá Prisma:
-
-```bash
-npm run prisma:migrate --workspace=@huellas/server
-npm run prisma:generate --workspace=@huellas/server
-```
-
-El autocompletado está restringido a Argentina. Combina direcciones y
-localidades; cuando Georef no cuenta con el punto exacto de una calle, utiliza
-el centroide oficial de la localidad y lo indica como ubicación aproximada.
+La plataforma cuenta con integración en el backend para realizar autocompletado de direcciones consultando la API oficial y gratuita de **Georef Argentina**.
+* No requiere API key ni configuración de cuentas de facturación externas.
+* El autocompletado está restringido a Argentina y combina nombres de calles y localidades. Cuando no se cuenta con el punto exacto de la altura, Georef ubica el centroide oficial de la localidad para referenciar la publicación de manera aproximada.
