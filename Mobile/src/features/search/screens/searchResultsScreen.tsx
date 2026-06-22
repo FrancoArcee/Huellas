@@ -14,7 +14,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
 import Svg, { Circle, Polygon, Path, G, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
-import { FilterBottomSheet } from '../../home/components/FilterBottomSheet';
+import {
+    FilterBottomSheet,
+    type FilterValues,
+} from '../../home/components/FilterBottomSheet';
 import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
 import { theme } from '../../../theme';
 import { AnimalDTO } from '../schemas/animalSchema';
@@ -91,6 +94,13 @@ const getParamValue = (value: string | string[] | undefined) => {
     return value ?? '';
 };
 
+const getNumericParam = (value: string | string[] | undefined): number | undefined => {
+    const raw = getParamValue(value);
+    if (!raw) return undefined;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : undefined;
+};
+
 const buildFilters = (params: FetchAnimalsParams): FilterOption[] => {
     const filters: FilterOption[] = [];
     if (params.category) filters.push({ id: 'category', label: categoryLabels[params.category] ?? params.category });
@@ -123,6 +133,9 @@ export function SearchResultsScreen() {
         category?: string;
         size?: string;
         location?: string;
+        latitude?: string;
+        longitude?: string;
+        radius?: string;
         layout?: string;
     }>();
 
@@ -130,13 +143,27 @@ export function SearchResultsScreen() {
     const initialCategory = getParamValue(params.category);
     const initialSize = getParamValue(params.size);
     const initialLocation = getParamValue(params.location);
+    const initialLatitude = getNumericParam(params.latitude);
+    const initialLongitude = getNumericParam(params.longitude);
+    const initialRadius = getNumericParam(params.radius);
     const initialLayout = getParamValue(params.layout);
     const initialFetchParams = useMemo<FetchAnimalsParams>(() => ({
         search: initialSearch,
         category: initialCategory,
         size: initialSize,
         location: initialLocation,
-    }), [initialCategory, initialLocation, initialSearch, initialSize]);
+        ...(initialLatitude !== undefined ? { latitude: initialLatitude } : {}),
+        ...(initialLongitude !== undefined ? { longitude: initialLongitude } : {}),
+        ...(initialRadius !== undefined ? { radius: initialRadius } : {}),
+    }), [
+        initialCategory,
+        initialLatitude,
+        initialLocation,
+        initialLongitude,
+        initialRadius,
+        initialSearch,
+        initialSize,
+    ]);
 
     const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
     const [searchText, setSearchText] = useState(initialSearch);
@@ -225,15 +252,32 @@ export function SearchResultsScreen() {
     };
 
     const handleRemoveFilter = (filterId: string) => {
-        setFetchParams((current) => ({ ...current, [filterId]: undefined }));
+        setFetchParams((current) => {
+            if (filterId === 'location') {
+                const {
+                    location: _location,
+                    latitude: _latitude,
+                    longitude: _longitude,
+                    radius: _radius,
+                    ...rest
+                } = current;
+                return rest;
+            }
+            return { ...current, [filterId]: undefined };
+        });
     };
 
-    const handleApplyFilters = (values: { category: string; size: string; location: string }) => {
+    const handleApplyFilters = (values: FilterValues) => {
         const nextParams: FetchAnimalsParams = {
             search: searchText,
             category: values.category,
             location: values.location,
             size: values.size,
+            ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
+            ...(values.longitude !== undefined ? { longitude: values.longitude } : {}),
+            ...(values.latitude !== undefined && values.longitude !== undefined
+                ? { radius: values.radius }
+                : {}),
         };
         setLayoutMode('map');
         setSelectedAnimal(null);
@@ -295,6 +339,13 @@ export function SearchResultsScreen() {
                 category: fetchParams.category ?? '',
                 size: fetchParams.size ?? '',
                 location: fetchParams.location ?? '',
+                radius: fetchParams.radius ?? 25,
+                ...(fetchParams.latitude !== undefined
+                    ? { latitude: fetchParams.latitude }
+                    : {}),
+                ...(fetchParams.longitude !== undefined
+                    ? { longitude: fetchParams.longitude }
+                    : {}),
             }}
         />
     );

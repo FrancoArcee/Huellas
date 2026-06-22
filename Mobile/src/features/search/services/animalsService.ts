@@ -12,12 +12,16 @@ export interface FetchAnimalsParams {
   latitude?: number;
   longitude?: number;
   location?: string;
+  radius?: number;
 }
 
 export async function fetchAnimals(params: FetchAnimalsParams): Promise<AnimalDTO[]> {
+  const normalizedParams = params.latitude !== undefined && params.longitude !== undefined
+    ? { ...params, location: undefined }
+    : params;
   const queryParams = Object.fromEntries(
     Object.entries({
-      ...params,
+      ...normalizedParams,
       q: params.search,
       search: undefined,
     }).filter(([, value]) => value !== undefined && value !== ''),

@@ -35,3 +35,14 @@ export const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+export const georefLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 40,
+  message: {
+    success: false,
+    message: "Too many location searches. Please try again shortly.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

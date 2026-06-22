@@ -18,7 +18,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Huellas usa tu ubicación para encontrar mascotas cercanas y completar direcciones."
+        }
+      ]
     ]
   }
 }

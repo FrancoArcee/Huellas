@@ -89,10 +89,13 @@ model Post {
   weight      Float
   size        String                        // "small" | "medium" | "large"
   category    String                        // "dog" | "cat" | etc.
+  gender      String                        // "male" | "female"
+  neutered    Boolean
   // ── Geolocalización ──
   latitude    Float
   longitude   Float
   location    String                        // Descripción textual (ej: "Parque Centenario, CABA")
+  placeId     String?
   // ── Opcionales ──
   birthDate   DateTime?
   description String?
