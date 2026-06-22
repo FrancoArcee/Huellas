@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   ImageBackground,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -15,8 +17,13 @@ import ChevronBackSvg from '../../../assets/icons/buttons/chevronBack.svg';
 import LikeIcon from '../../../assets/icons/like.svg';
 import LocationSvg from '../../../assets/icons/location.svg';
 import WhatsAppSvg from '../../../assets/icons/socialNetwork/whatsapp.svg';
-import { useWhatsApp } from '../../../shared/hooks/useWhatsApp';
+import TelegramSvg from '../../../assets/icons/socialNetwork/telegram.svg';
+import InstagramSvg from '../../../assets/icons/socialNetwork/instagram.svg';
+import DiscordSvg from '../../../assets/icons/socialNetwork/discord.svg';
+import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
+import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { useAuthStore } from '../../../shared/store/authStore';
+import { openContactApp } from '../../../shared/utils/contact-apps';
 import { animalService, type AnimalPost } from '../services/animalService';
 
 const roundedFont = Platform.select({
@@ -47,11 +54,20 @@ function getOwnerInitials(name: string): string {
     .slice(0, 2);
 }
 
+const contactIcons = {
+  WhatsApp: WhatsAppSvg,
+  Telegram: TelegramSvg,
+  Instagram: InstagramSvg,
+  Discord: DiscordSvg,
+  Facebook: FacebookSvg,
+  Messenger: MessengerSvg,
+};
+
 export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const router = useRouter();
+  const { width: windowWidth } = useWindowDimensions();
   const { id } = useLocalSearchParams<{ id?: string | string[] }>();
   const { user } = useAuthStore();
-  const { openWhatsApp } = useWhatsApp();
 
   const animalId = Array.isArray(id) ? id[0] : id;
 
@@ -62,7 +78,9 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const [contacting, setContacting] = useState(false);
   const [backHovered, setBackHovered] = useState(false);
   const [likeHovered, setLikeHovered] = useState(false);
-  const [whatsappHovered, setWhatsappHovered] = useState(false);
+  const [contactHovered, setContactHovered] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const [heroWidth, setHeroWidth] = useState(windowWidth);
 
   const isOwner = user != null && post != null && user.id === post.userId;
   const liked = favoriteId !== null;
@@ -77,6 +95,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
           user ? animalService.checkFavorite(animalId) : Promise.resolve(null),
         ]);
         setPost(postData);
+        setActivePhotoIndex(0);
         setFavoriteId(favData?.id ?? null);
       } catch (err) {
         console.error('Error cargando detalle del animal:', err);
@@ -99,7 +118,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
     document.head.appendChild(link);
   }, []);
 
-  const whatsappMessage = useMemo(
+  const contactMessage = useMemo(
     () => (post ? `Hola, vi a ${post.name} en Huellas y quisiera consultar por su adopción.` : ''),
     [post],
   );
@@ -126,10 +145,24 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
     if (!post) return;
     try {
       setContacting(true);
-      await openWhatsApp({
-        phoneNumber: post.user.contact,
-        message: whatsappMessage,
+      const opened = await openContactApp({
+        contact: post.user.contact,
+        contactType: post.user.contactType,
+        message: contactMessage,
       });
+
+      if (!opened) {
+        Alert.alert(
+          'Contacto por Discord',
+          `El usuario de Discord es ${post.user.contact}. Todavía no podemos abrir directamente este perfil.`,
+        );
+      }
+    } catch (error) {
+      console.error(`Error al abrir ${post.user.contactType}:`, error);
+      Alert.alert(
+        'No se pudo abrir la aplicación',
+        `Revisá que ${post.user.contactType} esté disponible en tu dispositivo.`,
+      );
     } finally {
       setContacting(false);
     }
@@ -152,9 +185,10 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   }
 
   const ownerInitials = getOwnerInitials(post.user.name);
-  const imageUrl = post.photosUrl?.[0] ?? '';
+  const photos = post.photosUrl?.length ? post.photosUrl : [''];
   const weightLabel = `${post.weight} Kg`;
   const ageLabel = `${post.age} ${post.age === 1 ? 'año' : 'años'}`;
+  const ContactIcon = contactIcons[post.user.contactType];
 
   return (
     <View style={styles.screen}>
@@ -164,12 +198,34 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <ImageBackground
-            source={{ uri: imageUrl }}
+          <View
             style={styles.hero}
-            imageStyle={styles.heroImage}
-            resizeMode="cover"
+            onLayout={({ nativeEvent }) => setHeroWidth(nativeEvent.layout.width)}
           >
+            <ScrollView
+              horizontal
+              pagingEnabled
+              bounces={false}
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={({ nativeEvent }) => {
+                if (heroWidth <= 0) return;
+                const nextIndex = Math.round(nativeEvent.contentOffset.x / heroWidth);
+                const boundedIndex = Math.max(0, Math.min(nextIndex, photos.length - 1));
+                setActivePhotoIndex(boundedIndex);
+              }}
+            >
+              {photos.map((photoUrl, index) => (
+                <ImageBackground
+                  key={`${photoUrl}-${index}`}
+                  source={{ uri: photoUrl }}
+                  style={[styles.hero, { width: heroWidth }]}
+                  imageStyle={styles.heroImage}
+                  resizeMode="cover"
+                />
+              ))}
+            </ScrollView>
+
             <View style={[styles.heroActions, { paddingTop: Math.max(topInset + 14, 42) }]}>
               <Pressable
                 accessibilityRole="button"
@@ -210,7 +266,21 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 </Pressable>
               )}
             </View>
-          </ImageBackground>
+
+            {photos.length > 1 ? (
+              <View style={styles.pagination} pointerEvents="none">
+                {photos.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.paginationDot,
+                      index === activePhotoIndex && styles.paginationDotActive,
+                    ]}
+                  />
+                ))}
+              </View>
+            ) : null}
+          </View>
 
           <View style={styles.body}>
             <View style={styles.titleCard}>
@@ -266,19 +336,19 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 {!isOwner && (
                   <Pressable
                     accessibilityRole="button"
-                    accessibilityLabel={`Contactar por WhatsApp a ${post.user.name}`}
+                    accessibilityLabel={`Contactar por ${post.user.contactType} a ${post.user.name}`}
                     accessibilityState={{ disabled: contacting }}
                     disabled={contacting}
                     onPress={handleContact}
-                    onHoverIn={() => setWhatsappHovered(true)}
-                    onHoverOut={() => setWhatsappHovered(false)}
+                    onHoverIn={() => setContactHovered(true)}
+                    onHoverOut={() => setContactHovered(false)}
                     style={({ pressed }) => [
-                      styles.whatsappButton,
-                      (pressed || whatsappHovered) && !contacting && styles.whatsappButtonActive,
-                      contacting && styles.whatsappButtonDisabled,
+                      styles.contactButton,
+                      (pressed || contactHovered) && !contacting && styles.contactButtonActive,
+                      contacting && styles.contactButtonDisabled,
                     ]}
                   >
-                    <WhatsAppSvg width={44} height={44} />
+                    <ContactIcon width={44} height={44} />
                   </Pressable>
                 )}
               </View>
@@ -323,9 +393,34 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   heroActions: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 27,
+  },
+  pagination: {
+    position: 'absolute',
+    bottom: 16,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  paginationDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.55)',
+  },
+  paginationDotActive: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: theme.colors.white,
   },
   iconButton: {
     width: 39,
@@ -493,18 +588,18 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 25,
   },
-  whatsappButton: {
+  contactButton: {
     width: 48,
     height: 48,
     borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  whatsappButtonActive: {
+  contactButtonActive: {
     transform: [{ scale: 0.94 }],
     opacity: 0.88,
   },
-  whatsappButtonDisabled: {
+  contactButtonDisabled: {
     opacity: 0.45,
   },
 });
