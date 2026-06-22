@@ -3,6 +3,9 @@
 // ───────────────────────────────────────────────
 
 import type { Request, Response, NextFunction } from "express";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 import { createUserSchema, updateUserSchema } from "@huellas/shared";
 import { auth } from "../../../config/auth";
 import { userService, UserNotFoundError, ForbiddenError, ContactAlreadyInUseError } from "../service/user.service";
@@ -194,6 +197,57 @@ export async function deleteUser(
       res.status(403).json({ success: false, message: error.message });
       return;
     }
+    next(error);
+  }
+}
+
+/**
+ * POST /users/upload
+ * Public endpoint to upload a profile picture.
+ */
+export async function uploadProfilePicture(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    if (!req.file) {
+      res.status(400).json({ success: false, message: "No file uploaded" });
+      return;
+    }
+
+    // Ensure uploads/user directory exists
+    const uploadsDir = path.join(process.cwd(), "uploads", "user");
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    // Generate unique filename using uuid
+    const ext = path.extname(req.file.originalname) || ".jpg";
+    const filename = `${crypto.randomUUID()}${ext}`;
+    const filepath = path.join(uploadsDir, filename);
+
+    try {
+      fs.renameSync(req.file.path, filepath);
+    } catch (err: any) {
+      if (err.code === "EXDEV") {
+        fs.copyFileSync(req.file.path, filepath);
+        fs.unlinkSync(req.file.path);
+      } else {
+        throw err;
+      }
+    }
+
+    // Construct public URL
+    const host = req.get("host");
+    const protocol = req.protocol;
+    const fileUrl = `${protocol}://${host}/uploads/user/${filename}`;
+
+    res.status(200).json({
+      success: true,
+      url: fileUrl,
+    });
+  } catch (error) {
     next(error);
   }
 }

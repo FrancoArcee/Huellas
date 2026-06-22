@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ImageBackground,
   Platform,
   Pressable,
@@ -24,6 +25,7 @@ import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
 import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { openContactApp } from '../../../shared/utils/contact-apps';
+import { translateCategory, translateGender, translateSize } from '../../../shared/utils/translations';
 import { animalService, type AnimalPost } from '../services/animalService';
 
 const roundedFont = Platform.select({
@@ -81,6 +83,8 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const [contactHovered, setContactHovered] = useState(false);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [heroWidth, setHeroWidth] = useState(windowWidth);
+  const [imageError, setImageError] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const isOwner = user != null && post != null && user.id === post.userId;
   const liked = favoriteId !== null;
@@ -96,6 +100,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
         ]);
         setPost(postData);
         setActivePhotoIndex(0);
+        setImageError(false);
         setFavoriteId(favData?.id ?? null);
       } catch (err) {
         console.error('Error cargando detalle del animal:', err);
@@ -288,19 +293,19 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 {post.name}
               </CustomText>
               <CustomText variant="p" style={styles.subtitle}>
-                {post.category} · {ageLabel}
+                {translateCategory(post.category)} · {ageLabel}
               </CustomText>
             </View>
 
             <View style={styles.tagsRow}>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{post.gender}</CustomText>
+                <CustomText style={styles.tagText}>{translateGender(post.gender)}</CustomText>
               </View>
               <View style={styles.tag}>
                 <CustomText style={styles.tagText}>{weightLabel}</CustomText>
               </View>
               <View style={styles.tag}>
-                <CustomText style={styles.tagText}>{post.size}</CustomText>
+                <CustomText style={styles.tagText}>{translateSize(post.size)}</CustomText>
               </View>
             </View>
 
@@ -309,8 +314,20 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 Sobre {post.name}
               </CustomText>
               <CustomText variant="p" style={styles.description}>
-                {post.description}
+                {post.description && post.description.length > 180 && !isExpanded
+                  ? `${post.description.slice(0, 180)}...`
+                  : post.description}
               </CustomText>
+              {post.description && post.description.length > 180 && (
+                <Pressable
+                  onPress={() => setIsExpanded(!isExpanded)}
+                  style={styles.readMoreButton}
+                >
+                  <CustomText style={styles.readMoreText}>
+                    {isExpanded ? 'Ver menos' : 'Ver más'}
+                  </CustomText>
+                </Pressable>
+              )}
             </View>
 
             {post.location ? (
@@ -321,40 +338,48 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 </CustomText>
               </View>
             ) : null}
-
-            <View style={styles.footerWrap}>
-              <View style={styles.footer}>
-                <View style={styles.avatar}>
-                  <CustomText style={styles.avatarText}>{ownerInitials}</CustomText>
-                </View>
-                <CustomText variant="p" style={styles.ownerName} numberOfLines={1}>
-                  {post.user.name}
-                </CustomText>
-                <CustomText variant="p" style={styles.ownerRole}>
-                  Dueño
-                </CustomText>
-                {!isOwner && (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Contactar por ${post.user.contactType} a ${post.user.name}`}
-                    accessibilityState={{ disabled: contacting }}
-                    disabled={contacting}
-                    onPress={handleContact}
-                    onHoverIn={() => setContactHovered(true)}
-                    onHoverOut={() => setContactHovered(false)}
-                    style={({ pressed }) => [
-                      styles.contactButton,
-                      (pressed || contactHovered) && !contacting && styles.contactButtonActive,
-                      contacting && styles.contactButtonDisabled,
-                    ]}
-                  >
-                    <ContactIcon width={44} height={44} />
-                  </Pressable>
-                )}
-              </View>
-            </View>
           </View>
         </ScrollView>
+
+        <View style={styles.footerWrap}>
+          <View style={styles.footer}>
+            {post.user.profilePictureUrl || post.user.image ? (
+              <Image
+                source={{ uri: post.user.profilePictureUrl || post.user.image! }}
+                style={styles.avatar}
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <View style={styles.avatar}>
+                <CustomText style={styles.avatarText}>{ownerInitials}</CustomText>
+              </View>
+            )}
+            <CustomText variant="p" style={styles.ownerName} numberOfLines={1}>
+              {post.user.name}
+            </CustomText>
+            <CustomText variant="p" style={styles.ownerRole}>
+              Dueño
+            </CustomText>
+            {!isOwner && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Contactar por ${post.user.contactType} a ${post.user.name}`}
+                accessibilityState={{ disabled: contacting }}
+                disabled={contacting}
+                onPress={handleContact}
+                onHoverIn={() => setContactHovered(true)}
+                onHoverOut={() => setContactHovered(false)}
+                style={({ pressed }) => [
+                  styles.contactButton,
+                  (pressed || contactHovered) && !contacting && styles.contactButtonActive,
+                  contacting && styles.contactButtonDisabled,
+                ]}
+              >
+                <ContactIcon width={44} height={44} />
+              </Pressable>
+            )}
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -382,7 +407,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 28,
+    paddingBottom: 110,
   },
   hero: {
     width: '100%',
@@ -403,23 +428,25 @@ const styles = StyleSheet.create({
   },
   pagination: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 44,
     left: 0,
     right: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 6,
+    gap: 8,
+    zIndex: 10,
+    elevation: 5,
   },
   paginationDot: {
-    width: 6,
+    width: 12,
     height: 6,
     borderRadius: 3,
     backgroundColor: 'rgba(255, 255, 255, 0.55)',
   },
   paginationDotActive: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 28,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: theme.colors.white,
   },
   iconButton: {
@@ -535,9 +562,23 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   footerWrap: {
+    position: 'absolute',
+    bottom: 24,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    marginTop: 18,
-    paddingHorizontal: 16,
+    zIndex: 20,
+    elevation: 6,
+  },
+  readMoreButton: {
+    marginTop: 6,
+    alignSelf: 'flex-start',
+  },
+  readMoreText: {
+    color: '#9B8EF2',
+    fontFamily: roundedBold,
+    fontSize: 16,
+    fontWeight: '800',
   },
   footer: {
     width: '90%',

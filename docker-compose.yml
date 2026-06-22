@@ -46,6 +46,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
+      - ./Server/uploads:/app/Server/uploads
       - animal_uploads:/app/Server/uploads/animal
     command: >
       sh -c "npx prisma migrate deploy && node dist/server.js"

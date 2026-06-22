@@ -8,6 +8,7 @@ export const backendAnimalSchema = z.object({
   size: z.string().optional(),
   age: z.number().optional(),
   weight: z.number().optional(),
+  gender: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   location: z.string().optional(),
@@ -30,6 +31,7 @@ export const animalSchema = z.object({
   weightKg: z.number(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  userId: z.string().optional(),
 });
 
 export type AnimalDTO = z.infer<typeof animalSchema>;
@@ -41,9 +43,10 @@ export const mapBackendAnimalToDTO = (backend: BackendAnimalDTO): AnimalDTO => (
   photoUri: backend.photosUrl[0] || '',
   distanceKm: 0,
   type: backend.category,
-  gender: '',
+  gender: backend.gender || '',
   age: backend.age ? `${backend.age} años` : '',
   weightKg: backend.weight || 0,
   latitude: backend.latitude,
   longitude: backend.longitude,
+  userId: backend.userId,
 });

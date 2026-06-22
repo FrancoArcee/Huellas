@@ -7,6 +7,7 @@ import { animalService } from '../../src/features/animals/services/animalService
 import { useAuthStore } from '../../src/shared/store/authStore';
 import { storage } from '../../src/shared/services/storage';
 import { getDistanceKm } from '../../src/shared/utils/distance';
+import { translateCategory, translateGender, formatAge, formatDistance } from '../../src/shared/utils/translations';
 import { theme } from '../../src/theme';
 
 export default function FavoritesRoute() {
@@ -113,15 +114,13 @@ export default function FavoritesRoute() {
                     pet.latitude,
                     pet.longitude
                   );
-                  distanceText = dist < 1
-                    ? `${Math.round(dist * 1000)} m`
-                    : `${dist.toFixed(1)} km`;
+                  distanceText = formatDistance(dist);
                 }
 
-                const petType = pet.category === 'dog' ? 'Perro' : pet.category === 'cat' ? 'Gato' : 'Otro';
-                const petGender = pet.gender || 'Macho';
-                const petAge = pet.age ? `${pet.age} ${pet.age === 1 ? 'año' : 'años'}` : '';
-                const details = `${petType} · ${petGender} · ${petAge}`;
+                const petType = translateCategory(pet.category);
+                const petGender = translateGender(pet.gender);
+                const petAge = formatAge(pet.age);
+                const details = [petType, petGender, petAge].filter(Boolean).join(' · ');
 
                 const imageSource = pet.photosUrl?.[0] || '';
 

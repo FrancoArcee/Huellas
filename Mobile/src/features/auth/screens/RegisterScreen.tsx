@@ -23,7 +23,7 @@ import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
 import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '../../../shared/store/authStore';
-import { validateContactByType } from '@huellas/shared';
+import { validateContactByType, contactErrorMessages } from '@huellas/shared';
 import { registerSchema } from '../validations/schemas';
 import { User, Mail, Lock, MessageSquare } from 'lucide-react-native';
 
@@ -45,14 +45,6 @@ const PLATFORM_INPUT_CONFIG: Record<string, { label: string; placeholder: string
   Messenger: { label: 'Usuario de Messenger', placeholder: 'usuario' },
 };
 
-const contactErrorMessages: Record<string, string> = {
-  WhatsApp: "El contacto de WhatsApp debe ser un número de teléfono válido (8-15 dígitos, puede incluir + al inicio)",
-  Telegram: "El contacto de Telegram debe empezar con @ seguido de 5-32 caracteres alfanuméricos o guiones bajos",
-  Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos; no puede empezar con punto ni tener dos puntos seguidos)",
-  Discord: "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos)",
-  Facebook: "El contacto de Facebook debe ser un username válido (5-50 caracteres) o una URL de facebook.com",
-  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres, letras y números)",
-};
 
 export const RegisterScreen = () => {
   const router = useRouter();
