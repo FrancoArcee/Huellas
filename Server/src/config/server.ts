@@ -16,6 +16,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads/user", express.static(path.join(process.cwd(), "uploads/user")));
 app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 app.use("/api/auth", toNodeHandler(auth));
 app.use("/locations", locationRoutes);

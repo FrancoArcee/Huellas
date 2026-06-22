@@ -1,53 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
+  Image,
+  Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
+import { useAuthStore } from '../../../shared/store/authStore';
+import { api } from '../../../shared/services/api';
 import ProfileSvg from '../../../assets/icons/screens/profile.svg';
 import PencilSvg from '../../../assets/icons/buttons/pencil.svg';
 import LogoutSvg from '../../../assets/icons/buttons/logout.svg';
 import WhatsAppSvg from '../../../assets/icons/socialNetwork/whatsapp.svg';
+import TelegramSvg from '../../../assets/icons/socialNetwork/telegram.svg';
+import InstagramSvg from '../../../assets/icons/socialNetwork/instagram.svg';
+import DiscordSvg from '../../../assets/icons/socialNetwork/discord.svg';
+import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
+import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 
-// Mock de datos del usuario
-const MOCK_USER = {
-  name: 'Carlos',
-  lastName: 'Rodriguez',
-  email: 'carlos@gmail.com',
-  whatsapp: '+54 221 555 -1234',
+const CONTACT_ICONS: Record<string, React.FC<any>> = {
+  WhatsApp: WhatsAppSvg,
+  Telegram: TelegramSvg,
+  Instagram: InstagramSvg,
+  Discord: DiscordSvg,
+  Facebook: FacebookSvg,
+  Messenger: MessengerSvg,
 };
 
 export const ProfileScreen = () => {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { user: authUser, logout: authLogout } = useAuthStore();
 
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const handleLogout = () => {
+  const fetchUserData = useCallback(async () => {
+    if (!authUser?.id) return;
+    try {
+      setLoading(true);
+      const res = await api.get(`/users/${authUser.id}`);
+      setUserData(res.data.data);
+    } catch (err) {
+      console.error('Error fetching user profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [authUser?.id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [fetchUserData])
+  );
+
+  const handleLogout = async () => {
     setShowLogoutModal(false);
-    router.replace('/(auth)/login');
+    try {
+      await authLogout();
+      router.replace('/(auth)/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      Alert.alert('Error', 'Ocurrió un error al cerrar sesión.');
+    }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     setShowDeleteModal(false);
-    router.replace('/(auth)/login');
+    if (!authUser?.id) return;
+    try {
+      setLoading(true);
+      await api.delete(`/users/${authUser.id}`);
+      await authLogout();
+      router.replace('/(auth)/login');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      Alert.alert('Error', 'No se pudo eliminar la cuenta. Inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading && !userData) {
+    return (
+      <View style={[styles.screen, styles.center]}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
+  }
+
+  const userDisplayName = userData?.name || authUser?.name || '';
+  const ContactIcon = userData?.contactType ? CONTACT_ICONS[userData.contactType] : null;
 
   return (
     <View style={styles.screen}>
       {/* Header naranja con avatar */}
       <View style={[styles.header, { paddingTop: insets.top + theme.spacing['3xl'] }]}>
         <View style={styles.avatarContainer}>
-          <ProfileSvg width={78} height={78} color={theme.colors.primary} />
+          {userData?.profilePictureUrl ? (
+            <Image
+              source={{ uri: userData.profilePictureUrl }}
+              style={styles.avatarImage}
+            />
+          ) : (
+            <ProfileSvg width={78} height={78} color={theme.colors.primary} />
+          )}
         </View>
         <CustomText variant="h3" style={styles.headerName}>
-          {MOCK_USER.name} {MOCK_USER.lastName}
+          {userDisplayName}
         </CustomText>
       </View>
 
@@ -66,7 +134,7 @@ export const ProfileScreen = () => {
               Nombre y apellido
             </CustomText>
             <CustomText variant="body" style={styles.fieldValue}>
-              {MOCK_USER.name} {MOCK_USER.lastName}
+              {userDisplayName}
             </CustomText>
             <View style={styles.separator} />
           </View>
@@ -76,19 +144,19 @@ export const ProfileScreen = () => {
               Correo electrónico
             </CustomText>
             <CustomText variant="body" style={styles.fieldValue}>
-              {MOCK_USER.email}
+              {userData?.email || authUser?.email || ''}
             </CustomText>
             <View style={styles.separator} />
           </View>
 
           <View style={[styles.dataField, styles.dataFieldLast]}>
             <CustomText variant="caption" style={styles.fieldLabel}>
-              WhatsApp
+              Contacto ({userData?.contactType || ''})
             </CustomText>
             <View style={styles.whatsappRow}>
-              <WhatsAppSvg width={28} height={28} style={styles.whatsappIcon} />
+              {ContactIcon && <ContactIcon width={28} height={28} style={styles.whatsappIcon} />}
               <CustomText variant="body" style={styles.fieldValue}>
-                {MOCK_USER.whatsapp}
+                {userData?.contact || ''}
               </CustomText>
             </View>
           </View>
@@ -284,5 +352,14 @@ const styles = StyleSheet.create({
     fontFamily: theme.typography.fontFamily.semiBold,
     textAlign: 'center',
     fontSize: 14,
+  },
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarImage: {
+    width: 136,
+    height: 136,
+    borderRadius: 68,
   },
 });

@@ -4,11 +4,13 @@
 
 import { Router } from "express";
 import { requireAuth } from "../../../shared/middleware/authMiddleware";
+import { upload } from "../../../shared/middleware/uploadMiddleware";
 import {
   createUser,
   getUser,
   updateUser,
   deleteUser,
+  uploadProfilePicture,
 } from "../controller/user.controller";
 
 const router = Router();
@@ -21,6 +23,13 @@ const router = Router();
  * No authentication required.
  */
 router.post("/", createUser);
+
+/**
+ * POST /users/upload
+ * Upload a profile picture.
+ * No authentication required to allow upload during sign-up.
+ */
+router.post("/upload", upload.single("image"), uploadProfilePicture);
 
 // ─── Protected routes (require authentication) ─
 
