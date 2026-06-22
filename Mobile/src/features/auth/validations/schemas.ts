@@ -1,14 +1,5 @@
 import { z } from 'zod';
-import { contactTypeSchema, validateContactByType } from '@huellas/shared';
-
-const contactErrorMessages: Record<string, string> = {
-  WhatsApp: "El contacto de WhatsApp debe ser un número de teléfono válido (8-15 dígitos, puede incluir + al inicio)",
-  Telegram: "El contacto de Telegram debe empezar con @ seguido de 5-32 caracteres alfanuméricos o guiones bajos",
-  Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos)",
-  Discord: "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos)",
-  Facebook: "El contacto de Facebook debe ser un username válido (5-50 caracteres, letras y números, guiones bajos)",
-  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres, letras y números)",
-};
+import { contactTypeSchema, validateContactByType, contactErrorMessages } from '@huellas/shared';
 
 export const loginSchema = z.object({
   email: z

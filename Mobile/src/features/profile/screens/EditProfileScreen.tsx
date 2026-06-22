@@ -36,7 +36,7 @@ import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { api } from '../../../shared/services/api';
 import { storage } from '../../../shared/services/storage';
-import { updateUserSchema, validateContactByType } from '@huellas/shared';
+import { updateUserSchema, validateContactByType, contactErrorMessages } from '@huellas/shared';
 
 const COMMUNICATION_OPTIONS = [
   { label: 'WhatsApp', value: 'WhatsApp', icon: WhatsAppSvg },
@@ -56,14 +56,6 @@ const PLATFORM_INPUT_CONFIG: Record<string, { label: string; placeholder: string
   Messenger: { label: 'Usuario de Messenger', placeholder: 'usuario' },
 };
 
-const contactErrorMessages: Record<string, string> = {
-  WhatsApp: "El contacto de WhatsApp debe ser un número de teléfono válido (8-15 dígitos, puede incluir + al inicio)",
-  Telegram: "El contacto de Telegram debe empezar con @ seguido de 5-32 caracteres alfanuméricos o guiones bajos",
-  Instagram: "El contacto de Instagram debe ser un username válido (1-30 caracteres, letras, números, puntos y guiones bajos; no puede empezar con punto ni tener dos puntos seguidos)",
-  Discord: "El contacto de Discord debe ser un username válido (2-32 caracteres, letras, números, puntos y guiones bajos)",
-  Facebook: "El contacto de Facebook debe ser un username válido (5-50 caracteres) o una URL de facebook.com",
-  Messenger: "El contacto de Messenger debe ser un username válido (5-50 caracteres, letras y números)",
-};
 
 export const EditProfileScreen = () => {
   const router = useRouter();
