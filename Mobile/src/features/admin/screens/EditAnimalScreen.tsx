@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,11 +8,13 @@ import {
   ScrollView,
   StatusBar,
   Alert,
+  Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
+import { BirthDatePicker } from '../components/BirthDatePicker';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -25,6 +27,12 @@ import {
   type AnimalFormErrors,
   type AnimalFormField,
 } from '../utils/validateAnimalForm';
+
+type FotoItem =
+  | { tipo: 'existente'; url: string }
+  | { tipo: 'nueva'; uri: string; asset: ImagePicker.ImagePickerAsset };
+
+const MAX_FOTOS = 3;
 
 export default function EditAnimalScreen() {
   const router = useRouter();
@@ -46,8 +54,7 @@ export default function EditAnimalScreen() {
     longitude: null,
     placeId: undefined,
   });
-  const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
-  const [existingPhotosUrl, setExistingPhotosUrl] = useState<string[]>([]);
+  const [fotos, setFotos] = useState<FotoItem[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
@@ -73,7 +80,7 @@ export default function EditAnimalScreen() {
         longitude: pub.longitude === 0 ? null : pub.longitude,
         placeId: pub.placeId,
       });
-      setExistingPhotosUrl(pub.imagenes);
+      setFotos(pub.imagenes.map(url => ({ tipo: 'existente', url })));
     } else {
       Alert.alert('Error', 'Publicación no encontrada');
       router.back();
@@ -99,7 +106,9 @@ export default function EditAnimalScreen() {
     setStep(step + 1);
   };
 
-  const handlePickImages = async () => {
+  const agregarFoto = async () => {
+    if (fotos.length >= MAX_FOTOS) return;
+
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
@@ -107,21 +116,21 @@ export default function EditAnimalScreen() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       mediaTypes: ['images'],
       quality: 1,
-      selectionLimit: 3,
       preferredAssetRepresentationMode:
         ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
-    if (result.canceled) return;
 
-    const parsed = animalPhotosSchema.safeParse(result.assets);
-    setErrors((prev) => ({
-      ...prev,
-      imagenes: parsed.success ? undefined : parsed.error.issues[0]?.message,
-    }));
-    if (parsed.success) setImagenes(result.assets);
+    if (result.canceled || !result.assets[0]) return;
+
+    setFotos(prev => [...prev, { tipo: 'nueva', uri: result.assets[0].uri, asset: result.assets[0] }]);
+    setErrors(prev => ({ ...prev, imagenes: undefined }));
+  };
+
+  const eliminarFoto = (index: number) => {
+    setFotos(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async () => {
@@ -129,10 +138,21 @@ export default function EditAnimalScreen() {
     if (formData.latitude === null || formData.longitude === null) {
       formErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
     }
-    const photosResult = animalPhotosSchema.safeParse(imagenes);
+
+    const fotosNuevas = fotos
+      .filter(f => f.tipo === 'nueva')
+      .map(f => (f as { tipo: 'nueva'; uri: string; asset: ImagePicker.ImagePickerAsset }).asset);
+
+    const fotosExistentes = fotos
+      .filter(f => f.tipo === 'existente')
+      .map(f => (f as { tipo: 'existente'; url: string }).url);
+
+    const todosLosAssets = fotosNuevas;
+    const photosResult = animalPhotosSchema.safeParse(todosLosAssets.length > 0 ? todosLosAssets : fotosExistentes.map(url => ({ uri: url })));
     if (!photosResult.success) {
       formErrors.imagenes = photosResult.error.issues[0]?.message;
     }
+
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       return;
@@ -143,8 +163,8 @@ export default function EditAnimalScreen() {
       await editarPublicacion(
         id,
         formData,
-        imagenes,
-        imagenes.length > 0 ? [] : existingPhotosUrl,
+        fotosNuevas,
+        fotosExistentes,
       );
       Alert.alert('¡Éxito!', 'La Publicación fue actualizada correctamente.');
       router.back();
@@ -179,7 +199,7 @@ export default function EditAnimalScreen() {
             {renderError('nombre')}
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
-            <TextInput style={styles.input} value={formData.fechaNacimiento} onChangeText={(t) => updateForm('fechaNacimiento', t)} />
+            <BirthDatePicker value={formData.fechaNacimiento} onChange={(value) => updateForm('fechaNacimiento', value)} />
             {renderError('fechaNacimiento')}
 
             <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
@@ -304,10 +324,41 @@ export default function EditAnimalScreen() {
         {step === 3 && (
           <View style={styles.formContainer}>
             <Text style={styles.label}>Fotos</Text>
-            <TouchableOpacity style={styles.imageUploadArea} onPress={handlePickImages}>
-              <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
-              <Text style={styles.uploadTextBold}>Modificar imágenes</Text>
-            </TouchableOpacity>
+
+            <View style={styles.photoSection}>
+              {fotos.length > 0 && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.photoPreviewList}
+                >
+                  {fotos.map((foto, index) => (
+                    <View key={index} style={styles.photoPreviewWrapper}>
+                      <Image
+                        source={{ uri: foto.tipo === 'existente' ? foto.url : foto.uri }}
+                        resizeMode="cover"
+                        style={styles.photoPreview}
+                      />
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => eliminarFoto(index)}
+                      >
+                        <Text style={styles.deleteButtonText}>✕</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+
+              {fotos.length < MAX_FOTOS && (
+                <TouchableOpacity style={styles.addPhotoButton} onPress={agregarFoto}>
+                  <Text style={styles.addPhotoText}>
+                    + Agregar foto ({fotos.length}/{MAX_FOTOS})
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
             {renderError('imagenes')}
 
             <Text style={styles.label}>Descripción</Text>
@@ -331,6 +382,52 @@ export default function EditAnimalScreen() {
 
 
 export const styles = StyleSheet.create({
+  photoSection: {
+    marginTop: 4,
+  },
+  photoPreviewWrapper: {
+    position: 'relative',
+    marginRight: 8,
+  },
+  photoPreview: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: '#ff4444',
+    borderRadius: 12,
+    width: 22,
+    height: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  addPhotoButton: {
+    marginTop: 8,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  addPhotoText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  photoPreviewList: {
+    gap: 10,
+    paddingVertical: 4,
+  },
   container: { flex: 1, backgroundColor: '#f6f6f6' },
   scrollContent: { paddingHorizontal: 24, paddingBottom: 40 },
   screenTitle: { fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 32, color: '#000' },

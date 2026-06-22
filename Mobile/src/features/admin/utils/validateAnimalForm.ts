@@ -1,12 +1,8 @@
 import { z } from 'zod';
 
-const dateSchema = z.string().superRefine((value, ctx) => {
-  if (!value) return;
+function parseBirthDate(value: string): Date | null {
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
-  if (!match) {
-    ctx.addIssue({ code: 'custom', message: 'Formato inválido (DD/MM/YYYY)' });
-    return;
-  }
+  if (!match) return null;
 
   const day = Number(match[1]);
   const month = Number(match[2]);
@@ -17,14 +13,53 @@ const dateSchema = z.string().superRefine((value, ctx) => {
     date.getUTCMonth() === month - 1 &&
     date.getUTCDate() === day;
 
-  if (!isValid) {
-    ctx.addIssue({ code: 'custom', message: 'La fecha no es válida' });
+    return isValid ? date : null;
+}
+
+function calculateAge(birthDate: Date, today = new Date()): number {
+  const hadBirthdayThisYear =
+    today.getUTCMonth() > birthDate.getUTCMonth() ||
+    (
+      today.getUTCMonth() === birthDate.getUTCMonth() &&
+      today.getUTCDate() >= birthDate.getUTCDate()
+    );
+
+  return today.getUTCFullYear() - birthDate.getUTCFullYear() - (hadBirthdayThisYear ? 0 : 1);
+}
+
+function validateBirthDateAgeConsistency(
+  birthDateValue: string,
+  ageValue: string,
+): string | undefined {
+  if (!birthDateValue || !ageValue) return undefined;
+
+  const birthDate = parseBirthDate(birthDateValue);
+  if (!birthDate) return undefined;
+
+  const enteredAge = Number(ageValue);
+  if (Number.isNaN(enteredAge)) return undefined;
+
+  const expectedAge = calculateAge(birthDate);
+  return enteredAge === expectedAge
+    ? undefined
+    : `La edad debe coincidir con la fecha de nacimiento (${expectedAge} anios)`;
+}
+
+const dateSchema = z.string().superRefine((value, ctx) => {
+  if (!value) return;
+  const date = parseBirthDate(value);
+
+  if (!date) {
+    ctx.addIssue({ code: 'custom', message: 'La fecha no es valida' });
   } else if (date > new Date()) {
     ctx.addIssue({ code: 'custom', message: 'La fecha no puede ser futura' });
+  } else if (calculateAge(date) > 50) {
+    ctx.addIssue({ code: 'custom', message: 'La fecha no coincide con la edad maxima permitida' });
   }
 });
 
-export const animalFormSchema = z.object({
+
+const baseAnimalFormSchema = z.object({
   nombre: z
     .string()
     .trim()
@@ -35,8 +70,8 @@ export const animalFormSchema = z.object({
   edad: z
     .string()
     .min(1, 'La edad es obligatoria')
-    .regex(/^\d+$/, 'Debe ser un número entero')
-    .refine((value) => Number(value) <= 50, 'La edad no puede ser mayor a 50 años'),
+    .regex(/^\d+$/, 'Debe ser un numero entero')
+    .refine((value) => Number(value) <= 50, 'La edad no puede ser mayor a 50 anios'),
   tamano: z.enum(['Chico', 'Mediano', 'Grande'], {
     message: 'Seleccioná un tamaño válido',
   }),
@@ -61,6 +96,17 @@ export const animalFormSchema = z.object({
   descripcion: z
     .string()
     .max(1000, 'La descripción no puede superar los 1000 caracteres'),
+    });
+
+export const animalFormSchema = baseAnimalFormSchema.superRefine((data, ctx) => {
+  const consistencyError = validateBirthDateAgeConsistency(data.fechaNacimiento, data.edad);
+  if (consistencyError) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['edad'],
+      message: consistencyError,
+    });
+  }
 });
 
 export const animalPhotosSchema = z
@@ -84,7 +130,7 @@ export const animalPhotosSchema = z
     'Usá imágenes JPEG, PNG o WebP',
   );
 
-export type AnimalFormData = z.infer<typeof animalFormSchema>;
+export type AnimalFormData = z.infer<typeof baseAnimalFormSchema>;
 export type AnimalFormField = keyof AnimalFormData;
 export type AnimalFormErrors = Partial<Record<AnimalFormField | 'imagenes', string | undefined>>;
 export type AnimalFormValues = Record<AnimalFormField, string>;
@@ -99,7 +145,7 @@ export function validateField(
   key: AnimalFormField,
   value: string,
 ): string | undefined {
-  const result = animalFormSchema.shape[key].safeParse(value);
+  const result = baseAnimalFormSchema.shape[key].safeParse(value);
   return result.success ? undefined : result.error.issues[0]?.message;
 }
 
@@ -120,7 +166,10 @@ export function validateStep(
   step: number,
 ): AnimalFormErrors {
   if (step === 1) {
-    return validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
+        const errors = validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
+    const consistencyError = validateBirthDateAgeConsistency(formData.fechaNacimiento, formData.edad);
+    if (consistencyError) errors.edad = consistencyError;
+    return errors;
   }
   if (step === 2) {
     return validateFields(formData, ['ubicacion', 'peso', 'genero', 'castrado']);
