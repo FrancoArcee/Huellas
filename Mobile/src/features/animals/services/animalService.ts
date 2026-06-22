@@ -19,6 +19,7 @@ export interface AnimalPost {
     id: string;
     name: string;
     image: string | null;
+    profilePictureUrl?: string | null;
     contact: string;
     contactType: ContactTypeValues;
   };
