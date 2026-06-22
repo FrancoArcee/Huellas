@@ -6,9 +6,12 @@ import { api } from '../../../shared/services/api';
 import { animalService } from '../../animals/services/animalService';
 import { getDistanceKm } from '../../../shared/utils/distance';
 import * as Location from 'expo-location';
+import { useAuthStore } from '../../../shared/store/authStore';
 
 export const useHomeData = () => {
   const router = useRouter();
+  const { user } = useAuthStore();
+  const userId = user?.id;
   const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
   const [locationState, setLocationState] = useState<'loading' | 'granted' | 'denied'>('loading');
   const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -201,16 +204,50 @@ export const useHomeData = () => {
       }
     } catch (error: any) {
       console.warn('Error toggling favorite:', error.response?.data || error.message);
-      setAnimals(prev =>
-        prev.map(a => {
-          if (a.id === animalId) {
-            return { ...a, isFavorite: wasFavorite };
-          }
-          return a;
-        })
-      );
+      
+      const isAlreadyDeleted = wasFavorite && (error.response?.status === 404 || error.response?.data?.error === "NOT_FOUND");
+
+      if (!isAlreadyDeleted) {
+        setAnimals(prev =>
+          prev.map(a => {
+            if (a.id === animalId) {
+              return { ...a, isFavorite: wasFavorite };
+            }
+            return a;
+          })
+        );
+      } else {
+        // Si ya fue eliminado en el servidor, limpiamos el estado local
+        setFavoriteIds(prev => {
+          const next = { ...prev };
+          delete next[animalId];
+          return next;
+        });
+      }
     }
   };
+
+  const syncFavorites = useCallback(async () => {
+    if (!userId || animals.length === 0) return;
+
+    try {
+      const userFavs = await animalService.getUserFavorites(userId);
+      const favMap: Record<string, string> = {};
+      (userFavs || []).forEach((fav: any) => {
+        favMap[fav.id] = fav.favoriteId;
+      });
+
+      setFavoriteIds(favMap);
+      setAnimals(prev =>
+        prev.map(a => ({
+          ...a,
+          isFavorite: !!favMap[a.id]
+        }))
+      );
+    } catch (error) {
+      console.warn('Error syncing favorites on focus:', error);
+    }
+  }, [userId, animals.length]);
 
   return {
     isFilterSheetVisible,
@@ -225,5 +262,6 @@ export const useHomeData = () => {
     handleApplyFilters,
     handleEnableLocation,
     handleFavoriteToggle,
+    syncFavorites,
   };
 };
