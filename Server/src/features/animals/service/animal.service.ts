@@ -40,9 +40,12 @@ export const animalService = {
    * Create a new post. The userId comes from the authenticated user.
    */
   async createPost(data: Record<string, unknown>, userId: string) {
+    const { userId: _ignoredUserId, ...postData } = data;
     return animalRepository.create({
-      ...data,
-      userId,
+      ...postData,
+      user: {
+        connect: { id: userId },
+      },
     } as any);
   },
 

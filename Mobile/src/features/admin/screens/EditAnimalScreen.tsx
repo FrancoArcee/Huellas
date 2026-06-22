@@ -8,11 +8,13 @@ import {
   ScrollView,
   StatusBar,
   Alert,
+  Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
+import { BirthDatePicker } from '../components/BirthDatePicker';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -161,7 +163,7 @@ export default function EditAnimalScreen() {
             {renderError('nombre')}
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
-            <TextInput style={styles.input} value={formData.fechaNacimiento} onChangeText={(t) => updateForm('fechaNacimiento', t)} />
+            <BirthDatePicker value={formData.fechaNacimiento} onChange={(value) => updateForm('fechaNacimiento', value)} />
             {renderError('fechaNacimiento')}
 
             <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
@@ -279,6 +281,27 @@ export default function EditAnimalScreen() {
               <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
               <Text style={styles.uploadTextBold}>Modificar imágenes</Text>
             </TouchableOpacity>
+            {(imagenes.length > 0 || existingPhotosUrl.length > 0) && (
+              <>
+                <Text style={styles.photoPreviewTitle}>
+                  {imagenes.length > 0 ? 'Imágenes nuevas' : 'Imágenes actuales'}
+                </Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.photoPreviewList}
+                >
+                  {(imagenes.length > 0 ? imagenes.map((image) => image.uri) : existingPhotosUrl).map((uri, index) => (
+                    <Image
+                      key={`${uri}-${index}`}
+                      source={{ uri }}
+                      resizeMode="cover"
+                      style={styles.photoPreview}
+                    />
+                  ))}
+                </ScrollView>
+              </>
+            )}
             {renderError('imagenes')}
 
             <Text style={styles.label}>Descripción</Text>
@@ -329,6 +352,23 @@ export const styles = StyleSheet.create({
   imageUploadArea: {
     borderWidth: 1, borderStyle: 'dashed', borderColor: '#999', borderRadius: 20,
     padding: 32, alignItems: 'center', justifyContent: 'center', backgroundColor: '#eee',
+  },
+  photoPreviewTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#555',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  photoPreviewList: {
+    gap: 10,
+    paddingVertical: 4,
+  },
+  photoPreview: {
+    width: 92,
+    height: 92,
+    borderRadius: 14,
+    backgroundColor: '#ddd',
   },
   selectOptions: {
     backgroundColor: '#fff', borderRadius: 16, borderWidth: 1, borderColor: '#ccc',
