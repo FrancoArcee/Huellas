@@ -120,11 +120,15 @@ const AppliedFilterBadge = ({
     label: string;
     onRemove: () => void;
 }) => (
-    <TouchableOpacity activeOpacity={0.85} onPress={onRemove} style={styles.filterBadge}>
+    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => {}}>
         <Text numberOfLines={1} style={styles.filterBadgeText}>
             {label}
         </Text>
-        <Text style={styles.filterBadgeRemove}>×</Text>
+        <TouchableOpacity activeOpacity={0.7} onPress={onRemove} style={styles.filterBadgeRemoveBtn}>
+            <Svg width={12} height={12} viewBox="0 0 24 24" fill="none">
+                <Path d="M18 6L6 18M6 6l12 12" stroke={theme.colors.textPrimary} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+            </Svg>
+        </TouchableOpacity>
     </TouchableOpacity>
 );
 
@@ -581,10 +585,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         marginTop: 12,
+        height: 34,
     },
     filtersScroll: {
         flexGrow: 0,
-        flex: 1,
+        flex: 0,
     },
     filtersContainer: {
         flexDirection: 'row',
@@ -615,28 +620,29 @@ const styles = StyleSheet.create({
         maxWidth: 132,
         paddingHorizontal: 12,
         borderRadius: 17,
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: theme.colors.cream,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 6,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.12,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.06,
+        shadowRadius: 2,
+        elevation: 1,
     },
     filterBadgeText: {
-        color: theme.colors.white,
+        color: theme.colors.textPrimary,
         fontSize: 12,
         fontFamily: theme.typography.fontFamily.semiBold,
-        maxWidth: 92,
+        maxWidth: 120,
     },
-    filterBadgeRemove: {
-        color: theme.colors.white,
-        fontSize: 16,
-        fontFamily: theme.typography.fontFamily.bold,
-        lineHeight: 16,
+    filterBadgeRemoveBtn: {
+        width: 24,
+        height: 24,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 6,
     },
     emptyState: {
         flex: 1,
