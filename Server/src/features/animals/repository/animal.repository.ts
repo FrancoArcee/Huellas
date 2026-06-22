@@ -75,6 +75,7 @@ export const animalRepository = {
             id: true,
             name: true,
             image: true,
+            profilePictureUrl: true,
             contact: true,
             contactType: true,
           },
@@ -186,6 +187,7 @@ export const animalRepository = {
               id: true,
               name: true,
               image: true,
+              profilePictureUrl: true,
             },
           },
           _count: {
