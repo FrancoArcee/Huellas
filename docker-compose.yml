@@ -45,8 +45,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - animal_uploads:/app/Server/uploads/animal
     command: >
       sh -c "npx prisma migrate deploy && node dist/server.js"
 
 volumes:
   pgdata:
+  animal_uploads:

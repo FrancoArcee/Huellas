@@ -9,36 +9,32 @@ import {
   StatusBar,
   Alert
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { styles } from './EditAnimalScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
+import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
 import { useRouter } from 'expo-router';
-import { validateStep, validateAll, sanitizeNumericInput } from '../utils/validateAnimalForm';
+import {
+  animalPhotosSchema,
+  sanitizeNumericInput,
+  validateAll,
+  validateField,
+  validateStep,
+  type AnimalFormErrors,
+  type AnimalFormField,
+} from '../utils/validateAnimalForm';
 import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import SearchIcon from '../../../assets/icons/screens/search.svg';
-
-type AnimalFormData = {
-  nombre: string;
-  fechaNacimiento: string;
-  edad: string;
-  tamano: string;
-  ubicacion: string;
-  peso: string;
-  genero: string;
-  castrado: string;
-  descripcion?: string;
-  imagen?: string;
-};
 
 export default function CreateAnimalScreen() {
   const router = useRouter();
   const agregarPublicacion = usePublicacionesStore((state) => state.agregarPublicacion);
   const [step, setStep] = useState(1);
 
-  const [formData, setFormData] = useState<AnimalFormData>({
+  const [formData, setFormData] = useState<PublicacionForm>({
     nombre: '',
     fechaNacimiento: '',
     edad: '',
@@ -48,59 +44,79 @@ export default function CreateAnimalScreen() {
     genero: '',
     castrado: '',
     descripcion: '',
-    imagen: '',
   });
+  const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
-  const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [errors, setErrors] = useState<AnimalFormErrors>({});
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
 
-  const setError = (key: string, msg: string | null) => {
-    setErrors((prev) => ({ ...prev, [key]: msg }));
-  };
-
-  const updateForm = (key: keyof typeof formData, value: string) => {
+  const updateForm = (key: AnimalFormField, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-    setError(key, null);
+    const error = validateField(key, value);
+    setErrors((prev) => ({ ...prev, [key]: error }));
   };
 
   const handleSiguiente = () => {
     if (step >= 3) return;
-    const error = validateStep(formData, step);
-    if (error) {
-      Alert.alert('Error', error);
+    const stepErrors = validateStep(formData, step);
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors((prev) => ({ ...prev, ...stepErrors }));
       return;
     }
     setStep(step + 1);
   };
 
-  const handleSubmit = () => {
-    const error = validateAll(formData);
-    if (error) {
-      Alert.alert('Error', error);
+  const handlePickImages = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
       return;
     }
 
-    const payload: Omit<Publicacion, 'id'> = {
-      nombre: formData.nombre,
-      fechaNacimiento: formData.fechaNacimiento,
-      edad: formData.edad,
-      tamano: formData.tamano,
-      ubicacion: formData.ubicacion,
-      peso: formData.peso,
-      genero: formData.genero,
-      castrado: formData.castrado,
-      descripcion: formData.descripcion ?? '',
-      imagen: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1',
-    };
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsMultipleSelection: true,
+      mediaTypes: ['images'],
+      quality: 1,
+      selectionLimit: 3,
+    });
+    if (result.canceled) return;
 
-    agregarPublicacion(payload);
-    setStep(4);
+    const parsed = animalPhotosSchema.safeParse(result.assets);
+    setErrors((prev) => ({
+      ...prev,
+      imagenes: parsed.success ? undefined : parsed.error.issues[0]?.message,
+    }));
+    if (parsed.success) setImagenes(result.assets);
   };
 
-  const renderError = (key: string) => {
+  const handleSubmit = async () => {
+    const formErrors = validateAll(formData);
+    const photosResult = animalPhotosSchema.safeParse(imagenes);
+    if (!photosResult.success) {
+      formErrors.imagenes = photosResult.error.issues[0]?.message;
+    }
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await agregarPublicacion(formData, imagenes);
+      setStep(4);
+    } catch (error) {
+      console.error('Error al crear la publicación:', error);
+      Alert.alert('Error', 'No se pudo crear la publicación. Intentá nuevamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const renderError = (key: keyof AnimalFormErrors) => {
     if (!errors[key]) return null;
     return <Text style={localStyles.errorText}>{errors[key]}</Text>;
   };
@@ -237,12 +253,13 @@ export default function CreateAnimalScreen() {
           {step === 3 && (
             <View style={styles.formContainer}>
               <Text style={styles.label}>Fotos</Text>
-              <TouchableOpacity style={styles.imageUploadArea}>
+              <TouchableOpacity style={styles.imageUploadArea} onPress={handlePickImages}>
                 <Text style={styles.uploadIcon}>{String.fromCodePoint(0x1F4F8)}</Text>
                 <Text style={styles.uploadTextBold}>Adjuntá tus imágenes</Text>
                 <Text style={styles.uploadTextSmall}>(Máximo 3 fotos)</Text>
                 <Text style={styles.uploadTextSmall}>Peso Máximo por foto 3mb</Text>
               </TouchableOpacity>
+              {renderError('imagenes')}
 
               <Text style={styles.label}>Descripción</Text>
               <TextInput
@@ -254,7 +271,7 @@ export default function CreateAnimalScreen() {
                 onChangeText={(t) => updateForm('descripcion', t)}
               />
 
-              <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
+              <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit} disabled={isSubmitting}>
                 <Text style={styles.primaryButtonText}>Crear publicación</Text>
               </TouchableOpacity>
             </View>

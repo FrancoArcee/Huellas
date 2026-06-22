@@ -84,12 +84,13 @@ export const updateUserSchema = z.object({
 // ─── Post Schemas ──────────────────────────────
 
 export const createPostSchema = z.object({
-  userId:     z.string().uuid(),
   name:       z.string().min(1).max(100),
   age:        z.number().int().min(0).max(50),
   weight:     z.number().positive(),
   size:       petSizeSchema,
   category:   petCategorySchema,
+  gender:     z.enum(["male", "female"]),
+  neutered:   z.boolean(),
   latitude:   z.number().min(-90).max(90),
   longitude:  z.number().min(-180).max(180),
   location:   z.string().min(1).max(200),
@@ -104,6 +105,8 @@ export const updatePostSchema = z.object({
   weight:      z.number().positive().optional(),
   size:        petSizeSchema.optional(),
   category:    petCategorySchema.optional(),
+  gender:      z.enum(["male", "female"]).optional(),
+  neutered:    z.boolean().optional(),
   latitude:    z.number().min(-90).max(90).optional(),
   longitude:   z.number().min(-180).max(180).optional(),
   location:    z.string().min(1).max(200).optional(),
@@ -126,7 +129,7 @@ export const postSearchSchema = z.object({
   maxAge:    z.coerce.number().int().min(0).optional(),
   minWeight:  z.coerce.number().positive().optional(),
   maxWeight:  z.coerce.number().positive().optional(),
-  userId:    z.string().uuid().optional(),
+  userId:    z.string().min(1).max(128).optional(),
   page:      z.coerce.number().int().positive().default(1),
   limit:     z.coerce.number().int().positive().max(100).default(20),
 });

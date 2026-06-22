@@ -5,6 +5,43 @@
 import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, updatePostSchema, postSearchSchema } from "@huellas/shared";
 import { animalService, PostNotFoundError, ForbiddenError } from "../service/animal.service";
+import { removeAnimalUploads } from "../../../shared/middleware/uploadMiddleware";
+
+function uploadedPhotoUrls(req: Request): string[] {
+  const files = (req.files as Express.Multer.File[] | undefined) ?? [];
+  return files.map(
+    (file) => `${req.protocol}://${req.get("host")}/uploads/animal/${file.filename}`,
+  );
+}
+
+function parseExistingPhotos(value: unknown): string[] {
+  if (typeof value !== "string" || !value) return [];
+  try {
+    const parsed: unknown = JSON.parse(value);
+    return Array.isArray(parsed)
+      ? parsed.filter((item): item is string => typeof item === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function normalizePostBody(body: Record<string, unknown>): Record<string, unknown> {
+  const normalized = { ...body };
+
+  for (const field of ["age", "weight", "latitude", "longitude"] as const) {
+    if (typeof normalized[field] === "string" && normalized[field] !== "") {
+      normalized[field] = Number(normalized[field]);
+    }
+  }
+
+  if (typeof normalized.neutered === "string") {
+    normalized.neutered = normalized.neutered === "true";
+  }
+
+  delete normalized.existingPhotosUrl;
+  return normalized;
+}
 
 // ─── Handlers ──────────────────────────────────
 
@@ -18,9 +55,14 @@ export async function createPost(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  const newPhotos = uploadedPhotoUrls(req);
   try {
-    const parsed = createPostSchema.safeParse(req.body);
+    const parsed = createPostSchema.safeParse({
+      ...normalizePostBody(req.body),
+      photosUrl: newPhotos,
+    });
     if (!parsed.success) {
+      removeAnimalUploads(newPhotos);
       res.status(400).json({
         success: false,
         message: "Validation error",
@@ -38,6 +80,7 @@ export async function createPost(
       message: "Post created successfully",
     });
   } catch (error) {
+    removeAnimalUploads(newPhotos);
     next(error);
   }
 }
@@ -142,11 +185,18 @@ export async function updatePost(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
+  const newPhotos = uploadedPhotoUrls(req);
   try {
     const id = String(req.params.id);
+    const existingPost = await animalService.getPost(id);
+    const retainedPhotos = parseExistingPhotos(req.body.existingPhotosUrl);
 
-    const parsed = updatePostSchema.safeParse(req.body);
+    const parsed = updatePostSchema.safeParse({
+      ...normalizePostBody(req.body),
+      photosUrl: [...retainedPhotos, ...newPhotos],
+    });
     if (!parsed.success) {
+      removeAnimalUploads(newPhotos);
       res.status(400).json({
         success: false,
         message: "Validation error",
@@ -156,6 +206,10 @@ export async function updatePost(
     }
 
     const updatedPost = await animalService.updatePost(id, parsed.data, req.user!.id);
+    const removedPhotos = existingPost.photosUrl.filter(
+      (photoUrl) => !retainedPhotos.includes(photoUrl),
+    );
+    removeAnimalUploads(removedPhotos);
 
     res.status(200).json({
       success: true,
@@ -163,6 +217,7 @@ export async function updatePost(
       message: "Post updated successfully",
     });
   } catch (error) {
+    removeAnimalUploads(newPhotos);
     if (error instanceof PostNotFoundError) {
       res.status(404).json({ success: false, message: error.message });
       return;
@@ -186,8 +241,10 @@ export async function deletePost(
 ): Promise<void> {
   try {
     const id = String(req.params.id);
+    const existingPost = await animalService.getPost(id);
 
     await animalService.deletePost(id, req.user!.id);
+    removeAnimalUploads(existingPost.photosUrl);
 
     res.status(204).send();
   } catch (error) {
