@@ -24,4 +24,20 @@ config.resolver = {
 
 config.watchFolders = [workspaceRoot];
 
+// react-native-maps imports native-only RN internals and breaks the web bundle.
+// Provide a no-op shim so the search/map screen builds on web.
+const originalResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (platform === 'web' && moduleName === 'react-native-maps') {
+    return {
+      type: 'sourceFile',
+      filePath: path.resolve(projectRoot, 'src/shims/react-native-maps.web.js'),
+    };
+  }
+  if (originalResolveRequest) {
+    return originalResolveRequest(context, moduleName, platform);
+  }
+  return context.resolveRequest(context, moduleName, platform);
+};
+
 module.exports = config;
