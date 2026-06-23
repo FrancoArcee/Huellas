@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -14,6 +13,7 @@ import Svg, { Path } from 'react-native-svg';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 
 const TOTAL_STEPS = 3;
 const ORANGE = '#FA9D24';
@@ -38,6 +38,7 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
   const [step, setStep] = useState(1);
   const [created, setCreated] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
   const [form, setForm] = useState({
     name: '',
     birthDate: '',
@@ -72,7 +73,7 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
+      setAlertError({ title: 'Permiso requerido', message: 'Necesitamos permiso para abrir tu galería de imágenes.' });
       return;
     }
 
@@ -275,6 +276,14 @@ export const CreatePostScreen = ({ topInset = 0, bottomInset = 0 }: Props) => {
           </Pressable>
         </View>
       </ScrollView>
+
+      <FeedbackModal
+        visible={alertError !== null}
+        type="error"
+        title={alertError?.title ?? ''}
+        message={alertError?.message}
+        onConfirm={() => setAlertError(null)}
+      />
     </View>
   );
 };
