@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
 import Svg, { Circle, Polygon, Path, G, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
@@ -184,7 +185,9 @@ export function SearchResultsScreen() {
     const [selectedAnimal, setSelectedAnimal] = useState<AnimalDTO | null>(null);
     const [hiddenMarkerId, setHiddenMarkerId] = useState<string | null>(null);
     const [fetchParams, setFetchParams] = useState<FetchAnimalsParams>(initialFetchParams);
-    const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [userCoords, setUserCoords] = useState<
+        { latitude: number; longitude: number } | null | undefined
+    >(undefined);
 
     const mapAnimals = useMemo(
         () => animals.filter((animal) => animal.latitude !== undefined && animal.longitude !== undefined),
@@ -201,6 +204,10 @@ export function SearchResultsScreen() {
     }, [initialFetchParams, initialLayout, initialSearch]);
 
     const loadAnimals = useCallback(async () => {
+        const hasFilterCoordinates =
+            fetchParams.latitude !== undefined && fetchParams.longitude !== undefined;
+        if (!hasFilterCoordinates && userCoords === undefined) return;
+
         setLoading(true);
         try {
             const nextAnimals = await fetchAnimals(fetchParams);
@@ -232,15 +239,38 @@ export function SearchResultsScreen() {
 
     useEffect(() => {
         const loadLocation = async () => {
-            const coords = await storage.getLocationCoords();
-            if (coords) {
-                setUserCoords(coords);
+            const savedCoords = await storage.getLocationCoords();
+
+            try {
+                let permission = await Location.getForegroundPermissionsAsync();
+                if (permission.status === 'undetermined') {
+                    permission = await Location.requestForegroundPermissionsAsync();
+                }
+
+                if (permission.status === 'granted') {
+                    const location = await Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.Balanced,
+                    });
+                    const currentCoords = {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    };
+
+                    await storage.setLocation(currentCoords.latitude, currentCoords.longitude);
+                    setUserCoords(currentCoords);
+                    return;
+                }
+            } catch (error) {
+                console.warn('Error getting current location for distances', error);
             }
+
+            setUserCoords(savedCoords);
         };
-        if (!fetchParams.latitude && !fetchParams.longitude) {
+
+        if (fetchParams.latitude === undefined || fetchParams.longitude === undefined) {
             loadLocation();
         }
-    }, []);
+    }, [fetchParams.latitude, fetchParams.longitude]);
 
     // Fit map coordinates when filtered animals list changes
     useEffect(() => {
@@ -425,7 +455,13 @@ export function SearchResultsScreen() {
                         const gender = translateGender(item.gender);
                         const age = formatAge(parseInt(item.age, 10) || undefined);
                         const details = [type, gender, age].filter(Boolean).join(' · ');
-                        const distText = formatDistance(item.distanceKm);
+                        const hasReferenceCoordinates =
+                            (fetchParams.latitude !== undefined &&
+                                fetchParams.longitude !== undefined) ||
+                            userCoords !== null;
+                        const distText = hasReferenceCoordinates
+                            ? formatDistance(item.distanceKm)
+                            : 'Distancia no disponible';
                         return (
                             <PetHorizontalCard
                                 name={item.name}
