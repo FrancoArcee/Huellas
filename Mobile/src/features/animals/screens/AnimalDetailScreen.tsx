@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Image,
   ImageBackground,
   Platform,
@@ -27,6 +26,7 @@ import { useAuthStore } from '../../../shared/store/authStore';
 import { openContactApp } from '../../../shared/utils/contact-apps';
 import { translateCategory, translateGender, translateSize } from '../../../shared/utils/translations';
 import { animalService, type AnimalPost } from '../services/animalService';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 
 const roundedFont = Platform.select({
   web: 'Nunito, Poppins, "Arial Rounded MT Bold", Arial, sans-serif',
@@ -77,6 +77,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const [loading, setLoading] = useState(true);
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
   const [contacting, setContacting] = useState(false);
   const [backHovered, setBackHovered] = useState(false);
   const [likeHovered, setLikeHovered] = useState(false);
@@ -157,17 +158,17 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
       });
 
       if (!opened) {
-        Alert.alert(
-          'Contacto por Discord',
-          `El usuario de Discord es ${post.user.contact}. Todavía no podemos abrir directamente este perfil.`,
-        );
+        setAlertError({
+          title: 'Contacto por Discord',
+          message: `El usuario de Discord es ${post.user.contact}. Todavía no podemos abrir directamente este perfil.`,
+        });
       }
     } catch (error) {
       console.error(`Error al abrir ${post.user.contactType}:`, error);
-      Alert.alert(
-        'No se pudo abrir la aplicación',
-        `Revisá que ${post.user.contactType} esté disponible en tu dispositivo.`,
-      );
+      setAlertError({
+        title: 'No se pudo abrir la aplicación',
+        message: `Revisá que ${post.user.contactType} esté disponible en tu dispositivo.`,
+      });
     } finally {
       setContacting(false);
     }
@@ -381,6 +382,14 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
           </View>
         </View>
       </View>
+
+      <FeedbackModal
+        visible={alertError !== null}
+        type="error"
+        title={alertError?.title ?? ''}
+        message={alertError?.message}
+        onConfirm={() => setAlertError(null)}
+      />
     </View>
   );
 };

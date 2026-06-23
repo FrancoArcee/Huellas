@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Huellas",
-    "slug": "huellas-app",
+    "slug": "huellas",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -14,7 +14,16 @@
       "bundleIdentifier": "com.huellas.app"
     },
     "android": {
-      "package": "com.huellas.app"
+      "package": "com.huellas.app",
+      "icon": "./src/assets/images/logo.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/logo.png",
+        "backgroundColor": "#F1EEEE"
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -25,6 +34,12 @@
           "locationWhenInUsePermission": "Huellas usa tu ubicación para encontrar mascotas cercanas y completar direcciones."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "52d0c0fa-3e2b-44c5-91d6-01da0b6cd5d7"
+      }
+    }
   }
 }

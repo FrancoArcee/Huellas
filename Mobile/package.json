@@ -4,11 +4,11 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
-    "start-nocached": "expo start -c",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "expo start --offline",
+    "start-nocached": "expo start -c --offline",
+    "android": "expo run:android --offline",
+    "ios": "expo run:ios --offline",
+    "web": "expo start --web --offline"
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.4.1",

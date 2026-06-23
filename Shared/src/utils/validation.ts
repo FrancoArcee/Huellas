@@ -71,7 +71,7 @@ export const contactErrorMessages: Record<string, string> = {
 export const createUserSchema = z.object({
   name: z.string().min(2).max(80),
   email: z.string().email(),
-  password: z.string().min(6).max(128),
+  password: z.string().min(8).max(128),
   contact: z.string().min(3).max(60),
   contactType: contactTypeSchema,
   profilePictureUrl: z.string().url().optional(),
@@ -88,7 +88,7 @@ export const createUserSchema = z.object({
 export const updateUserSchema = z.object({
   name: z.string().min(2).max(80).optional(),
   email: z.string().email().optional(),
-  password: z.string().min(6).max(128).optional(),
+  password: z.string().min(8).max(128).optional(),
   contact: z.string().min(3).max(60).optional(),
   contactType: contactTypeSchema.optional(),
   profilePictureUrl: z.string().url().optional(),
