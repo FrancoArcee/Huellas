@@ -6,23 +6,23 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
-  Alert,
   ActivityIndicator,
   Image,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
   Platform,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, User, Mail, MessageSquare } from 'lucide-react-native';
+import { DismissKeyboard } from '../../../shared/components/ui/DismissKeyboard';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { CustomInput } from '../../../shared/components/ui/CustomInput';
 import { CustomDropdown } from '../../../shared/components/ui/CustomDropdown';
 import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import BackSvg from '../../../assets/icons/buttons/chevronBack.svg';
 import ProfileSvg from '../../../assets/icons/screens/profile.svg';
 
@@ -75,6 +75,7 @@ export const EditProfileScreen = () => {
   const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -192,7 +193,7 @@ export const EditProfileScreen = () => {
   const handlePickGalleryImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para acceder a tu galería.');
+      setAlertError({ title: 'Permiso requerido', message: 'Necesitamos permiso para acceder a tu galería.' });
       return;
     }
 
@@ -212,14 +213,14 @@ export const EditProfileScreen = () => {
       }
     } catch (error) {
       console.error('Error picking image from library:', error);
-      Alert.alert('Error', 'No se pudo seleccionar la imagen de la galería.');
+      setAlertError({ title: 'Error', message: 'No se pudo seleccionar la imagen de la galería.' });
     }
   };
 
   const handleTakeCameraPhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para acceder a tu cámara.');
+      setAlertError({ title: 'Permiso requerido', message: 'Necesitamos permiso para acceder a tu cámara.' });
       return;
     }
 
@@ -239,7 +240,7 @@ export const EditProfileScreen = () => {
       }
     } catch (error) {
       console.error('Error taking photo:', error);
-      Alert.alert('Error', 'No se pudo tomar la foto.');
+      setAlertError({ title: 'Error', message: 'No se pudo tomar la foto.' });
     }
   };
 
@@ -270,7 +271,7 @@ export const EditProfileScreen = () => {
       }
     } catch (error) {
       console.error('Error uploading image:', error);
-      Alert.alert('Error de subida', 'No se pudo subir la imagen al servidor.');
+      setAlertError({ title: 'Error de subida', message: 'No se pudo subir la imagen al servidor.' });
     } finally {
       setUploadingImage(false);
     }
@@ -360,8 +361,7 @@ export const EditProfileScreen = () => {
       style={styles.keyboardContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={[styles.screen, { paddingTop: insets.top }]}>
+      <DismissKeyboard style={[styles.screen, { paddingTop: insets.top }]}>
           {/* Botón volver */}
           <TouchableOpacity
             style={[styles.backButton, { top: insets.top + 12 }]}
@@ -504,8 +504,15 @@ export const EditProfileScreen = () => {
               </View>
             </View>
           </Modal>
-        </View>
-      </TouchableWithoutFeedback>
+
+          <FeedbackModal
+            visible={!!alertError}
+            type="error"
+            title={alertError?.title || ''}
+            message={alertError?.message || ''}
+            onClose={() => setAlertError(null)}
+          />
+      </DismissKeyboard>
     </KeyboardAvoidingView>
   );
 };

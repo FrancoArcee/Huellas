@@ -5,13 +5,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  Alert,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { api } from '../../../shared/services/api';
 import ProfileSvg from '../../../assets/icons/screens/profile.svg';
@@ -42,6 +42,7 @@ export const ProfileScreen = () => {
   const [loading, setLoading] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   const fetchUserData = useCallback(async () => {
     if (!authUser?.id) return;
@@ -69,7 +70,7 @@ export const ProfileScreen = () => {
       router.replace('/(auth)/login');
     } catch (error) {
       console.error('Error during logout:', error);
-      Alert.alert('Error', 'Ocurrió un error al cerrar sesión.');
+      setAlertError({ title: 'Error', message: 'Ocurrió un error al cerrar sesión.' });
     }
   };
 
@@ -83,7 +84,7 @@ export const ProfileScreen = () => {
       router.replace('/(auth)/login');
     } catch (error) {
       console.error('Error deleting account:', error);
-      Alert.alert('Error', 'No se pudo eliminar la cuenta. Inténtalo de nuevo.');
+      setAlertError({ title: 'Error', message: 'No se pudo eliminar la cuenta. Inténtalo de nuevo.' });
     } finally {
       setLoading(false);
     }
@@ -219,6 +220,15 @@ export const ProfileScreen = () => {
         cancelText="Cancelar"
         onConfirm={handleDeleteAccount}
         onCancel={() => setShowDeleteModal(false)}
+      />
+
+      {/* Alert de error */}
+      <FeedbackModal
+        visible={alertError !== null}
+        type="error"
+        title={alertError?.title ?? ''}
+        message={alertError?.message}
+        onConfirm={() => setAlertError(null)}
       />
     </View>
   );

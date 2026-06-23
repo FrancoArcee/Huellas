@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  TouchableOpacity, 
-  KeyboardAvoidingView, 
-  ScrollView, 
-  TouchableWithoutFeedback, 
-  Keyboard, 
-  Platform 
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
 } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
@@ -19,6 +17,7 @@ import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { loginSchema } from '../validations/schemas';
 import { Mail, Lock } from 'lucide-react-native';
+import { DismissKeyboard } from '../../../shared/components/ui/DismissKeyboard';
 
 export const LogInScreen = () => {
   const router = useRouter();
@@ -103,8 +102,7 @@ export const LogInScreen = () => {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
+        <DismissKeyboard style={styles.innerContainer}>
             <View style={styles.header}>
               <LogoSvg width={100} height={100} />
               <CustomText variant="h1" color="primary" style={styles.appName}> Huellas </CustomText>
@@ -168,8 +166,7 @@ export const LogInScreen = () => {
                 textColor={theme.colors.black}
               />
             </View>
-          </View>
-        </TouchableWithoutFeedback>
+        </DismissKeyboard>
       </ScrollView>
     </KeyboardAvoidingView>
   );
