@@ -93,6 +93,45 @@ Una vez que Expo inicie en tu terminal, podés:
 
 ---
 
+## Conectividad de la APK con el backend
+
+La app móvil se comunica con el backend a través de la variable de entorno `EXPO_PUBLIC_API_URL`. Por defecto, si no se configura, toma `http://localhost:3000`. La lógica en `Mobile/src/shared/services/api.ts` aplica las siguientes reglas:
+
+| Entorno | Comportamiento |
+|---|---|
+| **Desarrollo (`__DEV__`) con `localhost`** | Reemplaza `localhost` por la IP que el celular/emulador usa para conectarse a Metro (el servidor de Expo). Esto permite que la app funcione en emuladores y dispositivos físicos en red local sin configurar nada. |
+| **APK de producción (EAS Build) sin `EXPO_PUBLIC_API_URL`** | El valor `http://localhost:3000` queda "horneado" (baked-in) en el bundle. La APK intentará conectar a `localhost:3000`, lo cual **solo funciona si el backend corre en el mismo dispositivo**, lo cual no es el caso habitual. |
+| **APK de producción con `EXPO_PUBLIC_API_URL`** | La URL configurada se usa tal cual. Es la forma correcta de apuntar a un servidor remoto. |
+
+### Para que la APK funcione correctamente, se debe cumplir UNA de estas condiciones:
+
+#### Opción A: Backend y emulador en la misma máquina (desarrollo)
+- El backend debe escuchar en **`0.0.0.0:3000`** (no solo `127.0.0.1`), porque el emulador Android usa `10.0.2.2` para mapear al host.
+- Ejemplo: `node dist/server.js` con el servidor Express escuchando en `0.0.0.0`.
+- La app detecta automáticamente la IP de Metro y reemplaza `localhost`.
+
+#### Opción B: Dispositivo físico en la misma red LAN (desarrollo)
+- La PC que corre el backend y la que corre Expo deben estar en la misma red.
+- El backend debe escuchar en **`0.0.0.0:3000`**.
+- La app usa la IP LAN del host (ej: `192.168.1.50`) automáticamente gracias al reemplazo de `localhost`.
+
+#### Opción C: APK con backend remoto (producción)
+- Setear la variable de entorno antes de buildear con EAS:
+  ```bash
+  EXPO_PUBLIC_API_URL=https://api.huellas.example.com eas build --platform android
+  ```
+- Puede configurarse también desde el dashboard de EAS como secret.
+- En este caso la URL se usa literal, sin reemplazo de IP.
+
+### Variables de entorno requeridas en el backend
+El servidor necesita su propio `.env` (`Server/.env`):
+- `DATABASE_URL` — conexión a PostgreSQL
+- `BETTER_AUTH_SECRET` — clave de sesión de Better Auth
+- `BETTER_AUTH_URL` — debe coincidir con la URL desde la cual el backend es accesible (interna y externamente)
+- `PORT` — puerto del servidor (default: `3000`)
+
+---
+
 ## Autocompletado de direcciones
 
 La plataforma cuenta con integración en el backend para realizar autocompletado de direcciones consultando la API oficial y gratuita de **Georef Argentina**.
