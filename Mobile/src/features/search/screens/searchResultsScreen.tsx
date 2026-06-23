@@ -26,6 +26,7 @@ import { storage } from '../../../shared/services/storage';
 import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
+import { animalService } from '../../animals/services/animalService';
 import { translateCategory, translateGender, formatAge, formatDistance } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
@@ -188,6 +189,7 @@ export function SearchResultsScreen() {
     const [userCoords, setUserCoords] = useState<
         { latitude: number; longitude: number } | null | undefined
     >(undefined);
+    const [favoriteIds, setFavoriteIds] = useState<Record<string, string>>({});
 
     const mapAnimals = useMemo(
         () => animals.filter((animal) => animal.latitude !== undefined && animal.longitude !== undefined),
@@ -224,7 +226,32 @@ export function SearchResultsScreen() {
                 return a;
             });
 
-            setAnimals(withDistance);
+            // Check favorites for loaded animals
+            try {
+                if (currentUserId) {
+                    const favMap: Record<string, string> = {};
+                    await Promise.all(
+                        withDistance.map(async (animal) => {
+                            try {
+                                const fav = await animalService.checkFavorite(animal.id);
+                                if (fav) {
+                                    favMap[animal.id] = fav.id;
+                                }
+                            } catch {}
+                        })
+                    );
+                    setFavoriteIds(favMap);
+                }
+            } catch (error) {
+                console.warn('Error checking favorites:', error);
+            }
+
+            const withFavorite = withDistance.map((a) => ({
+                ...a,
+                isFavorite: !!favoriteIds[a.id],
+            }));
+
+            setAnimals(withFavorite);
         } catch (error) {
             console.warn('Error loading animals', error);
             setAnimals([]);
@@ -236,6 +263,60 @@ export function SearchResultsScreen() {
     useEffect(() => {
         loadAnimals();
     }, [loadAnimals]);
+
+    const handleFavoriteToggle = async (animalId: string) => {
+        const animal = animals.find(a => a.id === animalId);
+        if (!animal) return;
+
+        const wasFavorite = !!favoriteIds[animalId];
+
+        setAnimals(prev =>
+            prev.map(a => {
+                if (a.id === animalId) {
+                    return { ...a, isFavorite: !wasFavorite };
+                }
+                return a;
+            })
+        );
+
+        try {
+            if (wasFavorite) {
+                const favId = favoriteIds[animalId];
+                if (favId) {
+                    await animalService.removeFavorite(favId);
+                    setFavoriteIds(prev => {
+                        const next = { ...prev };
+                        delete next[animalId];
+                        return next;
+                    });
+                }
+            } else {
+                const favRecord = await animalService.addFavorite(animalId);
+                setFavoriteIds(prev => ({ ...prev, [animalId]: favRecord.id }));
+            }
+        } catch (error: any) {
+            console.warn('Error toggling favorite:', error.response?.data || error.message);
+
+            const isAlreadyDeleted = wasFavorite && (error.response?.status === 404 || error.response?.data?.error === "NOT_FOUND");
+
+            if (!isAlreadyDeleted) {
+                setAnimals(prev =>
+                    prev.map(a => {
+                        if (a.id === animalId) {
+                            return { ...a, isFavorite: wasFavorite };
+                        }
+                        return a;
+                    })
+                );
+            } else {
+                setFavoriteIds(prev => {
+                    const next = { ...prev };
+                    delete next[animalId];
+                    return next;
+                });
+            }
+        }
+    };
 
     useEffect(() => {
         const loadLocation = async () => {
@@ -469,6 +550,8 @@ export function SearchResultsScreen() {
                                 location={distText}
                                 image={item.photoUri}
                                 tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
+                                isLiked={!!favoriteIds[item.id]}
+                                onLikePress={() => handleFavoriteToggle(item.id)}
                                 onPress={() => {
                                     router.push({
                                         pathname: '/animals/[id]',
@@ -718,13 +801,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         gap: 16,
     },
-    petCard: {
-        width: '92%',
-        maxWidth: 360,
-        height: 210,
-        alignSelf: 'center',
-        marginBottom: 18,
-    },
+petCard: {
+    width: '100%',
+    maxWidth: 420,
+    height: 175,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
 
     markerContainer: {
         width: 42,
