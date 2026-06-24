@@ -1,0 +1,93 @@
+# Corrige Animal Detail y redirección
+
+> tengo un problema en animal detail si el usuario eligio otro contacto diferente no tiene que aprecer el logo de whasap y dirigirte a whasap ver cuales aplicaciones estan diponibles primero y armamos un plan, para que no te aparezca el logo de whasap sino la de la aplicacion y tambien te redidiriga a la aplicacion
+
+<details><summary>2 previous messages</summary>
+
+> Voy a revisar cómo está modelado `Animal Detail`, qué opciones de contacto existen hoy y dónde se decide el ícono/enlace. Voy a usar las guías de UI nativa y React Native del proyecto para que el plan contemple bien iconos, deep links y fallbacks, sin tocar código todavía.
+>
+> `rg` está bloqueado en este entorno, así que sigo con búsqueda nativa de PowerShell. Ahora voy a ubicar la pantalla, el modelo de datos del contacto y cualquier utilidad existente para abrir aplicaciones externas.
+</details>
+
+Revisé el proyecto. Actualmente están disponibles:
+
+- WhatsApp
+- Telegram
+- Instagram
+- Discord
+- Facebook
+- Messenger
+
+Los seis ya tienen sus respectivos iconos SVG. Además, la API de `Animal Detail` ya entrega `contact` y `contactType`. El problema está únicamente en la pantalla: ignora `contactType` y siempre muestra/abre WhatsApp.
+
+Plan propuesto:
+
+1. Crear una utilidad centralizada de contacto que reciba `contactType` y `contact`.
+2. Asociar cada tipo con su icono correspondiente.
+3. Generar el enlace correcto para WhatsApp, Telegram, Instagram, Facebook y Messenger.
+4. Para Discord, definir un fallback: el username actual no alcanza para abrir directamente el perfil; necesitaríamos guardar un ID o URL de Discord.
+5. Reemplazar en `AnimalDetailScreen` el icono, nombre, accesibilidad y redirección fija de WhatsApp por valores dinámicos.
+6. Verificar enlaces válidos y mostrar un aviso si no pueden abrirse.
+7. Probar los seis medios en Android, iOS y web.
+
+No hace falta modificar el backend para cinco plataformas. Discord sí requiere decidir si abrimos Discord genéricamente o cambiamos el registro para solicitar una URL/ID válido.
+
+> okey dale si no te deja con el dato que esta en discrod dejalo como esta y preguntame
+
+<details><summary>6 previous messages</summary>
+
+> Perfecto. Voy a implementar ahora los cinco enlaces que sí permiten abrir el contacto correctamente y dejaré Discord sin inventar una redirección. Para el cierre voy a usar también la guía de verificación del proyecto y comprobar TypeScript antes de darte el resultado.
+>
+> La causa está bien acotada: `contactType` ya llega desde el servidor, pero la pantalla lo descarta. Voy a centralizar la construcción de enlaces y hacer que el botón tome dinámicamente nombre, icono y destino; Discord quedará identificado con su icono, pero sin una redirección falsa.
+>
+> El primer parche chocó con un detalle de codificación que ya existe en ese archivo (acentos guardados de forma inconsistente). No modificó nada. Voy a aplicar cambios más pequeños para preservar exactamente el contenido actual y evitar tocar textos ajenos al problema.
+>
+> <details><summary>Created a file, edited 2 files</summary>
+>
+> - Wrote `./Mobile/src/features/animals/screens/AnimalDetailScreen.tsx` (+46 -17)
+> - Wrote `./Mobile/src/features/animals/services/animalService.ts` (+6 -5)
+> - Wrote `./Mobile/src/shared/utils/contact-apps.ts` (+48 -0)
+>
+> </details>
+>
+> El comportamiento ya quedó desacoplado de WhatsApp. Antes de cerrar, voy a revisar el diff y compilar Mobile; también comprobaré que los destinos producidos sean los esperados para cada tipo de contacto.
+>
+> La compilación de Shared y el chequeo estricto de TypeScript de Mobile terminaron sin errores. Haré una última revisión de espacios/diff y del alcance para asegurar que no se mezclaron tus cambios previos del repositorio.
+</details>
+
+Implementado en `Animal Detail`:
+
+- Muestra el icono correcto para cada aplicación.
+- Abre WhatsApp, Telegram, Instagram, Facebook o Messenger.
+- Discord muestra su icono y el usuario, sin redirigir incorrectamente.
+- TypeScript compiló sin errores.
+- No modifiqué tus cambios previos.
+
+Para Discord: ¿querés que además abra la aplicación general de Discord al tocar el botón?
+
+> Agregar únicamente un carrusel de fotos en la sección superior del perfil de mascota. Mantener intacto todo el diseño actual, tamaños, tipografías, colores, tarjetas, botones y contenido existente.
+>
+> La foto principal debe poder deslizarse horizontalmente para mostrar fotos adicionales de la mascota. Incluir un indicador de paginación discreto sobre la imagen puntos, para comunicar cuántas fotos hay y cuál se está viendo. No modificar ningún otro componente de la pantalla.
+
+<details><summary>4 previous messages</summary>
+
+> Voy a tocar únicamente el bloque superior de imágenes: mismo alto y mismo diseño, agregando deslizamiento horizontal y puntos de paginación superpuestos. Usaré las guías de UI nativa, rendimiento React Native y verificación del proyecto; no modificaré el resto de la pantalla.
+>
+> La implementación será autocontenida en el `hero`: el carrusel ocupará exactamente los 318 px actuales, los botones seguirán en la misma posición como capa superior y los puntos solo aparecerán cuando haya más de una foto.
+>
+> <details><summary>Edited a file</summary>
+>
+> - Wrote `./Mobile/src/features/animals/screens/AnimalDetailScreen.tsx` (+72 -6)
+>
+> </details>
+>
+> Sí, confirmado: no hace falta tocar la base de datos ni el backend. El detalle ya recibe `photosUrl: string[]`, y el carrusel está leyendo directamente ese array completo. Ahora verifico compilación y que el cambio quede limitado al bloque de fotos.
+</details>
+
+Carrusel agregado usando directamente `photosUrl: string[]` existente.
+
+- Deslizamiento horizontal.
+- Mismo tamaño de imagen: 318 px.
+- Puntos discretos de paginación.
+- Sin cambios en el resto del diseño.
+- TypeScript verificado sin errores.
