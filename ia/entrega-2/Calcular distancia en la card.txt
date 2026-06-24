@@ -1,0 +1,45 @@
+# Calcular distancia en la card
+
+> necesito que en la card calcule la distancia ya que creo que está harcodeado en 0
+>
+> User context
+>
+> Images:
+> - `~/.codex/codex-remote-attachments/019ef1e9-7639-7d82-a356-78313669c521/F9BC3B80-9A96-43E2-9367-8D7DE2259B01/1-Imagen-pegada-1.jpg`
+
+<details><summary>6 previous messages</summary>
+
+> Voy a revisar la card y el flujo de ubicación. Usaré las guías de React Native/Expo para implementar el cálculo sin afectar el rendimiento, y verificaré el resultado antes de darlo por terminado.
+>
+> `rg` no puede ejecutarse en este entorno, así que continúo con búsqueda nativa de PowerShell. Primero localizaré dónde se renderiza “0 m” y qué coordenadas ya expone cada mascota.
+>
+> Encontré el origen: el adaptador de resultados asigna explícitamente `distanceKm: 0`. Voy a reemplazarlo por el cálculo Haversine usando la ubicación actual (con respaldo en la última ubicación guardada) y mostrar un texto neutro si faltan coordenadas.
+>
+> <details><summary>Edited 4 files</summary>
+>
+> - Wrote `./Mobile/src/shared/utils/distance.ts` (+13 -3)
+> - Wrote `./Mobile/src/features/search/schemas/animalSchema.ts` (+21 -4)
+> - Wrote `./Mobile/src/features/search/services/animalsService.ts` (+7 -2)
+> - Wrote `./Mobile/src/features/search/screens/searchResultsScreen.tsx` (+16 -11)
+> - Wrote `./Mobile/src/features/search/screens/searchResultsScreen.tsx` (+66 -19)
+> - Wrote `./Mobile/src/features/search/screens/searchResultsScreen.tsx` (+1 -1)
+>
+> </details>
+>
+> El cálculo ya quedó conectado al listado: espera a resolver la ubicación, envía esas coordenadas al servicio y calcula cada distancia con las coordenadas de la publicación. Ahora estoy validando tipos y revisando el diff para detectar efectos secundarios.
+>
+> La compilación de TypeScript pasó. La prueba numérica detectó que mi valor esperado estaba demasiado rígido (la ruta de prueba redondea a 4,9 km, no 5,0); ajusto la aserción para validar el resultado real del formateador y la vuelvo a ejecutar.
+</details>
+
+Implementado.
+
+- Se eliminó `distanceKm: 0`.
+- Calcula la distancia real mediante coordenadas y Haversine.
+- Usa ubicación actual o la última guardada.
+- Formatea en metros o kilómetros.
+- Sin coordenadas muestra “Distancia no disponible”.
+
+Archivos principales: [searchResultsScreen.tsx](~/OneDrive/Documentos/Desktop/Nueva%20carpeta/Huellas/Mobile/src/features/search/screens/searchResultsScreen.tsx:174) y [animalSchema.ts](~/OneDrive/Documentos/Desktop/Nueva%20carpeta/Huellas/Mobile/src/features/search/schemas/animalSchema.ts:51).
+
+Verificación: TypeScript sin errores y prueba de distancia correcta (`4.919 km → 4.9 km`).
+
