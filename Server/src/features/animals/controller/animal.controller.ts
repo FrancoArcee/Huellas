@@ -5,6 +5,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, updatePostSchema, postSearchSchema } from "@huellas/shared";
 import { animalService, PostNotFoundError, ForbiddenError } from "../service/animal.service";
+import { clinicalHistoryService } from "../../clinical-history/service/clinicalHistory.service";
 import { removeAnimalUploads } from "../../../shared/middleware/uploadMiddleware";
 
 function uploadedPhotoUrls(req: Request): string[] {
@@ -172,6 +173,31 @@ export async function getPost(
       res.status(404).json({ success: false, message: error.message });
       return;
     }
+    next(error);
+  }
+}
+
+/**
+ * GET /animals/:id/clinical-history
+ * Retrieve the clinical history of a post (owner only).
+ */
+export async function getClinicalHistory(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const id = String(req.params.id);
+    const history = await clinicalHistoryService.getClinicalHistoryByPostId(
+      id,
+      req.user!.id,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: history,
+    });
+  } catch (error) {
     next(error);
   }
 }

@@ -2,6 +2,7 @@
 //  Animal Service — Business logic layer
 // ───────────────────────────────────────────────
 
+import prisma from "../../../config/database";
 import { animalRepository } from "../repository/animal.repository";
 
 // ─── Errors ────────────────────────────────────
@@ -41,12 +42,22 @@ export const animalService = {
    */
   async createPost(data: Record<string, unknown>, userId: string) {
     const { userId: _ignoredUserId, ...postData } = data;
-    return animalRepository.create({
-      ...postData,
-      user: {
-        connect: { id: userId },
-      },
-    } as any);
+    return prisma.$transaction(async (tx) => {
+      const post = await tx.post.create({
+        data: {
+          ...postData,
+          user: {
+            connect: { id: userId },
+          },
+        } as any,
+      });
+
+      await tx.clinicalHistory.create({
+        data: { postId: post.id },
+      });
+
+      return post;
+    });
   },
 
   /**

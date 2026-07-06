@@ -220,3 +220,29 @@ export const createFavoriteSchema = z.object({
   postId: z.string().uuid(),
   userId: z.string().uuid(),
 });
+
+// ─── Clinical History Schemas ──────────────────
+
+export const eventTypeSchema = z.enum([
+  "VACUNACION",
+  "DESPARASITACION",
+  "CONSULTA_GENERAL",
+  "CIRUGIA",
+  "DIAGNOSTICO",
+]);
+
+export const createClinicalHistoryEntrySchema = z.object({
+  eventType: eventTypeSchema,
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  date: z.string().datetime(),
+  documentUrl: z.string().url().optional(),
+});
+
+export const updateClinicalHistoryEntrySchema = z.object({
+  eventType: eventTypeSchema.optional(),
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().min(1).max(2000).optional(),
+  date: z.string().datetime().optional(),
+  documentUrl: z.string().url().optional(),
+});
