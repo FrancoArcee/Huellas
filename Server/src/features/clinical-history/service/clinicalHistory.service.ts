@@ -13,7 +13,7 @@ export interface CreateEntryData {
   title: string;
   description: string;
   date: string;
-  documentUrl?: string;
+  documentsUrl?: string[];
 }
 
 export interface UpdateEntryData {
@@ -21,17 +21,16 @@ export interface UpdateEntryData {
   title?: string;
   description?: string;
   date?: string;
-  documentUrl?: string;
+  documentsUrl?: string[];
 }
 
 // ─── Service ───────────────────────────────────
 
 export const clinicalHistoryService = {
-  /**
-   * Retrieve the clinical history associated with a post.
-   * Creates it if it does not exist yet.
-   * Only the post owner is allowed.
-   */
+  async getEntryById(entryId: string) {
+    return clinicalHistoryRepository.findEntryById(entryId);
+  },
+
   async getClinicalHistoryByPostId(postId: string, requestingUserId: string) {
     const post = await prisma.post.findUnique({
       where: { id: postId },
@@ -79,7 +78,7 @@ export const clinicalHistoryService = {
       eventType: data.eventType,
       title: data.title,
       description: data.description,
-      documentUrl: data.documentUrl,
+      documentsUrl: data.documentsUrl ?? [],
     });
   },
 
@@ -113,7 +112,7 @@ export const clinicalHistoryService = {
       ...(data.eventType !== undefined && { eventType: data.eventType }),
       ...(data.title !== undefined && { title: data.title }),
       ...(data.description !== undefined && { description: data.description }),
-      ...(data.documentUrl !== undefined && { documentUrl: data.documentUrl }),
+      ...(data.documentsUrl !== undefined && { documentsUrl: data.documentsUrl }),
     });
   },
 
