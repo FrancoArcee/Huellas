@@ -157,7 +157,7 @@ model ClinicalHistoryEntry {
   eventType         EventType
   title             String
   description       String
-  documentUrl       String?
+  documentsUrl    String[]
 
   clinicalHistory   ClinicalHistory @relation(fields: [clinicalHistoryId], references: [id], onDelete: Cascade)
 
