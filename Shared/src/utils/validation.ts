@@ -236,7 +236,7 @@ export const createClinicalHistoryEntrySchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().min(1).max(2000),
   date: z.string().datetime(),
-  documentUrl: z.string().url().optional(),
+  documentsUrl: z.array(z.string().url()).max(5).optional(),
 });
 
 export const updateClinicalHistoryEntrySchema = z.object({
@@ -244,5 +244,5 @@ export const updateClinicalHistoryEntrySchema = z.object({
   title: z.string().min(1).max(200).optional(),
   description: z.string().min(1).max(2000).optional(),
   date: z.string().datetime().optional(),
-  documentUrl: z.string().url().optional(),
+  documentsUrl: z.array(z.string().url()).max(5).optional(),
 });
