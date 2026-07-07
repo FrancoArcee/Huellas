@@ -68,3 +68,68 @@ export function removeAnimalUploads(photoUrls: string[]): void {
     }
   }
 }
+
+// ─── Clinical Documents Upload ──────────────────
+
+export const clinicalUploadDirectory = path.resolve(process.cwd(), "uploads", "clinical");
+mkdirSync(clinicalUploadDirectory, { recursive: true });
+
+const clinicalExtensionByMimeType: Record<string, string> = {
+  "image/jpeg": ".jpg",
+  "image/jpg": ".jpg",
+  "image/pjpeg": ".jpg",
+  "image/png": ".png",
+  "image/x-png": ".png",
+  "image/webp": ".webp",
+  "application/pdf": ".pdf",
+};
+
+const clinicalStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, clinicalUploadDirectory),
+  filename: (_req, file, cb) => {
+    cb(null, `${randomUUID()}${clinicalExtensionByMimeType[file.mimetype] ?? ""}`);
+  },
+});
+
+export const clinicalUpload = multer({
+  storage: clinicalStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+  },
+  fileFilter: (_req, file, cb) => {
+    const allowed = [
+      "image/jpeg",
+      "image/jpg",
+      "image/pjpeg",
+      "image/png",
+      "image/x-png",
+      "image/webp",
+      "application/pdf",
+    ];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(HttpError.badRequest(
+        `Formato de documento no compatible (${file.mimetype || "desconocido"}). Usá JPEG, PNG, WebP o PDF.`,
+      ));
+    }
+  },
+});
+
+export function removeClinicalUploads(documentUrls: string[]): void {
+  for (const documentUrl of documentUrls) {
+    try {
+      const parsedUrl = new URL(documentUrl, "http://localhost");
+      if (!parsedUrl.pathname.startsWith("/uploads/clinical/")) continue;
+
+      const filename = path.basename(parsedUrl.pathname);
+      unlinkSync(path.join(clinicalUploadDirectory, filename));
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "ENOENT") {
+        console.error("Could not remove clinical upload", error);
+      }
+    }
+  }
+}
