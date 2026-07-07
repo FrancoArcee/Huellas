@@ -4,14 +4,11 @@
 
 import { Router } from "express";
 import { requireAuth } from "../../../shared/middleware/authMiddleware";
+import { clinicalUpload } from "../../../shared/middleware/uploadMiddleware";
 import { createEntry } from "../controller/clinicalHistory.controller";
 
 const router = Router();
 
-/**
- * POST /clinical-histories/:id/entries
- * Add a new entry to a clinical history.
- */
-router.post("/:id/entries", requireAuth, createEntry);
+router.post("/:id/entries", requireAuth, clinicalUpload.array("documents", 5), createEntry);
 
 export default router;
