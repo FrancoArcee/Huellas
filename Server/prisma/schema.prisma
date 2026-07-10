@@ -80,6 +80,14 @@ model Verification {
 
 // ─── 2. MODELOS DE NEGOCIO ───────────────────────────
 
+enum EventType {
+  VACUNACION
+  DESPARASITACION
+  CONSULTA_GENERAL
+  CIRUGIA
+  DIAGNOSTICO
+}
+
 model Post {
   id          String   @id @default(uuid())
   userId      String
@@ -104,9 +112,10 @@ model Post {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   // ── Relaciones ──
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  favorites   Favorite[]
+  favorites         Favorite[]
+  clinicalHistory   ClinicalHistory?
 
   @@index([userId])
   @@index([category])
@@ -126,4 +135,34 @@ model Favorite {
   @@unique([postId, userId])                // Un usuario solo puede marcar una vez
   @@index([userId])
   @@index([postId])
+}
+
+model ClinicalHistory {
+  id        String   @id @default(uuid())
+  postId    String   @unique
+
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  entries   ClinicalHistoryEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+}
+
+model ClinicalHistoryEntry {
+  id                String          @id @default(uuid())
+  clinicalHistoryId String
+  date              DateTime
+  eventType         EventType
+  title             String
+  description       String
+  documentsUrl    String[]
+
+  clinicalHistory   ClinicalHistory @relation(fields: [clinicalHistoryId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([clinicalHistoryId])
 }

@@ -11,6 +11,7 @@ import {
   getPost,
   updatePost,
   deletePost,
+  getClinicalHistory,
 } from "../controller/animal.controller";
 
 const router = Router();
@@ -28,6 +29,14 @@ router.get("/", listPosts);
  * Retrieve a single post by ID.
  */
 router.get("/:id", getPost);
+
+// ─── Protected routes (require authentication) ─
+
+/**
+ * GET /animals/:id/clinical-history
+ * Retrieve the clinical history of a post (owner only).
+ */
+router.get("/:id/clinical-history", requireAuth, getClinicalHistory);
 
 // ─── Protected routes (require authentication) ─
 
