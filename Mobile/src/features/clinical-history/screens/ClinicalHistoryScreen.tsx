@@ -43,6 +43,7 @@ export function ClinicalHistoryScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<ClinicalHistoryItem | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [itemToDelete, setItemToDelete] = useState<ClinicalHistoryItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -97,6 +98,7 @@ export function ClinicalHistoryScreen() {
     if (editingItem) {
       try {
         await updateItem(postId, editingItem.id, payload, data.file);
+        setSuccessMessage('Tu registro se actualizó con éxito');
         setShowSuccessModal(true);
       } catch (err) {
         Alert.alert('Error', 'No se pudo actualizar el registro.');
@@ -104,7 +106,8 @@ export function ClinicalHistoryScreen() {
     } else {
       try {
         await createItem(postId, payload, data.file);
-        Alert.alert('Éxito', 'Registro agregado correctamente.');
+        setSuccessMessage('Tu registro se guardó correctamente');
+        setShowSuccessModal(true);
       } catch (err) {
         Alert.alert('Error', 'No se pudo agregar el registro.');
       }
@@ -191,7 +194,7 @@ export function ClinicalHistoryScreen() {
               <SuccessCheckIcon size={80} />
             </View>
             <Text style={styles.successTitle}>
-              Tu registro se actualizó con éxito
+              {successMessage}
             </Text>
             <TouchableOpacity
               style={styles.successButton}
