@@ -1,5 +1,5 @@
 import { api } from '../../../shared/services/api';
-import type { ContactTypeValues } from '@huellas/shared';
+import type { ContactTypeValues, ClinicalHistory } from '@huellas/shared';
 
 export interface AnimalPost {
   id: string;
@@ -61,6 +61,11 @@ export const animalService = {
 
   async getUserFavorites(userId: string): Promise<any[]> {
     const res = await api.get(`/favorites/user/${userId}`);
+    return res.data.data;
+  },
+
+  async getClinicalHistory(postId: string): Promise<ClinicalHistory> {
+    const res = await api.get(`/animals/${postId}/clinical-history`);
     return res.data.data;
   },
 };
