@@ -1,5 +1,6 @@
 import type { ImagePickerAsset } from 'expo-image-picker';
 import { create } from 'zustand';
+import type { ClinicalHistoryItem } from '@huellas/shared';
 import {
   adminService,
   type AnimalPostPayload,
@@ -11,6 +12,7 @@ export interface Publicacion {
   nombre: string;
   fechaNacimiento: string;
   edad: string;
+  unidadTiempo: string;
   tamano: string;
   ubicacion: string;
   peso: string;
@@ -22,12 +24,14 @@ export interface Publicacion {
   latitude: number;
   longitude: number;
   placeId: string | undefined;
+  clinicalHistory: ClinicalHistoryItem[];
 }
 
 export interface PublicacionForm {
   nombre: string;
   fechaNacimiento: string;
   edad: string;
+  unidadTiempo: string;
   tamano: string;
   ubicacion: string;
   peso: string;
@@ -68,6 +72,7 @@ function toPublicacion(post: AnimalPostRecord): Publicacion {
     nombre: post.name,
     fechaNacimiento: formatBirthDate(post.birthDate),
     edad: String(post.age),
+    unidadTiempo: post.unidadTiempo || (post.age === 1 ? 'año' : 'años'),
     tamano: sizeLabels[post.size],
     ubicacion: post.location,
     peso: String(post.weight),
@@ -79,6 +84,7 @@ function toPublicacion(post: AnimalPostRecord): Publicacion {
     latitude: post.latitude,
     longitude: post.longitude,
     placeId: post.placeId ?? undefined,
+    clinicalHistory: post.clinicalHistory ?? [],
   };
 }
 
@@ -93,6 +99,7 @@ function toPayload(form: PublicacionForm): AnimalPostPayload {
   return {
     name: form.nombre.trim(),
     age: Number(form.edad),
+    unidadTiempo: form.unidadTiempo || 'años',
     weight: Number(form.peso),
     size: sizes[form.tamano] ?? 'medium',
     category: 'dog',

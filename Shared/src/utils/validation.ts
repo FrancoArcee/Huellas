@@ -227,7 +227,7 @@ export const createFavoriteSchema = z.object({
 
 export const createClinicalHistorySchema = z.object({
   type: z.enum(["VACUNACION", "DESPARASITACION", "CHEQUEO_PREVENTIVO", "OTRO"], {
-    errorMap: () => ({ message: "El tipo es requerido y debe ser válido" }),
+    message: "El tipo es requerido y debe ser válido",
   }),
   name: z.string().min(1, "El nombre es requerido"),
   date: z.string().min(1, "La fecha es requerida"),

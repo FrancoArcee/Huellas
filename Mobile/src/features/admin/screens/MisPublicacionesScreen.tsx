@@ -20,6 +20,7 @@ import Trash from '../../../assets/icons/buttons/trash.svg';
 import Location from '../../../assets/icons/location.svg';
 import { colors } from '../../../theme/index';
 import { useAuthStore } from '../../../shared/store/authStore';
+import { FileText, AlertCircle } from 'lucide-react-native';
 
 export function MisPublicacionesScreen() {
   const publicaciones = usePublicacionesStore((state) => state.publicaciones);
@@ -91,7 +92,7 @@ export function MisPublicacionesScreen() {
           <View>
             <Text style={styles.dogName}>{item.nombre}</Text>
             <Text style={styles.dogDetails}>
-              {item.tamano ? item.tamano + ' · ' : ''}{item.peso ? item.peso + ' kg · ' : ''}{item.edad}
+              {item.tamano ? item.tamano + ' · ' : ''}{item.peso ? item.peso + ' kg · ' : ''}{item.edad}{' '}{item.unidadTiempo}
             </Text>
 
             <View style={styles.locationContainer}>
@@ -109,17 +110,51 @@ export function MisPublicacionesScreen() {
             </View>
           </View>
 
-          <TouchableOpacity
-            style={styles.btnEditar}
-            onPress={() => handleEditar(item.id)}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.btnEditarText}>Editar</Text>
-          </TouchableOpacity>
+          <View style={styles.actionsRow}>
+            <TouchableOpacity
+              style={styles.btnEditar}
+              onPress={() => handleEditar(item.id)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.btnEditarText}>Editar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.btnHistorial,
+                item.clinicalHistory && item.clinicalHistory.length > 0
+                  ? styles.btnHistorialSuccess
+                  : styles.btnHistorialAlert,
+              ]}
+              onPress={() =>
+                router.push({
+                  pathname: '/clinical-history',
+                  params: { postId: item.id },
+                })
+              }
+              activeOpacity={0.8}
+            >
+              {item.clinicalHistory && item.clinicalHistory.length > 0 ? (
+                <FileText width={14} height={14} color={colors.secondary} style={styles.btnIcon} />
+              ) : (
+                <AlertCircle width={14} height={14} color={colors.danger} style={styles.btnIcon} />
+              )}
+              <Text
+                style={[
+                  styles.btnHistorialText,
+                  item.clinicalHistory && item.clinicalHistory.length > 0
+                    ? styles.btnHistorialTextSuccess
+                    : styles.btnHistorialTextAlert,
+                ]}
+              >
+                Historial
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.imageContainer}>
-          <Image source={{ uri: item.imagen || 'https://via.placeholder.com/150' }} style={styles.dogImage} />
+          <Image source={{ uri: item.imagen }} style={styles.dogImage} />
         </View>
       </View>
     </Swipeable>
@@ -251,17 +286,50 @@ const styles = StyleSheet.create({
     height: 185,
     width: 80,
   },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    width: '85%',
+  },
   btnEditar: {
     backgroundColor: colors.primary,
     borderRadius: 14,
     paddingVertical: 8,
     alignItems: 'center',
-    width: '75%',
+    flex: 1,
   },
   btnEditarText: {
     color: '#ffffff',
     fontWeight: '700',
     fontSize: 13,
+  },
+  btnHistorial: {
+    borderRadius: 14,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1.2,
+  },
+  btnHistorialSuccess: {
+    backgroundColor: colors.secondaryLight,
+  },
+  btnHistorialAlert: {
+    backgroundColor: '#FEE2E2',
+  },
+  btnIcon: {
+    marginRight: 4,
+  },
+  btnHistorialText: {
+    fontWeight: '700',
+    fontSize: 12,
+  },
+  btnHistorialTextSuccess: {
+    color: colors.secondary,
+  },
+  btnHistorialTextAlert: {
+    color: colors.danger,
   },
   imageContainer: {
     width: '45%',
