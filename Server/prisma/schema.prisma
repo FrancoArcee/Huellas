@@ -86,6 +86,7 @@ model Post {
   // ── Datos de la mascota ──
   name        String                        // Nombre de la mascota
   age         Int
+  unidadTiempo String                       @default("años")
   weight      Float
   size        String                        // "small" | "medium" | "large"
   category    String                        // "dog" | "cat" | etc.
@@ -107,6 +108,7 @@ model Post {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   favorites   Favorite[]
+  clinicalHistory ClinicalHistoryItem[]
 
   @@index([userId])
   @@index([category])
@@ -127,3 +129,29 @@ model Favorite {
   @@index([userId])
   @@index([postId])
 }
+
+enum ClinicalHistoryType {
+  VACUNACION
+  DESPARASITACION
+  CHEQUEO_PREVENTIVO
+  OTRO
+}
+
+model ClinicalHistoryItem {
+  id           String              @id @default(uuid())
+  postId       String
+  type         ClinicalHistoryType
+  name         String              @default("")
+  date         DateTime
+  veterinary   String
+  veterinarian String
+  comprobante  String              // File path or URL
+  description  String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  post         Post                @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+}
+

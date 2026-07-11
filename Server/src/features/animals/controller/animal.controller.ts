@@ -207,7 +207,7 @@ export async function updatePost(
 
     const updatedPost = await animalService.updatePost(id, parsed.data, req.user!.id);
     const removedPhotos = existingPost.photosUrl.filter(
-      (photoUrl) => !retainedPhotos.includes(photoUrl),
+      (photoUrl: string) => !retainedPhotos.includes(photoUrl),
     );
     removeAnimalUploads(removedPhotos);
 

@@ -80,6 +80,9 @@ export const animalRepository = {
             contactType: true,
           },
         },
+        clinicalHistory: {
+          orderBy: { date: "asc" },
+        },
         _count: {
           select: { favorites: true },
         },
@@ -189,6 +192,9 @@ export const animalRepository = {
               image: true,
               profilePictureUrl: true,
             },
+          },
+          clinicalHistory: {
+            orderBy: { date: "asc" },
           },
           _count: {
             select: { favorites: true },

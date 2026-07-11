@@ -160,6 +160,7 @@ function validateBirthDateAndAge(
 export const createPostSchema = z.object({
   name:       z.string().min(1).max(100),
   age:        z.number().int().min(0).max(50),
+  unidadTiempo: z.string().min(1, "La unidad de tiempo es requerida"),
   weight:     z.number().positive(),
   size:       petSizeSchema,
   category:   petCategorySchema,
@@ -179,6 +180,7 @@ export const createPostSchema = z.object({
 export const updatePostSchema = z.object({
   name:        z.string().min(1).max(100).optional(),
   age:         z.number().int().min(0).max(50).optional(),
+  unidadTiempo: z.string().min(1, "La unidad de tiempo es requerida").optional(),
   weight:      z.number().positive().optional(),
   size:        petSizeSchema.optional(),
   category:    petCategorySchema.optional(),
@@ -220,3 +222,28 @@ export const createFavoriteSchema = z.object({
   postId: z.string().uuid(),
   userId: z.string().uuid(),
 });
+
+// ─── Clinical History Schemas ───────────────────
+
+export const createClinicalHistorySchema = z.object({
+  type: z.enum(["VACUNACION", "DESPARASITACION", "CHEQUEO_PREVENTIVO", "OTRO"], {
+    errorMap: () => ({ message: "El tipo es requerido y debe ser válido" }),
+  }),
+  name: z.string().min(1, "El nombre es requerido"),
+  date: z.string().min(1, "La fecha es requerida"),
+  veterinary: z.string().min(1, "La veterinaria es requerida"),
+  veterinarian: z.string().min(1, "El veterinario es requerido"),
+  comprobante: z.string().min(1, "El comprobante es requerido"),
+  description: z.string().optional().nullable(),
+});
+
+export const updateClinicalHistorySchema = z.object({
+  type: z.enum(["VACUNACION", "DESPARASITACION", "CHEQUEO_PREVENTIVO", "OTRO"]).optional(),
+  name: z.string().min(1, "El nombre es requerido").optional(),
+  date: z.string().min(1, "La fecha es requerida").optional(),
+  veterinary: z.string().min(1, "La veterinaria es requerida").optional(),
+  veterinarian: z.string().min(1, "El veterinario es requerido").optional(),
+  comprobante: z.string().min(1, "El comprobante es requerido").optional(),
+  description: z.string().optional().nullable(),
+});
+
