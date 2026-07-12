@@ -99,6 +99,7 @@ export const animalService = {
     filters: {
       category?: string;
       size?: string;
+      status?: string;
       location?: string;
       q?: string;
       latitude?: number;
