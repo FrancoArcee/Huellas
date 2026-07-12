@@ -1,11 +1,13 @@
 import type { ImagePickerAsset } from 'expo-image-picker';
 import { api } from '../../../shared/services/api';
+import type { ClinicalHistoryItem } from '@huellas/shared';
 
 export interface AnimalPostRecord {
   id: string;
   userId: string;
   name: string;
   age: number;
+  unidadTiempo: string;
   weight: number;
   size: 'small' | 'medium' | 'large';
   category: 'dog' | 'cat' | 'other';
@@ -18,6 +20,7 @@ export interface AnimalPostRecord {
   birthDate: string | null;
   description: string | null;
   photosUrl: string[];
+  clinicalHistory?: ClinicalHistoryItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -25,6 +28,7 @@ export interface AnimalPostRecord {
 export interface AnimalPostPayload {
   name: string;
   age: number;
+  unidadTiempo: string;
   weight: number;
   size: AnimalPostRecord['size'];
   category: AnimalPostRecord['category'];

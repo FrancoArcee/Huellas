@@ -72,6 +72,7 @@ const baseAnimalFormSchema = z.object({
     .min(1, 'La edad es obligatoria')
     .regex(/^\d+$/, 'Debe ser un numero entero')
     .refine((value) => Number(value) <= 50, 'La edad no puede ser mayor a 50 anios'),
+  unidadTiempo: z.string().min(1, 'La unidad de tiempo es obligatoria'),
   tamano: z.enum(['Chico', 'Mediano', 'Grande'], {
     message: 'Seleccioná un tamaño válido',
   }),

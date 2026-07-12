@@ -15,6 +15,6 @@ const pool = new pg.Pool({
 });
 
 const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({ adapter } as any);
 
 export default prisma;

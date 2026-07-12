@@ -4,7 +4,7 @@ import Constants from 'expo-constants';
 
 const getBaseURL = (): string => {
   const url = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
-  
+
   // En desarrollo, si apunta a localhost, reemplazamos con la IP de Metro para dispositivos físicos
   if (__DEV__ && url.includes('localhost')) {
     const hostUri = Constants.expoConfig?.hostUri;
