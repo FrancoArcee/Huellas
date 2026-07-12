@@ -34,9 +34,9 @@ router.get("/:id", getPost);
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (public).
+ * Retrieve the clinical history of a post (any authenticated user).
  */
-router.get("/:id/clinical-history", getClinicalHistory);
+router.get("/:id/clinical-history", requireAuth, getClinicalHistory);
 
 // ─── Protected routes (require authentication) ─
 

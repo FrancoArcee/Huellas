@@ -179,7 +179,7 @@ export async function getPost(
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (public).
+ * Retrieve the clinical history of a post (any authenticated user).
  */
 export async function getClinicalHistory(
   req: Request,
@@ -190,7 +190,7 @@ export async function getClinicalHistory(
     const id = String(req.params.id);
     const history = await clinicalHistoryService.getClinicalHistoryByPostId(
       id,
-      req.user?.id,
+      req.user!.id,
     );
 
     res.status(200).json({
