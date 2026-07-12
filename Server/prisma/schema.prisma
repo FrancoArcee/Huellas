@@ -90,6 +90,12 @@ enum EventType {
   OTRO
 }
 
+enum PostStatus {
+  ADOPTADO
+  EN_TRANSITO
+  EN_ADOPCION
+}
+
 model Post {
   id          String   @id @default(uuid())
   userId      String
@@ -102,6 +108,7 @@ model Post {
   category    String                        // "dog" | "cat" | etc.
   gender      String                        // "male" | "female"
   neutered    Boolean
+  status      PostStatus                    @default(EN_ADOPCION)
   // ── Geolocalización ──
   latitude    Float
   longitude   Float
