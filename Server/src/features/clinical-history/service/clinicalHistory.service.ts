@@ -199,16 +199,13 @@ export const clinicalHistoryService = {
     return clinicalHistoryRepository.findEntryById(entryId);
   },
 
-  async getClinicalHistoryByPostId(postId: string, requestingUserId: string) {
+  async getClinicalHistoryByPostId(postId: string, requestingUserId?: string) {
     const post = await prisma.post.findUnique({
       where: { id: postId },
       select: { userId: true },
     });
     if (!post) {
       throw HttpError.notFound("Post not found");
-    }
-    if (post.userId !== requestingUserId) {
-      throw HttpError.forbidden("You are not allowed to access this clinical history");
     }
 
     let history = await clinicalHistoryRepository.findByPostId(postId, true);

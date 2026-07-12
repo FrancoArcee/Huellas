@@ -36,7 +36,7 @@ function parseExistingDocuments(req: Request): string[] {
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (owner only).
+ * Retrieve the clinical history of a post (public).
  */
 export async function getClinicalHistory(
   req: Request,
@@ -47,7 +47,7 @@ export async function getClinicalHistory(
     const postId = String(req.params.id || req.params.postId);
     const history = await clinicalHistoryService.getClinicalHistoryByPostId(
       postId,
-      req.user!.id,
+      req.user?.id,
     );
     sendSuccess(res, history);
   } catch (error) {

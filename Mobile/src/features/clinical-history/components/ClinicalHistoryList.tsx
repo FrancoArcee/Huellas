@@ -15,14 +15,16 @@ import { colors } from '../../../theme/index';
 
 interface ClinicalHistoryListProps {
   items: ClinicalHistoryItem[];
-  onEditItem: (item: ClinicalHistoryItem) => void;
-  onDeleteItem: (item: ClinicalHistoryItem) => void;
+  onEditItem?: (item: ClinicalHistoryItem) => void;
+  onDeleteItem?: (item: ClinicalHistoryItem) => void;
+  readOnly?: boolean;
 }
 
 export function ClinicalHistoryList({
   items,
   onEditItem,
   onDeleteItem,
+  readOnly = false,
 }: ClinicalHistoryListProps) {
   if (items.length === 0) {
     return (
@@ -39,8 +41,9 @@ export function ClinicalHistoryList({
       renderItem={({ item }) => (
         <ClinicalHistoryCard
           item={item}
-          onEdit={() => onEditItem(item)}
-          onDelete={() => onDeleteItem(item)}
+          onEdit={onEditItem ? () => onEditItem(item) : undefined}
+          onDelete={onDeleteItem ? () => onDeleteItem(item) : undefined}
+          readOnly={readOnly}
         />
       )}
       showsVerticalScrollIndicator={false}

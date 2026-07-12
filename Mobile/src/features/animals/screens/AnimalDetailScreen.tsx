@@ -29,6 +29,7 @@ import { animalService, type AnimalPost } from '../services/animalService';
 import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import { ClinicalHistoryButton } from '../components/ClinicalHistoryButton';
 import { ClinicalHistoryModal } from '../components/ClinicalHistoryModal';
+import { clinicalHistoryService } from '../../clinical-history/services/clinicalHistoryService';
 
 const roundedFont = Platform.select({
   web: 'Nunito, Poppins, "Arial Rounded MT Bold", Arial, sans-serif',
@@ -129,12 +130,12 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (!isOwner || !animalId) return;
+    if (!animalId) return;
 
     const loadVaccineCount = async () => {
       try {
-        const history = await animalService.getClinicalHistory(animalId);
-        const count = history.entries?.filter((e) => e.eventType === 'VACUNACION').length ?? 0;
+        const items = await clinicalHistoryService.listByPost(animalId);
+        const count = items.filter((e) => e.type === 'VACUNACION').length;
         setVaccineCount(count);
       } catch {
         // silently fail - button will show 0
@@ -142,7 +143,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
     };
 
     loadVaccineCount();
-  }, [isOwner, animalId]);
+  }, [animalId]);
 
   const contactMessage = useMemo(
     () => (post ? `Hola, vi a ${post.name} en Huellas y quisiera consultar por su adopción.` : ''),
@@ -330,6 +331,10 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
               </View>
             </View>
 
+            <ClinicalHistoryButton
+              onPress={() => setClinicalHistoryModalVisible(true)}
+              vaccineCount={vaccineCount}
+            />
             <View style={styles.about}>
               <CustomText variant="h4" style={styles.sectionTitle}>
                 Sobre {post.name}
@@ -351,12 +356,7 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
               )}
             </View>
 
-            {isOwner && (
-              <ClinicalHistoryButton
-                onPress={() => setClinicalHistoryModalVisible(true)}
-                vaccineCount={vaccineCount}
-              />
-            )}
+
 
             {post.location ? (
               <View style={styles.locationRow}>
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   about: {
-    marginTop: 32,
+    marginTop: 15,
     paddingLeft: 40,
     paddingRight: 46,
   },
