@@ -86,6 +86,8 @@ enum EventType {
   CONSULTA_GENERAL
   CIRUGIA
   DIAGNOSTICO
+  CHEQUEO_PREVENTIVO
+  OTRO
 }
 
 model Post {
@@ -94,6 +96,7 @@ model Post {
   // ── Datos de la mascota ──
   name        String                        // Nombre de la mascota
   age         Int
+  unidadTiempo String                       @default("años")
   weight      Float
   size        String                        // "small" | "medium" | "large"
   category    String                        // "dog" | "cat" | etc.
@@ -157,7 +160,12 @@ model ClinicalHistoryEntry {
   eventType         EventType
   title             String
   description       String
-  documentsUrl    String[]
+  documentsUrl      String[]
+
+  // Campos adicionales para soportar la compatibilidad local del frontend
+  name              String?
+  veterinary        String?
+  veterinarian      String?
 
   clinicalHistory   ClinicalHistory @relation(fields: [clinicalHistoryId], references: [id], onDelete: Cascade)
 

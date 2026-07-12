@@ -61,13 +61,34 @@ async function findIdsWithinRadius(
 
 // ─── Repository ────────────────────────────────
 
+function mapPostClinicalHistory(post: any) {
+  if (!post) return post;
+  const entries = post.clinicalHistory?.entries ?? [];
+  return {
+    ...post,
+    clinicalHistory: entries.map((entry: any) => ({
+      id: entry.id,
+      postId: post.id,
+      type: entry.eventType,
+      name: entry.name || entry.title || "",
+      date: entry.date,
+      veterinary: entry.veterinary || "",
+      veterinarian: entry.veterinarian || "",
+      comprobante: entry.documentsUrl?.[0] || "",
+      description: entry.description,
+      createdAt: entry.createdAt,
+      updatedAt: entry.updatedAt,
+    })),
+  };
+}
+
 export const animalRepository = {
   /**
    * Find a single post by its unique ID.
    * Includes the author user and a count of favorites.
    */
   async findById(id: string) {
-    return prisma.post.findUnique({
+    const post = await prisma.post.findUnique({
       where: { id },
       include: {
         user: {
@@ -80,11 +101,19 @@ export const animalRepository = {
             contactType: true,
           },
         },
+        clinicalHistory: {
+          include: {
+            entries: {
+              orderBy: { date: "asc" },
+            },
+          },
+        },
         _count: {
           select: { favorites: true },
         },
       },
     });
+    return mapPostClinicalHistory(post);
   },
 
   /**
@@ -190,6 +219,13 @@ export const animalRepository = {
               profilePictureUrl: true,
             },
           },
+          clinicalHistory: {
+            include: {
+              entries: {
+                orderBy: { date: "asc" },
+              },
+            },
+          },
           _count: {
             select: { favorites: true },
           },
@@ -199,7 +235,7 @@ export const animalRepository = {
     ]);
 
     return {
-      posts,
+      posts: posts.map(mapPostClinicalHistory),
       total,
       page,
       limit,

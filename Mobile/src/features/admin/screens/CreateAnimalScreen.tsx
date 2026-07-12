@@ -42,6 +42,7 @@ export default function CreateAnimalScreen() {
     nombre: '',
     fechaNacimiento: '',
     edad: '',
+    unidadTiempo: 'años',
     tamano: '',
     ubicacion: '',
     peso: '',
@@ -56,6 +57,7 @@ export default function CreateAnimalScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
+  const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
   const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
@@ -168,13 +170,50 @@ export default function CreateAnimalScreen() {
               {renderError('fechaNacimiento')}
 
               <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Edad (puede ser aproximada)"
-                keyboardType="numeric"
-                value={formData.edad}
-                onChangeText={(t) => updateForm('edad', sanitizeNumericInput(t))}
-              />
+              <View style={[localStyles.inputWrapper, errors.edad ? localStyles.inputError : {}]}>
+                <TextInput
+                  style={localStyles.nestedInput}
+                  placeholder="Edad"
+                  keyboardType="numeric"
+                  value={formData.edad}
+                  onChangeText={(t) => updateForm('edad', sanitizeNumericInput(t))}
+                />
+                <View style={localStyles.divider} />
+                <TouchableOpacity
+                  style={localStyles.unitSelector}
+                  onPress={() => setOpenUnitDropdown(!openUnitDropdown)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={localStyles.unitSelectorText}>
+                    {formData.unidadTiempo === 'meses' ? 'Meses' : 'Años'}
+                  </Text>
+                  <ChevronDown width={14} height={14} color="#555" />
+                </TouchableOpacity>
+
+                {openUnitDropdown && (
+                  <View style={localStyles.inlineDropdown}>
+                    <TouchableOpacity
+                      style={localStyles.inlineDropdownOption}
+                      onPress={() => {
+                        updateForm('unidadTiempo', 'años');
+                        setOpenUnitDropdown(false);
+                      }}
+                    >
+                      <Text style={localStyles.inlineDropdownText}>Años</Text>
+                    </TouchableOpacity>
+                    <View style={localStyles.inlineDivider} />
+                    <TouchableOpacity
+                      style={localStyles.inlineDropdownOption}
+                      onPress={() => {
+                        updateForm('unidadTiempo', 'meses');
+                        setOpenUnitDropdown(false);
+                      }}
+                    >
+                      <Text style={localStyles.inlineDropdownText}>Meses</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
               {renderError('edad')}
 
               <Text style={styles.label}>Tamaño <Text style={styles.asterisk}>*</Text></Text>
@@ -376,5 +415,74 @@ const localStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     marginLeft: 4,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e6e6e6',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 0,
+    height: 50,
+    position: 'relative',
+    zIndex: 10,
+  },
+  inputError: {
+    borderColor: '#e74c3c',
+  },
+  nestedInput: {
+    flex: 1,
+    height: '100%',
+    paddingLeft: 16,
+    paddingRight: 8,
+    fontSize: 14,
+    color: '#000',
+  },
+  divider: {
+    width: 1,
+    height: 20,
+    backgroundColor: '#ccc',
+  },
+  unitSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    height: '100%',
+    gap: 6,
+  },
+  unitSelectorText: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+  },
+  inlineDropdown: {
+    position: 'absolute',
+    top: 54,
+    right: 0,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    width: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+    zIndex: 100,
+  },
+  inlineDropdownOption: {
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  inlineDropdownText: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+  },
+  inlineDivider: {
+    height: 1,
+    backgroundColor: '#eee',
   },
 });
