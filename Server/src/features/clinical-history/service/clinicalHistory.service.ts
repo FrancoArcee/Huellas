@@ -207,9 +207,6 @@ export const clinicalHistoryService = {
     if (!post) {
       throw HttpError.notFound("Post not found");
     }
-    if (post.userId !== requestingUserId) {
-      throw HttpError.forbidden("You are not allowed to access this clinical history");
-    }
 
     let history = await clinicalHistoryRepository.findByPostId(postId, true);
     if (!history) {

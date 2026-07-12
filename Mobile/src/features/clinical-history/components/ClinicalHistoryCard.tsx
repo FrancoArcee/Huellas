@@ -19,20 +19,27 @@ import {
   MapPin,
   FileText,
   MoreVertical,
+  Stethoscope,
+  HeartPulse,
+  FileSearch,
 } from 'lucide-react-native';
 import type { ClinicalHistoryItem } from '@huellas/shared';
 import { colors } from '../../../theme/index';
 
 interface ClinicalHistoryCardProps {
   item: ClinicalHistoryItem;
-  onEdit: () => void;
-  onDelete: () => void;
+  onEdit?: (() => void) | undefined;
+  onDelete?: (() => void) | undefined;
+  readOnly?: boolean | undefined;
 }
 
 const TYPE_LABELS: Record<string, string> = {
   VACUNACION: 'Vacunación',
   DESPARASITACION: 'Desparasitación',
   CHEQUEO_PREVENTIVO: 'Chequeo preventivo',
+  CONSULTA_GENERAL: 'Consulta General',
+  CIRUGIA: 'Cirugía',
+  DIAGNOSTICO: 'Diagnóstico',
   OTRO: 'Otro',
 };
 
@@ -46,6 +53,15 @@ const getIconAndColors = (type: string) => {
   }
   if (lower.includes('control') || lower.includes('preventivo') || lower.includes('chequeo')) {
     return { Icon: Calendar, bg: '#E0F2FE', color: '#0284C7' };
+  }
+  if (lower.includes('consulta') || lower.includes('stethoscope') || lower.includes('general')) {
+    return { Icon: Stethoscope, bg: '#E0F2FE', color: colors.secondary };
+  }
+  if (lower.includes('cirugia') || lower.includes('heart') || lower.includes('pulse')) {
+    return { Icon: HeartPulse, bg: '#FEE2E2', color: colors.danger };
+  }
+  if (lower.includes('diagnostico') || lower.includes('search')) {
+    return { Icon: FileSearch, bg: '#E0F2FE', color: '#0284C7' };
   }
   return { Icon: FileText, bg: '#F3F4F6', color: '#4B5563' };
 };
@@ -64,7 +80,7 @@ const formatDate = (isoString: string) => {
   }
 };
 
-export function ClinicalHistoryCard({ item, onEdit, onDelete }: ClinicalHistoryCardProps) {
+export function ClinicalHistoryCard({ item, onEdit, onDelete, readOnly = false }: ClinicalHistoryCardProps) {
   const { Icon, bg, color } = getIconAndColors(item.type);
   const [menuVisible, setMenuVisible] = React.useState(false);
 
@@ -136,40 +152,46 @@ export function ClinicalHistoryCard({ item, onEdit, onDelete }: ClinicalHistoryC
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity
-          style={styles.actionBtn}
-          onPress={handleActionsMenu}
-          activeOpacity={0.7}
-        >
-          <MoreVertical width={20} height={20} color={colors.gray500} />
-        </TouchableOpacity>
+        {!readOnly && (onEdit || onDelete) && (
+          <TouchableOpacity
+            style={styles.actionBtn}
+            onPress={handleActionsMenu}
+            activeOpacity={0.7}
+          >
+            <MoreVertical width={20} height={20} color={colors.gray500} />
+          </TouchableOpacity>
+        )}
       </View>
 
-      {menuVisible && (
+      {!readOnly && menuVisible && (
         <>
           <Pressable
             style={styles.menuBackdrop}
             onPress={() => setMenuVisible(false)}
           />
           <View style={styles.dropdownMenu}>
-            <TouchableOpacity
-              style={styles.dropdownItem}
-              onPress={() => {
-                setMenuVisible(false);
-                onEdit();
-              }}
-            >
-              <Text style={styles.dropdownText}>Editar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.dropdownItem, styles.lastDropdownItem]}
-              onPress={() => {
-                setMenuVisible(false);
-                onDelete();
-              }}
-            >
-              <Text style={[styles.dropdownText, styles.destructiveText]}>Eliminar</Text>
-            </TouchableOpacity>
+            {!!onEdit && (
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setMenuVisible(false);
+                  onEdit();
+                }}
+              >
+                <Text style={styles.dropdownText}>Editar</Text>
+              </TouchableOpacity>
+            )}
+            {!!onDelete && (
+              <TouchableOpacity
+                style={[styles.dropdownItem, styles.lastDropdownItem]}
+                onPress={() => {
+                  setMenuVisible(false);
+                  onDelete();
+                }}
+              >
+                <Text style={[styles.dropdownText, styles.destructiveText]}>Eliminar</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}

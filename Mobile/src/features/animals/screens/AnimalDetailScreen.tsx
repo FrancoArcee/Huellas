@@ -27,6 +27,9 @@ import { openContactApp } from '../../../shared/utils/contact-apps';
 import { translateCategory, translateGender, translateSize } from '../../../shared/utils/translations';
 import { animalService, type AnimalPost } from '../services/animalService';
 import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
+import { ClinicalHistoryButton } from '../components/ClinicalHistoryButton';
+import { ClinicalHistoryModal } from '../components/ClinicalHistoryModal';
+import { clinicalHistoryService } from '../../clinical-history/services/clinicalHistoryService';
 
 const roundedFont = Platform.select({
   web: 'Nunito, Poppins, "Arial Rounded MT Bold", Arial, sans-serif',
@@ -86,6 +89,8 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const [heroWidth, setHeroWidth] = useState(windowWidth);
   const [imageError, setImageError] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [clinicalHistoryModalVisible, setClinicalHistoryModalVisible] = useState(false);
+  const [vaccineCount, setVaccineCount] = useState(0);
 
   const isOwner = user != null && post != null && user.id === post.userId;
   const liked = favoriteId !== null;
@@ -123,6 +128,22 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
     link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap';
     document.head.appendChild(link);
   }, []);
+
+  useEffect(() => {
+    if (!animalId) return;
+
+    const loadVaccineCount = async () => {
+      try {
+        const items = await clinicalHistoryService.listByPost(animalId);
+        const count = items.filter((e) => e.type === 'VACUNACION').length;
+        setVaccineCount(count);
+      } catch {
+        // silently fail - button will show 0
+      }
+    };
+
+    loadVaccineCount();
+  }, [animalId]);
 
   const contactMessage = useMemo(
     () => (post ? `Hola, vi a ${post.name} en Huellas y quisiera consultar por su adopción.` : ''),
@@ -310,6 +331,10 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
               </View>
             </View>
 
+            <ClinicalHistoryButton
+              onPress={() => setClinicalHistoryModalVisible(true)}
+              vaccineCount={vaccineCount}
+            />
             <View style={styles.about}>
               <CustomText variant="h4" style={styles.sectionTitle}>
                 Sobre {post.name}
@@ -330,6 +355,8 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
                 </Pressable>
               )}
             </View>
+
+
 
             {post.location ? (
               <View style={styles.locationRow}>
@@ -389,6 +416,13 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
         title={alertError?.title ?? ''}
         message={alertError?.message}
         onConfirm={() => setAlertError(null)}
+      />
+
+      <ClinicalHistoryModal
+        visible={clinicalHistoryModalVisible}
+        onClose={() => setClinicalHistoryModalVisible(false)}
+        postId={animalId ?? ''}
+        petName={post.name}
       />
     </View>
   );
@@ -537,7 +571,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   about: {
-    marginTop: 32,
+    marginTop: 15,
     paddingLeft: 40,
     paddingRight: 46,
   },

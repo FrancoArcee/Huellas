@@ -34,7 +34,7 @@ router.get("/:id", getPost);
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (owner only).
+ * Retrieve the clinical history of a post (any authenticated user).
  */
 router.get("/:id/clinical-history", requireAuth, getClinicalHistory);
 

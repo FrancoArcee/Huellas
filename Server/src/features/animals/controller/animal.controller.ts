@@ -179,7 +179,7 @@ export async function getPost(
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (owner only).
+ * Retrieve the clinical history of a post (any authenticated user).
  */
 export async function getClinicalHistory(
   req: Request,
