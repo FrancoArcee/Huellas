@@ -22,11 +22,18 @@ export function errorHandler(
   }
 
   if (err instanceof multer.MulterError) {
+    const isClinical = err.field === "documents";
     const message = err.code === "LIMIT_FILE_SIZE"
-      ? "Cada imagen puede pesar como máximo 3 MB."
+      ? isClinical
+        ? "Cada documento puede pesar como máximo 5 MB."
+        : "Cada imagen puede pesar como máximo 3 MB."
       : err.code === "LIMIT_FILE_COUNT"
-        ? "Podés adjuntar hasta 3 imágenes."
-        : "No se pudieron procesar las imágenes adjuntas.";
+        ? isClinical
+          ? "Podés adjuntar hasta 5 documentos."
+          : "Podés adjuntar hasta 3 imágenes."
+        : isClinical
+          ? "No se pudieron procesar los documentos adjuntos."
+          : "No se pudieron procesar las imágenes adjuntas.";
     res.status(400).json({
       success: false,
       error: err.code,

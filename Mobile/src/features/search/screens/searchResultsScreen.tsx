@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as Location from 'expo-location';
 import MapView, { Marker, UrlTile } from 'react-native-maps';
 import Svg, { Circle, Polygon, Path, G, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
@@ -25,6 +26,7 @@ import { storage } from '../../../shared/services/storage';
 import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
+import { animalService } from '../../animals/services/animalService';
 import { translateCategory, translateGender, formatAge, formatDistance } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
@@ -184,7 +186,10 @@ export function SearchResultsScreen() {
     const [selectedAnimal, setSelectedAnimal] = useState<AnimalDTO | null>(null);
     const [hiddenMarkerId, setHiddenMarkerId] = useState<string | null>(null);
     const [fetchParams, setFetchParams] = useState<FetchAnimalsParams>(initialFetchParams);
-    const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [userCoords, setUserCoords] = useState<
+        { latitude: number; longitude: number } | null | undefined
+    >(undefined);
+    const [favoriteIds, setFavoriteIds] = useState<Record<string, string>>({});
 
     const mapAnimals = useMemo(
         () => animals.filter((animal) => animal.latitude !== undefined && animal.longitude !== undefined),
@@ -201,6 +206,10 @@ export function SearchResultsScreen() {
     }, [initialFetchParams, initialLayout, initialSearch]);
 
     const loadAnimals = useCallback(async () => {
+        const hasFilterCoordinates =
+            fetchParams.latitude !== undefined && fetchParams.longitude !== undefined;
+        if (!hasFilterCoordinates && userCoords === undefined) return;
+
         setLoading(true);
         try {
             const nextAnimals = await fetchAnimals(fetchParams);
@@ -217,7 +226,32 @@ export function SearchResultsScreen() {
                 return a;
             });
 
-            setAnimals(withDistance);
+            // Check favorites for loaded animals
+            try {
+                if (currentUserId) {
+                    const favMap: Record<string, string> = {};
+                    await Promise.all(
+                        withDistance.map(async (animal) => {
+                            try {
+                                const fav = await animalService.checkFavorite(animal.id);
+                                if (fav) {
+                                    favMap[animal.id] = fav.id;
+                                }
+                            } catch {}
+                        })
+                    );
+                    setFavoriteIds(favMap);
+                }
+            } catch (error) {
+                console.warn('Error checking favorites:', error);
+            }
+
+            const withFavorite = withDistance.map((a) => ({
+                ...a,
+                isFavorite: !!favoriteIds[a.id],
+            }));
+
+            setAnimals(withFavorite);
         } catch (error) {
             console.warn('Error loading animals', error);
             setAnimals([]);
@@ -230,17 +264,94 @@ export function SearchResultsScreen() {
         loadAnimals();
     }, [loadAnimals]);
 
+    const handleFavoriteToggle = async (animalId: string) => {
+        const animal = animals.find(a => a.id === animalId);
+        if (!animal) return;
+
+        const wasFavorite = !!favoriteIds[animalId];
+
+        setAnimals(prev =>
+            prev.map(a => {
+                if (a.id === animalId) {
+                    return { ...a, isFavorite: !wasFavorite };
+                }
+                return a;
+            })
+        );
+
+        try {
+            if (wasFavorite) {
+                const favId = favoriteIds[animalId];
+                if (favId) {
+                    await animalService.removeFavorite(favId);
+                    setFavoriteIds(prev => {
+                        const next = { ...prev };
+                        delete next[animalId];
+                        return next;
+                    });
+                }
+            } else {
+                const favRecord = await animalService.addFavorite(animalId);
+                setFavoriteIds(prev => ({ ...prev, [animalId]: favRecord.id }));
+            }
+        } catch (error: any) {
+            console.warn('Error toggling favorite:', error.response?.data || error.message);
+
+            const isAlreadyDeleted = wasFavorite && (error.response?.status === 404 || error.response?.data?.error === "NOT_FOUND");
+
+            if (!isAlreadyDeleted) {
+                setAnimals(prev =>
+                    prev.map(a => {
+                        if (a.id === animalId) {
+                            return { ...a, isFavorite: wasFavorite };
+                        }
+                        return a;
+                    })
+                );
+            } else {
+                setFavoriteIds(prev => {
+                    const next = { ...prev };
+                    delete next[animalId];
+                    return next;
+                });
+            }
+        }
+    };
+
     useEffect(() => {
         const loadLocation = async () => {
-            const coords = await storage.getLocationCoords();
-            if (coords) {
-                setUserCoords(coords);
+            const savedCoords = await storage.getLocationCoords();
+
+            try {
+                let permission = await Location.getForegroundPermissionsAsync();
+                if (permission.status === 'undetermined') {
+                    permission = await Location.requestForegroundPermissionsAsync();
+                }
+
+                if (permission.status === 'granted') {
+                    const location = await Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.Balanced,
+                    });
+                    const currentCoords = {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                    };
+
+                    await storage.setLocation(currentCoords.latitude, currentCoords.longitude);
+                    setUserCoords(currentCoords);
+                    return;
+                }
+            } catch (error) {
+                console.warn('Error getting current location for distances', error);
             }
+
+            setUserCoords(savedCoords);
         };
-        if (!fetchParams.latitude && !fetchParams.longitude) {
+
+        if (fetchParams.latitude === undefined || fetchParams.longitude === undefined) {
             loadLocation();
         }
-    }, []);
+    }, [fetchParams.latitude, fetchParams.longitude]);
 
     // Fit map coordinates when filtered animals list changes
     useEffect(() => {
@@ -425,7 +536,13 @@ export function SearchResultsScreen() {
                         const gender = translateGender(item.gender);
                         const age = formatAge(parseInt(item.age, 10) || undefined);
                         const details = [type, gender, age].filter(Boolean).join(' · ');
-                        const distText = formatDistance(item.distanceKm);
+                        const hasReferenceCoordinates =
+                            (fetchParams.latitude !== undefined &&
+                                fetchParams.longitude !== undefined) ||
+                            userCoords !== null;
+                        const distText = hasReferenceCoordinates
+                            ? formatDistance(item.distanceKm)
+                            : 'Distancia no disponible';
                         return (
                             <PetHorizontalCard
                                 name={item.name}
@@ -433,6 +550,8 @@ export function SearchResultsScreen() {
                                 location={distText}
                                 image={item.photoUri}
                                 tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
+                                isLiked={!!favoriteIds[item.id]}
+                                onLikePress={() => handleFavoriteToggle(item.id)}
                                 onPress={() => {
                                     router.push({
                                         pathname: '/animals/[id]',
@@ -682,13 +801,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         gap: 16,
     },
-    petCard: {
-        width: '92%',
-        maxWidth: 360,
-        height: 210,
-        alignSelf: 'center',
-        marginBottom: 18,
-    },
+petCard: {
+    width: '100%',
+    maxWidth: 420,
+    height: 175,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
 
     markerContainer: {
         width: 42,

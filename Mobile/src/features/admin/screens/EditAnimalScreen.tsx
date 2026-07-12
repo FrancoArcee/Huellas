@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Alert,
   Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -15,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
 import { BirthDatePicker } from '../components/BirthDatePicker';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -60,6 +60,7 @@ export default function EditAnimalScreen() {
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
   const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
@@ -85,7 +86,7 @@ export default function EditAnimalScreen() {
       });
       setFotos(pub.imagenes.map(url => ({ tipo: 'existente', url })));
     } else {
-      Alert.alert('Error', 'Publicación no encontrada');
+      setAlertError({ title: 'Error', message: 'Publicación no encontrada' });
       router.back();
     }
   }, [id, publicaciones]);
@@ -114,7 +115,7 @@ export default function EditAnimalScreen() {
 
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
+      setAlertError({ title: 'Permiso requerido', message: 'Necesitamos permiso para abrir tu galería de imágenes.' });
       return;
     }
 
@@ -126,9 +127,11 @@ export default function EditAnimalScreen() {
         ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
 
-    if (result.canceled || !result.assets[0]) return;
+    if (result.canceled) return;
+    const asset = result.assets[0];
+    if (!asset) return;
 
-    setFotos(prev => [...prev, { tipo: 'nueva', uri: result.assets[0].uri, asset: result.assets[0] }]);
+    setFotos(prev => [...prev, { tipo: 'nueva', uri: asset.uri, asset }]);
     setErrors(prev => ({ ...prev, imagenes: undefined }));
   };
 
@@ -169,15 +172,11 @@ export default function EditAnimalScreen() {
         fotosNuevas,
         fotosExistentes,
       );
-      Alert.alert('¡Éxito!', 'La Publicación fue actualizada correctamente.');
+      setAlertError({ title: '¡Éxito!', message: 'La Publicación fue actualizada correctamente.' });
       router.back();
     } catch (error: any) {
       console.error('Error al editar la publicación:', error);
-      Alert.alert(
-        'Error',
-        error.response?.data?.message ??
-          'No se pudo actualizar la publicación. Intentá nuevamente.',
-      );
+      setAlertError({ title: 'Error', message: 'No se pudo guardar la publicación. Intentá nuevamente.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -417,6 +416,15 @@ export default function EditAnimalScreen() {
           </View>
         )}
       </ScrollView>
+      {alertError && (
+        <FeedbackModal
+          visible={true}
+          type="error"
+          title={alertError.title}
+          message={alertError.message}
+          onClose={() => setAlertError(null)}
+        />
+      )}
     </SafeAreaView>
   );
 }

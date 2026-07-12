@@ -1,0 +1,58 @@
+Conectar pantalla de Detalle del Animal con backend
+Crear y eliminar un favorito
+Obtener detalles de la publicación
+Vincular deep link para contactar al dueño
+Si es el dueño de la publicación no debe aparecer el botón de favoritos
+
+Voy a explorar la estructura del proyecto para entender cómo está organizado.
+
+Ejecutó agente
+Explore project structure
+Tengo el mapa completo del proyecto. Voy a leer los archivos clave antes de modificar.
+
+
+Leyó 8 archivos
+Voy a leer el controller de animales y el de favoritos para entender la respuesta actual.
+
+
+Leyó 4 archivos
+Tengo todo lo que necesito. Voy a implementar los cambios en paralelo.
+
+Implementación del detalle del animal
+Backend — agregar endpoint GET /favorites/check/:postId:
+
+
+Editado 3 archivos
+Ahora el frontend — primero el animalService.ts:
+
+Creado
+animalService.ts
++59
+-0
+Ahora reescribo AnimalDetailScreen.tsx conectado al backend:
+
+Actualizado
+AnimalDetailScreen.tsx
++156
+-83
+Listo. Esto es lo que se implementó:
+
+Cambios realizados
+Backend (Server/src/features/favorites/)
+
+Archivo	Cambio
+Server/src/features/favorites/service/favorite.service.ts	Nuevo método getByUserAndPost(postId, userId)
+Server/src/features/favorites/controller/favorite.controller.ts	Nuevo handler checkFavoriteByPost — devuelve el registro de favorito del usuario o null
+Server/src/features/favorites/routes/favorite.routes.ts	Nueva ruta GET /favorites/check/:postId (antes de /:id para evitar colisión de Express)
+Frontend (Mobile/src/features/animals/)
+
+Archivo	Cambio
+Mobile/src/features/animals/services/animalService.ts	Nuevo servicio con getAnimalDetail, checkFavorite, addFavorite, removeFavorite
+Mobile/src/features/animals/screens/AnimalDetailScreen.tsx	Reescrito completamente
+Comportamiento de la pantalla:
+
+Al abrir, hace GET /animals/:id y (si hay sesión) GET /favorites/check/:id en paralelo
+Si el usuario es el dueño: no aparece el botón de favoritos ni el botón de WhatsApp
+Si no es dueño: el corazón persiste el favorito en el backend (crea/elimina con el favoriteId real)
+El botón de WhatsApp usa post.user.contact del backend como número real en el deep link wa.me/
+Pantalla de loading mientras carga, y mensaje de error si falla el fetch

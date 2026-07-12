@@ -56,7 +56,18 @@ const multipartConfig = {
 export const clinicalHistoryService = {
   async listByPost(postId: string): Promise<ClinicalHistoryItem[]> {
     const response = await api.get(`/animals/${postId}/clinical-history`);
-    return response.data.data;
+    const data = response.data.data;
+    const entries = Array.isArray(data) ? data : (data?.entries || []);
+    return entries.map((entry: any) => ({
+      id: entry.id,
+      type: entry.eventType || entry.type,
+      name: entry.name || entry.title || '',
+      date: entry.date,
+      veterinary: entry.veterinary || '',
+      veterinarian: entry.veterinarian || '',
+      comprobante: entry.documentsUrl?.[0] || entry.comprobante || '',
+      description: entry.description || '',
+    }));
   },
 
   async create(

@@ -96,7 +96,7 @@ const baseAnimalFormSchema = z.object({
   }),
   descripcion: z
     .string()
-    .max(1000, 'La descripción no puede superar los 1000 caracteres'),
+    .max(255, 'La descripción no puede superar los 255 caracteres'),
     });
 
 export const animalFormSchema = baseAnimalFormSchema.superRefine((data, ctx) => {

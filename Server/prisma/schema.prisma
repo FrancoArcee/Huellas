@@ -80,6 +80,16 @@ model Verification {
 
 // ─── 2. MODELOS DE NEGOCIO ───────────────────────────
 
+enum EventType {
+  VACUNACION
+  DESPARASITACION
+  CONSULTA_GENERAL
+  CIRUGIA
+  DIAGNOSTICO
+  CHEQUEO_PREVENTIVO
+  OTRO
+}
+
 model Post {
   id          String   @id @default(uuid())
   userId      String
@@ -105,10 +115,10 @@ model Post {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   // ── Relaciones ──
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  favorites   Favorite[]
-  clinicalHistory ClinicalHistoryItem[]
+  favorites         Favorite[]
+  clinicalHistory   ClinicalHistory?
 
   @@index([userId])
   @@index([category])
@@ -130,28 +140,37 @@ model Favorite {
   @@index([postId])
 }
 
-enum ClinicalHistoryType {
-  VACUNACION
-  DESPARASITACION
-  CHEQUEO_PREVENTIVO
-  OTRO
-}
+model ClinicalHistory {
+  id        String   @id @default(uuid())
+  postId    String   @unique
 
-model ClinicalHistoryItem {
-  id           String              @id @default(uuid())
-  postId       String
-  type         ClinicalHistoryType
-  name         String              @default("")
-  date         DateTime
-  veterinary   String
-  veterinarian String
-  comprobante  String              // File path or URL
-  description  String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  entries   ClinicalHistoryEntry[]
 
-  post         Post                @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([postId])
 }
 
+model ClinicalHistoryEntry {
+  id                String          @id @default(uuid())
+  clinicalHistoryId String
+  date              DateTime
+  eventType         EventType
+  title             String
+  description       String
+  documentsUrl      String[]
+
+  // Campos adicionales para soportar la compatibilidad local del frontend
+  name              String?
+  veterinary        String?
+  veterinarian      String?
+
+  clinicalHistory   ClinicalHistory @relation(fields: [clinicalHistoryId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([clinicalHistoryId])
+}

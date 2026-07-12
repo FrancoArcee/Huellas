@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
-  KeyboardAvoidingView, 
-  TouchableWithoutFeedback, 
-  Keyboard, 
-  Platform 
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
@@ -26,6 +24,7 @@ import { useAuthStore } from '../../../shared/store/authStore';
 import { validateContactByType, contactErrorMessages } from '@huellas/shared';
 import { registerSchema } from '../validations/schemas';
 import { User, Mail, Lock, MessageSquare } from 'lucide-react-native';
+import { DismissKeyboard } from '../../../shared/components/ui/DismissKeyboard';
 
 const COMMUNICATION_OPTIONS = [
   { label: 'WhatsApp', value: 'WhatsApp', icon: WhatsAppSvg },
@@ -225,8 +224,7 @@ export const RegisterScreen = () => {
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.innerContainer}>
+        <DismissKeyboard style={styles.innerContainer}>
             <View style={styles.header}>
               <LogoSvg width={80} height={80} />
               <CustomText variant="h1" color="primary" style={styles.appName}> Huellas </CustomText>
@@ -277,7 +275,7 @@ export const RegisterScreen = () => {
               />
               <CustomInput
                 label="Contraseña"
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Mínimo 8 caracteres"
                 secureTextEntry
                 value={password}
                 onChangeText={handlePasswordChange}
@@ -323,8 +321,7 @@ export const RegisterScreen = () => {
                 </TouchableOpacity>
               </Link>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
+        </DismissKeyboard>
       </ScrollView>
     </KeyboardAvoidingView>
   );

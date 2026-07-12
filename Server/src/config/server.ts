@@ -10,6 +10,8 @@ import userRoutes from "../features/users/routes/user.routes";
 import favoriteRoutes from "../features/favorites/routes/favorite.routes";
 import animalRoutes from "../features/animals/routes/animal.routes";
 import { clinicalHistoryRouter } from "../features/clinical-history";
+import clinicalHistoryRoutes from "../features/clinical-history/routes/clinicalHistory.routes";
+import entryRoutes from "../features/clinical-history/routes/entry.routes";
 import requestRoutes from "../features/requests/routes/request.routes";
 import locationRoutes from "../features/locations/routes/location.routes";
 
@@ -29,6 +31,8 @@ app.use("/users", userRoutes);
 app.use("/favorites", favoriteRoutes);
 app.use("/animals", clinicalHistoryRouter);
 app.use("/animals", animalRoutes);
+app.use("/clinical-histories", clinicalHistoryRoutes);
+app.use("/entries", entryRoutes);
 app.use("/requests", requestRoutes);
 
 app.get("/health", (_req, res) => {

@@ -71,7 +71,7 @@ export const contactErrorMessages: Record<string, string> = {
 export const createUserSchema = z.object({
   name: z.string().min(2).max(80),
   email: z.string().email(),
-  password: z.string().min(6).max(128),
+  password: z.string().min(8).max(128),
   contact: z.string().min(3).max(60),
   contactType: contactTypeSchema,
   profilePictureUrl: z.string().url().optional(),
@@ -88,7 +88,7 @@ export const createUserSchema = z.object({
 export const updateUserSchema = z.object({
   name: z.string().min(2).max(80).optional(),
   email: z.string().email().optional(),
-  password: z.string().min(6).max(128).optional(),
+  password: z.string().min(8).max(128).optional(),
   contact: z.string().min(3).max(60).optional(),
   contactType: contactTypeSchema.optional(),
   profilePictureUrl: z.string().url().optional(),
@@ -245,5 +245,31 @@ export const updateClinicalHistorySchema = z.object({
   veterinarian: z.string().min(1, "El veterinario es requerido").optional(),
   comprobante: z.string().min(1, "El comprobante es requerido").optional(),
   description: z.string().optional().nullable(),
+});
+
+export const eventTypeSchema = z.enum([
+  "VACUNACION",
+  "DESPARASITACION",
+  "CONSULTA_GENERAL",
+  "CIRUGIA",
+  "DIAGNOSTICO",
+  "CHEQUEO_PREVENTIVO",
+  "OTRO",
+]);
+
+export const createClinicalHistoryEntrySchema = z.object({
+  eventType: eventTypeSchema,
+  title: z.string().min(1).max(200),
+  description: z.string().min(1).max(2000),
+  date: z.string().datetime(),
+  documentsUrl: z.array(z.string().url()).max(5).optional(),
+});
+
+export const updateClinicalHistoryEntrySchema = z.object({
+  eventType: eventTypeSchema.optional(),
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().min(1).max(2000).optional(),
+  date: z.string().datetime().optional(),
+  documentsUrl: z.array(z.string().url()).max(5).optional(),
 });
 

@@ -2,40 +2,71 @@
 //  Clinical History Repository — Prisma operations
 // ───────────────────────────────────────────────
 
-import prisma from "../../../config/database";
 import type { Prisma } from "@prisma/client";
+import prisma from "../../../config/database";
 
 export const clinicalHistoryRepository = {
-  async findById(id: string) {
-    return prisma.clinicalHistoryItem.findUnique({
-      where: { id },
+  /**
+   * Find a clinical history by its associated post ID.
+   * Optionally includes entries ordered by date descending.
+   */
+  async findByPostId(postId: string, includeEntries: boolean = false) {
+    return prisma.clinicalHistory.findUnique({
+      where: { postId },
       include: {
-        post: true,
+        entries: includeEntries
+          ? {
+              orderBy: { date: "desc" },
+            }
+          : false,
       },
     });
   },
 
-  async findByPostId(postId: string) {
-    return prisma.clinicalHistoryItem.findMany({
-      where: { postId },
-      orderBy: { date: "asc" }, // Ascending order so they appear chronologically in the horizontal list
+  /**
+   * Create a clinical history record for a given post.
+   */
+  async createForPost(postId: string) {
+    return prisma.clinicalHistory.create({
+      data: { postId },
     });
   },
 
-  async create(data: Prisma.ClinicalHistoryItemCreateInput) {
-    return prisma.clinicalHistoryItem.create({ data });
+  /**
+   * Find a single clinical history entry by ID.
+   */
+  async findEntryById(id: string) {
+    return prisma.clinicalHistoryEntry.findUnique({
+      where: { id },
+      include: {
+        clinicalHistory: {
+          select: { postId: true },
+        },
+      },
+    });
   },
 
-  async update(id: string, data: Prisma.ClinicalHistoryItemUpdateInput) {
-    return prisma.clinicalHistoryItem.update({
+  /**
+   * Create a new clinical history entry.
+   */
+  async createEntry(data: Prisma.ClinicalHistoryEntryCreateInput) {
+    return prisma.clinicalHistoryEntry.create({ data });
+  },
+
+  /**
+   * Update an existing clinical history entry.
+   */
+  async updateEntry(id: string, data: Prisma.ClinicalHistoryEntryUpdateInput) {
+    return prisma.clinicalHistoryEntry.update({
       where: { id },
       data,
     });
   },
 
-  async delete(id: string) {
-    return prisma.clinicalHistoryItem.delete({
-      where: { id },
-    });
+  /**
+   * Delete a clinical history entry by ID.
+   */
+  async deleteEntry(id: string): Promise<void> {
+    await prisma.clinicalHistoryEntry.delete({ where: { id } });
   },
 };

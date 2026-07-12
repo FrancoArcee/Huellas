@@ -8,13 +8,13 @@ import {
   FlatList,
   StatusBar,
   Animated,
-  Alert,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, Publicacion } from '../store/publicaciones';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { ConfirmModal } from '../../../shared/components/ui/ConfirmModal';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import Plus from '../../../assets/icons/buttons/plus.svg';
 import Trash from '../../../assets/icons/buttons/trash.svg';
 import Location from '../../../assets/icons/location.svg';
@@ -30,13 +30,17 @@ export function MisPublicacionesScreen() {
   const router = useRouter();
   const swipeableRefs = useRef<Record<string, Swipeable | null>>({});
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       if (!userId) return;
       cargarPublicaciones(userId).catch((error) => {
         console.error('Error al cargar publicaciones:', error);
-        Alert.alert('Error', 'No se pudieron cargar tus publicaciones.');
+        const status = error?.response?.status;
+        if (status && status >= 500) {
+          setAlertError({ title: 'Error', message: 'No se pudieron cargar tus publicaciones.' });
+        }
       });
     }, [cargarPublicaciones, userId]),
   );
@@ -60,7 +64,7 @@ export function MisPublicacionesScreen() {
         setPendingDeleteId(null);
       } catch (error) {
         console.error('Error al eliminar la publicación:', error);
-        Alert.alert('Error', 'No se pudo eliminar la publicación. Intentá nuevamente.');
+        setAlertError({ title: 'Error', message: 'No se pudo eliminar la publicación. Intentá nuevamente.' });
       }
     }
   };
@@ -173,8 +177,14 @@ export function MisPublicacionesScreen() {
         data={publicaciones}
         keyExtractor={(item) => item.id}
         renderItem={renderCardItem}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={publicaciones.length === 0 ? styles.emptyListContent : styles.listContent}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyTitle}>Todavía no tenés publicaciones</Text>
+            <Text style={styles.emptyText}>Tocá el botón + para crear tu primera publicación.</Text>
+          </View>
+        }
       />
 
       <TouchableOpacity
@@ -193,6 +203,14 @@ export function MisPublicacionesScreen() {
         cancelText="Cancelar"
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
+      />
+
+      <FeedbackModal
+        visible={alertError !== null}
+        type="error"
+        title={alertError?.title || ''}
+        message={alertError?.message || ''}
+        onClose={() => setAlertError(null)}
       />
 
     </SafeAreaView>
@@ -219,6 +237,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 12,
     paddingBottom: 100,
+  },
+  emptyListContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyText: {
+    fontSize: 14,
+    color: colors.gray500,
+    textAlign: 'center',
   },
   card: {
     flexDirection: 'row',

@@ -233,7 +233,7 @@ export function ClinicalHistoryFormModal({
                 onPress={() => setShowDropdown(!showDropdown)}
                 activeOpacity={0.8}
               >
-                <Text style={type ? styles.typeText : styles.placeholderText}>
+                <Text style={type ? styles.inputText : styles.placeholderText}>
                   {TYPE_OPTIONS.find(o => o.value === type)?.label || 'Seleccioná el tipo'}
                 </Text>
                 <ChevronDown width={20} height={20} color={colors.gray600} />

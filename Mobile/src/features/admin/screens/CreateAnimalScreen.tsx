@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
-  Alert,
   Image
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -28,6 +27,7 @@ import {
 } from '../utils/validateAnimalForm';
 import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
+import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 
@@ -58,6 +58,7 @@ export default function CreateAnimalScreen() {
   const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
   const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
+  const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
@@ -68,7 +69,7 @@ export default function CreateAnimalScreen() {
 
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('Permiso requerido', 'Necesitamos permiso para abrir tu galería de imágenes.');
+      setAlertError({ title: 'Permiso requerido', message: 'Necesitamos permiso para abrir tu galería de imágenes.' });
       return;
     }
 
@@ -80,9 +81,11 @@ export default function CreateAnimalScreen() {
         ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
     });
 
-    if (result.canceled || !result.assets[0]) return;
+    if (result.canceled) return;
+    const asset = result.assets[0];
+    if (!asset) return;
 
-    setImagenes(prev => [...prev, result.assets[0]]);
+    setImagenes(prev => [...prev, asset]);
     setErrors(prev => ({ ...prev, imagenes: undefined }));
   };
 
@@ -129,11 +132,14 @@ export default function CreateAnimalScreen() {
       setStep(4);
     } catch (error: any) {
       console.error('Error al crear la publicación:', error);
-      Alert.alert(
-        'Error',
-        error.response?.data?.message ??
-          'No se pudo crear la publicación. Intentá nuevamente.',
-      );
+      const serverErrors = error?.response?.data?.errors;
+      if (serverErrors) {
+        const firstErr = Object.values(serverErrors)[0];
+        const msg = Array.isArray(firstErr) ? firstErr[0] : firstErr;
+        setAlertError({ title: 'Error', message: msg ?? 'Revisá los datos ingresados.' });
+      } else {
+        setAlertError({ title: 'Error', message: error.response?.data?.message ?? 'No se pudo crear la publicación. Intentá nuevamente.' });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -389,6 +395,15 @@ export default function CreateAnimalScreen() {
             <Text style={styles.primaryButtonText}>Ver mis publicaciones</Text>
           </TouchableOpacity>
         </View>
+      )}
+      {alertError && (
+        <FeedbackModal
+          visible={true}
+          type="error"
+          title={alertError.title}
+          message={alertError.message}
+          onClose={() => setAlertError(null)}
+        />
       )}
     </SafeAreaView>
   );

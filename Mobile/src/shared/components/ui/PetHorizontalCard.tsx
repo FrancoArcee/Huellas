@@ -51,6 +51,26 @@ export function PetHorizontalCard({
         style,
       ]}
     >
+      {onLikePress && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+          accessibilityState={{ selected: isLiked }}
+          style={styles.likeButton}
+          onPress={(event) => {
+            event?.stopPropagation?.();
+            onLikePress();
+          }}
+        >
+          <LikeIcon
+            width={22}
+            height={21}
+            fill={isLiked ? '#FFB0B0' : 'none'}
+            stroke={isLiked ? '#FFB0B0' : '#FFB0B0'}
+          />
+        </Pressable>
+      )}
+
       <View style={styles.cardInfo}>
         <View>
           <Text style={styles.petName}>{name}</Text>
@@ -72,8 +92,8 @@ export function PetHorizontalCard({
           </View>
         )}
 
-        <View style={styles.actionsRow}>
-          {onButtonPress && (
+        {onButtonPress && (
+          <View style={styles.actionsRow}>
             <TouchableOpacity
               style={styles.button}
               onPress={(event) => {
@@ -84,29 +104,8 @@ export function PetHorizontalCard({
             >
               <Text style={styles.buttonText}>{buttonText}</Text>
             </TouchableOpacity>
-          )}
-
-          {onLikePress && (
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel={isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-              accessibilityState={{ selected: isLiked }}
-              style={styles.likeButton}
-              onPress={(event) => {
-                event.stopPropagation();
-                onLikePress();
-              }}
-              activeOpacity={0.8}
-            >
-              <LikeIcon
-                width={22}
-                height={21}
-                fill={isLiked ? '#FFB0B0' : 'none'}
-                stroke={isLiked ? '#FFB0B0' : '#FFB0B0'}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
+          </View>
+        )}
       </View>
 
       <View style={styles.imageContainer}>
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
   actionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 13,
     marginTop: 9,
   },
   button: {
@@ -201,12 +199,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   likeButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
     width: 36,
     height: 36,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#777777',
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    zIndex: 10,
+    elevation: 5,
   },
   imageContainer: {
     width: '40%',
