@@ -124,7 +124,7 @@ export async function listPosts(
     }
 
     const {
-      q, category, size, location,
+      q, category, size, gender, location,
       latitude, longitude, radius,
       minAge, maxAge, minWeight, maxWeight,
       userId, page, limit,
@@ -132,7 +132,7 @@ export async function listPosts(
 
     const result = await animalService.listPosts(
       {
-        q, category, size, location,
+        q, category, size, gender, location,
         latitude, longitude, radius,
         minAge, maxAge, minWeight, maxWeight,
         userId,

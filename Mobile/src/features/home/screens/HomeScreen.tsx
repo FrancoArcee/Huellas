@@ -14,6 +14,7 @@ export const HomeScreen = () => {
   const {
     isFilterSheetVisible,
     locationState,
+    userCoords,
     animals,
     loadingAnimals,
     openFilterSheet,
@@ -114,6 +115,7 @@ export const HomeScreen = () => {
         visible={isFilterSheetVisible}
         onClose={closeFilterSheet}
         onApply={handleApplyFilters}
+        hasUserLocation={!!userCoords}
       />
     </View>
   );

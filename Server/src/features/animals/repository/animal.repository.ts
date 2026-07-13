@@ -18,6 +18,7 @@ export interface PaginatedPosts {
 export interface PostFilters {
   category?: string;
   size?: string;
+  gender?: string;
   location?: string;
   q?: string;
   // ── Geolocation filters ──
@@ -177,6 +178,9 @@ export const animalRepository = {
     }
     if (filters.size) {
       where.size = filters.size;
+    }
+    if (filters.gender) {
+      where.gender = filters.gender;
     }
     if (filters.location) {
       where.location = { contains: filters.location, mode: "insensitive" };

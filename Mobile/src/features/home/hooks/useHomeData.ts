@@ -41,11 +41,24 @@ export const useHomeData = () => {
 
     if (filters.category) params.category = filters.category;
     if (filters.size) params.size = filters.size;
+    if (filters.gender) params.gender = filters.gender;
     if (filters.location) params.location = filters.location;
-    if (filters.latitude !== undefined && filters.longitude !== undefined) {
-      params.latitude = String(filters.latitude);
-      params.longitude = String(filters.longitude);
-      params.radius = String(filters.radius);
+    if (filters.minAge !== undefined) params.minAge = String(filters.minAge);
+    if (filters.maxAge !== undefined) params.maxAge = String(filters.maxAge);
+    if (filters.minWeight !== undefined) params.minWeight = String(filters.minWeight);
+    if (filters.maxWeight !== undefined) params.maxWeight = String(filters.maxWeight);
+
+    // Centro del filtro de distancia: localidad elegida > ubicación del usuario
+    const center =
+      filters.latitude !== undefined && filters.longitude !== undefined
+        ? { latitude: filters.latitude, longitude: filters.longitude }
+        : userCoords ?? undefined;
+    if (center) {
+      params.latitude = String(center.latitude);
+      params.longitude = String(center.longitude);
+      if (filters.radius > 0) {
+        params.radius = String(filters.radius);
+      }
     }
 
     router.push({
@@ -57,14 +70,15 @@ export const useHomeData = () => {
   const loadAnimalsData = useCallback(async (lat: number, lng: number) => {
     setLoadingAnimals(true);
     try {
-      const response = await api.get('/animals');
+      const response = await api.get('/animals', {
+        params: { latitude: lat, longitude: lng, radius: 25, limit: 100 },
+      });
       const posts = response.data?.data?.posts ?? response.data?.posts ?? [];
 
       const nearbyPosts = posts.filter((post: any) => {
         if (post.userId === userId) return false;
         if (post.latitude === undefined || post.longitude === undefined) return false;
-        const dist = getDistanceKm(lat, lng, post.latitude, post.longitude);
-        return dist <= 10;
+        return true;
       });
 
       if (nearbyPosts.length === 0) {

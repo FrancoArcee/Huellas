@@ -9,16 +9,28 @@ export interface FetchAnimalsParams {
   search?: string;
   category?: string;
   size?: string;
+  gender?: string;
   latitude?: number;
   longitude?: number;
   location?: string;
   radius?: number;
+  minAge?: number;
+  maxAge?: number;
+  minWeight?: number;
+  maxWeight?: number;
+  limit?: number;
 }
 
 export async function fetchAnimals(params: FetchAnimalsParams): Promise<AnimalDTO[]> {
-  const normalizedParams = params.latitude !== undefined && params.longitude !== undefined
+  // Solo se descarta la localidad textual cuando el geo-filtro por radio está
+  // activo (el backend ignora lat/lng si no viene radius).
+  const geoFilterActive =
+    params.latitude !== undefined &&
+    params.longitude !== undefined &&
+    params.radius !== undefined;
+  const normalizedParams = geoFilterActive
     ? { ...params, location: undefined }
-    : params;
+    : { ...params, radius: undefined };
   const queryParams = Object.fromEntries(
     Object.entries({
       ...normalizedParams,

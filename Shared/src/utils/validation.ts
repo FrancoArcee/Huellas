@@ -203,6 +203,7 @@ export const postSearchSchema = z.object({
   q: z.string().optional(),
   category: petCategorySchema.optional(),
   size: petSizeSchema.optional(),
+  gender: z.enum(["male", "female"]).optional(),
   location: z.string().optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
   longitude: z.coerce.number().min(-180).max(180).optional(),

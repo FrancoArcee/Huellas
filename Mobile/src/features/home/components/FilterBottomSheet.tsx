@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import {
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -16,10 +17,15 @@ import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutoco
 export type FilterValues = {
   category: string;
   size: string;
+  gender: string;
   location: string;
   latitude?: number;
   longitude?: number;
-  radius: number;
+  radius: number; // 0 = sin límite de distancia
+  minAge?: number;
+  maxAge?: number;
+  minWeight?: number;
+  maxWeight?: number;
 };
 
 interface FilterBottomSheetProps {
@@ -28,39 +34,100 @@ interface FilterBottomSheetProps {
   onApply?: (filters: FilterValues) => void;
   onClear?: () => void;
   initialValues?: FilterValues;
+  hasUserLocation?: boolean;
 }
+
+export const NO_RADIUS = 0;
 
 const initialFilters: FilterValues = {
   category: '',
   size: '',
+  gender: '',
   location: '',
   radius: 25,
 };
 
-const categoryOptions = [
+type SelectOption = { label: string; value: string | number };
+
+const categoryOptions: SelectOption[] = [
+  { label: 'Todos', value: '' },
   { label: 'Perros', value: 'dog' },
   { label: 'Gatos', value: 'cat' },
   { label: 'Otros', value: 'other' },
 ];
 
-const sizeOptions = [
+const sizeOptions: SelectOption[] = [
+  { label: 'Todos', value: '' },
   { label: 'Pequeño', value: 'small' },
   { label: 'Mediano', value: 'medium' },
   { label: 'Grande', value: 'large' },
 ];
 
-const radiusOptions = [
+const genderOptions: SelectOption[] = [
+  { label: 'Todos', value: '' },
+  { label: 'Macho', value: 'male' },
+  { label: 'Hembra', value: 'female' },
+];
+
+const radiusOptions: SelectOption[] = [
+  { label: '5 km', value: 5 },
   { label: '10 km', value: 10 },
   { label: '25 km', value: 25 },
   { label: '50 km', value: 50 },
+  { label: '100 km', value: 100 },
+  { label: 'Sin límite', value: NO_RADIUS },
 ];
 
-const getOptionLabel = (
-  options: { label: string; value: string | number }[],
-  value: string | number,
-) => {
+type RangePreset = { label: string; chip?: string; value: string; min?: number; max?: number };
+
+export const agePresets: RangePreset[] = [
+  { label: 'Todas', value: '' },
+  { label: 'Cachorro (0 a 1 año)', chip: 'Cachorro', value: '0-1', min: 0, max: 1 },
+  { label: 'Joven (1 a 3 años)', chip: 'Joven', value: '1-3', min: 1, max: 3 },
+  { label: 'Adulto (3 a 8 años)', chip: 'Adulto', value: '3-8', min: 3, max: 8 },
+  { label: 'Senior (8+ años)', chip: 'Senior', value: '8+', min: 8 },
+];
+
+export const weightPresets: RangePreset[] = [
+  { label: 'Todos', value: '' },
+  { label: 'Hasta 5 kg', chip: 'Hasta 5 kg', value: '-5', max: 5 },
+  { label: '5 a 15 kg', chip: '5-15 kg', value: '5-15', min: 5, max: 15 },
+  { label: '15 a 30 kg', chip: '15-30 kg', value: '15-30', min: 15, max: 30 },
+  { label: 'Más de 30 kg', chip: '+30 kg', value: '30+', min: 30 },
+];
+
+const presetFromRange = (presets: RangePreset[], min?: number, max?: number) =>
+  presets.find((preset) => preset.min === min && preset.max === max)?.value ?? '';
+
+const getOptionLabel = (options: SelectOption[], value: string | number) => {
   return options.find((option) => option.value === value)?.label ?? '';
 };
+
+type SelectKey = 'category' | 'size' | 'gender' | 'ageRange' | 'weightRange' | 'radius';
+
+type SheetFilters = {
+  category: string;
+  size: string;
+  gender: string;
+  location: string;
+  latitude?: number;
+  longitude?: number;
+  radius: number;
+  ageRange: string;
+  weightRange: string;
+};
+
+const toSheetFilters = (values: FilterValues): SheetFilters => ({
+  category: values.category,
+  size: values.size,
+  gender: values.gender,
+  location: values.location,
+  ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
+  ...(values.longitude !== undefined ? { longitude: values.longitude } : {}),
+  radius: values.radius,
+  ageRange: presetFromRange(agePresets, values.minAge, values.maxAge),
+  weightRange: presetFromRange(weightPresets, values.minWeight, values.maxWeight),
+});
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SHEET_HEIGHT = SCREEN_HEIGHT * 0.75;
@@ -71,11 +138,10 @@ export const FilterBottomSheet = ({
   onApply,
   onClear,
   initialValues = initialFilters,
+  hasUserLocation = false,
 }: FilterBottomSheetProps) => {
-  const [filters, setFilters] = useState<FilterValues>(initialValues);
-  const [openSelect, setOpenSelect] = useState<
-    keyof Pick<FilterValues, 'category' | 'size' | 'radius'> | null
-  >(null);
+  const [filters, setFilters] = useState<SheetFilters>(toSheetFilters(initialValues));
+  const [openSelect, setOpenSelect] = useState<SelectKey | null>(null);
 
   const slideAnim = useRef(new Animated.Value(SHEET_HEIGHT)).current;
   const backdropAnim = useRef(new Animated.Value(0)).current;
@@ -83,7 +149,7 @@ export const FilterBottomSheet = ({
 
   useEffect(() => {
     if (visible) {
-      setFilters(initialValues);
+      setFilters(toSheetFilters(initialValues));
       setOpenSelect(null);
       setShouldRender(true);
       Animated.parallel([
@@ -117,14 +183,21 @@ export const FilterBottomSheet = ({
   }, [
     visible,
     initialValues.category,
-    initialValues.location,
-    initialValues.radius,
     initialValues.size,
+    initialValues.gender,
+    initialValues.location,
+    initialValues.latitude,
+    initialValues.longitude,
+    initialValues.radius,
+    initialValues.minAge,
+    initialValues.maxAge,
+    initialValues.minWeight,
+    initialValues.maxWeight,
   ]);
 
-  const updateFilter = <Key extends keyof FilterValues>(
+  const updateFilter = <Key extends keyof SheetFilters>(
     key: Key,
-    value: FilterValues[Key],
+    value: SheetFilters[Key],
   ) => {
     setFilters((currentFilters) => ({
       ...currentFilters,
@@ -133,21 +206,102 @@ export const FilterBottomSheet = ({
   };
 
   const handleApply = () => {
+    const agePreset = agePresets.find((preset) => preset.value === filters.ageRange);
+    const weightPreset = weightPresets.find((preset) => preset.value === filters.weightRange);
     onApply?.({
       category: filters.category.trim(),
       size: filters.size.trim(),
+      gender: filters.gender.trim(),
       location: filters.location.trim(),
       radius: filters.radius,
       ...(filters.latitude !== undefined ? { latitude: filters.latitude } : {}),
       ...(filters.longitude !== undefined ? { longitude: filters.longitude } : {}),
+      ...(agePreset?.min !== undefined ? { minAge: agePreset.min } : {}),
+      ...(agePreset?.max !== undefined ? { maxAge: agePreset.max } : {}),
+      ...(weightPreset?.min !== undefined ? { minWeight: weightPreset.min } : {}),
+      ...(weightPreset?.max !== undefined ? { maxWeight: weightPreset.max } : {}),
     });
     onClose();
   };
 
   const handleClear = () => {
-    setFilters(initialFilters);
+    setFilters(toSheetFilters(initialFilters));
     setOpenSelect(null);
     onClear?.();
+    onClose();
+  };
+
+  const hasSelectedPlace = filters.latitude !== undefined && filters.longitude !== undefined;
+  const radiusActive = filters.radius !== NO_RADIUS;
+  const radiusHint = !radiusActive
+    ? 'Se mostrarán resultados de cualquier distancia.'
+    : hasSelectedPlace
+      ? `Hasta ${filters.radius} km desde ${filters.location || 'la localidad elegida'}.`
+      : hasUserLocation
+        ? `Hasta ${filters.radius} km desde tu ubicación actual.`
+        : 'Elegí una localidad o activá tu ubicación para aplicar la distancia.';
+  const radiusHintIsWarning = radiusActive && !hasSelectedPlace && !hasUserLocation;
+
+  const renderSelect = (
+    label: string,
+    key: SelectKey,
+    options: SelectOption[],
+    hint?: { text: string; warning: boolean },
+  ) => {
+    const selectedValue = filters[key];
+    const selectedLabel = getOptionLabel(options, selectedValue);
+    return (
+      <View style={styles.fieldGroup}>
+        <CustomText variant="p" color="textPrimary" style={styles.label}>
+          {label}
+        </CustomText>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setOpenSelect((current) => (current === key ? null : key))}
+          style={styles.selectControl}
+        >
+          <CustomText
+            variant="body"
+            color="textPrimary"
+            style={[styles.controlText, selectedLabel && selectedLabel !== 'Todos' && selectedLabel !== 'Todas' ? styles.controlTextActive : null]}
+          >
+            {selectedLabel || 'Seleccionar'}
+          </CustomText>
+          <ChevronDownIcon width={14} height={14} />
+        </TouchableOpacity>
+        {openSelect === key && (
+          <View style={styles.dropdown}>
+            {options.map((option) => (
+              <TouchableOpacity
+                key={String(option.value)}
+                activeOpacity={0.8}
+                onPress={() => {
+                  updateFilter(key, option.value as never);
+                  setOpenSelect(null);
+                }}
+                style={[
+                  styles.dropdownOption,
+                  selectedValue === option.value && styles.dropdownOptionSelected,
+                ]}
+              >
+                <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
+                  {option.label}
+                </CustomText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+        {hint && (
+          <CustomText
+            variant="body"
+            color="textSecondary"
+            style={[styles.hintText, hint.warning && styles.hintTextWarning]}
+          >
+            {hint.text}
+          </CustomText>
+        )}
+      </View>
+    );
   };
 
   return (
@@ -183,82 +337,25 @@ export const FilterBottomSheet = ({
             Filtros
           </CustomText>
 
-          <View style={styles.form}>
-            <View style={styles.fieldGroup}>
-              <CustomText variant="p" color="textPrimary" style={styles.label}>
-                Categoría
-              </CustomText>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setOpenSelect((current) => (current === 'category' ? null : 'category'))}
-                style={styles.selectControl}
-              >
-                <CustomText variant="body" color="textPrimary" style={styles.controlText}>
-                  {getOptionLabel(categoryOptions, filters.category) || 'Seleccionar'}
-                </CustomText>
-                <ChevronDownIcon width={14} height={14} />
-              </TouchableOpacity>
-              {openSelect === 'category' && (
-                <View style={styles.dropdown}>
-                  {categoryOptions.map((option) => (
-                    <TouchableOpacity
-                      key={option.value}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        updateFilter('category', option.value);
-                        setOpenSelect(null);
-                      }}
-                      style={[
-                        styles.dropdownOption,
-                        filters.category === option.value && styles.dropdownOptionSelected,
-                      ]}
-                    >
-                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
-                        {option.label}
-                      </CustomText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
-
-            <View style={styles.fieldGroup}>
-              <CustomText variant="p" color="textPrimary" style={styles.label}>
-                Tamaño
-              </CustomText>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setOpenSelect((current) => (current === 'size' ? null : 'size'))}
-                style={styles.selectControl}
-              >
-                <CustomText variant="body" color="textPrimary" style={styles.controlText}>
-                  {getOptionLabel(sizeOptions, filters.size) || 'Seleccionar'}
-                </CustomText>
-                <ChevronDownIcon width={14} height={14} />
-              </TouchableOpacity>
-              {openSelect === 'size' && (
-                <View style={styles.dropdown}>
-                  {sizeOptions.map((option) => (
-                    <TouchableOpacity
-                      key={option.value}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        updateFilter('size', option.value);
-                        setOpenSelect(null);
-                      }}
-                      style={[
-                        styles.dropdownOption,
-                        filters.size === option.value && styles.dropdownOptionSelected,
-                      ]}
-                    >
-                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
-                        {option.label}
-                      </CustomText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
+          <ScrollView
+            style={styles.formScroll}
+            contentContainerStyle={styles.form}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {renderSelect('Categoría', 'category', categoryOptions)}
+            {renderSelect('Tamaño', 'size', sizeOptions)}
+            {renderSelect('Género', 'gender', genderOptions)}
+            {renderSelect(
+              'Edad',
+              'ageRange',
+              agePresets.map(({ label, value }) => ({ label, value })),
+            )}
+            {renderSelect(
+              'Peso',
+              'weightRange',
+              weightPresets.map(({ label, value }) => ({ label, value })),
+            )}
 
             <View style={styles.fieldGroup}>
               <CustomText variant="p" color="textPrimary" style={styles.label}>
@@ -266,7 +363,12 @@ export const FilterBottomSheet = ({
               </CustomText>
               <AddressAutocomplete
                 value={filters.location}
-                onChangeText={(value) => updateFilter('location', value)}
+                onChangeText={(value) => {
+                  setFilters((current) => {
+                    const { latitude: _latitude, longitude: _longitude, ...rest } = current;
+                    return { ...rest, location: value };
+                  });
+                }}
                 onSelect={(location) => {
                   setFilters((current) => {
                     const { latitude: _latitude, longitude: _longitude, ...rest } = current;
@@ -283,44 +385,11 @@ export const FilterBottomSheet = ({
               />
             </View>
 
-            <View style={styles.fieldGroup}>
-              <CustomText variant="p" color="textPrimary" style={styles.label}>
-                Distancia
-              </CustomText>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setOpenSelect((current) => (current === 'radius' ? null : 'radius'))}
-                style={styles.selectControl}
-              >
-                <CustomText variant="body" color="textPrimary" style={styles.controlText}>
-                  {getOptionLabel(radiusOptions, filters.radius)}
-                </CustomText>
-                <ChevronDownIcon width={14} height={14} />
-              </TouchableOpacity>
-              {openSelect === 'radius' && (
-                <View style={styles.dropdown}>
-                  {radiusOptions.map((option) => (
-                    <TouchableOpacity
-                      key={option.value}
-                      activeOpacity={0.8}
-                      onPress={() => {
-                        updateFilter('radius', option.value);
-                        setOpenSelect(null);
-                      }}
-                      style={[
-                        styles.dropdownOption,
-                        filters.radius === option.value && styles.dropdownOptionSelected,
-                      ]}
-                    >
-                      <CustomText variant="body" color="textPrimary" style={styles.dropdownOptionText}>
-                        {option.label}
-                      </CustomText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
-          </View>
+            {renderSelect('Distancia', 'radius', radiusOptions, {
+              text: radiusHint,
+              warning: radiusHintIsWarning,
+            })}
+          </ScrollView>
 
           <View style={styles.actions}>
             <TouchableOpacity activeOpacity={0.85} onPress={handleApply} style={styles.applyButton}>
@@ -354,7 +423,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sheet: {
-    maxHeight: '75%',
+    maxHeight: '85%',
     minHeight: '75%',
     backgroundColor: theme.colors.white,
     borderTopLeftRadius: 24,
@@ -392,8 +461,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: theme.spacing.lg,
   },
+  formScroll: {
+    flexGrow: 0,
+    flexShrink: 1,
+  },
   form: {
     gap: theme.spacing.xl,
+    paddingBottom: theme.spacing.lg,
   },
   fieldGroup: {
     gap: theme.spacing.sm,
@@ -414,6 +488,9 @@ const styles = StyleSheet.create({
     flex: 1,
     color: theme.colors.gray500,
   },
+  controlTextActive: {
+    color: theme.colors.textPrimary,
+  },
   dropdown: {
     marginTop: theme.spacing.xs,
     borderRadius: 16,
@@ -431,22 +508,12 @@ const styles = StyleSheet.create({
   dropdownOptionText: {
     color: theme.colors.textPrimary,
   },
-  inputControl: {
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: theme.colors.background,
-    paddingHorizontal: theme.spacing.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
+  hintText: {
+    fontSize: 12,
+    lineHeight: 16,
   },
-  input: {
-    flex: 1,
-    padding: 0,
-    paddingVertical: 0,
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: 14,
-    color: theme.colors.textPrimary,
-    includeFontPadding: false,
+  hintTextWarning: {
+    color: theme.colors.primary,
   },
   actions: {
     flexDirection: 'row',

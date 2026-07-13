@@ -3,7 +3,6 @@ import {
     ActivityIndicator,
     FlatList,
     Image,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -12,11 +11,14 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Location from 'expo-location';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import MapView, { Marker, UrlTile, Circle as MapCircle } from 'react-native-maps';
 import Svg, { Circle, Polygon, Path, G, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { SearchBar } from '../../../shared/components/ui/SearchBar';
 import {
     FilterBottomSheet,
+    NO_RADIUS,
+    agePresets,
+    weightPresets,
     type FilterValues,
 } from '../../home/components/FilterBottomSheet';
 import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
@@ -42,6 +44,21 @@ const sizeLabels: Record<string, string> = {
     small: 'Pequeño',
     medium: 'Mediano',
     large: 'Grande',
+};
+
+const genderLabels: Record<string, string> = {
+    male: 'Macho',
+    female: 'Hembra',
+};
+
+const rangeLabel = (
+    presets: { label: string; chip?: string; min?: number; max?: number }[],
+    min: number | undefined,
+    max: number | undefined,
+    fallback: string,
+) => {
+    const preset = presets.find((p) => p.min === min && p.max === max);
+    return preset?.chip ?? preset?.label ?? fallback;
 };
 
 interface CustomMarkerPinProps {
@@ -109,9 +126,24 @@ const getNumericParam = (value: string | string[] | undefined): number | undefin
 
 const buildFilters = (params: FetchAnimalsParams): FilterOption[] => {
     const filters: FilterOption[] = [];
+    if (params.search) filters.push({ id: 'search', label: `"${params.search}"` });
     if (params.category) filters.push({ id: 'category', label: categoryLabels[params.category] ?? params.category });
-    if (params.location) filters.push({ id: 'location', label: params.location });
+    if (params.location) filters.push({ id: 'location', label: (params.location.split(',')[0] ?? params.location).trim() });
     if (params.size) filters.push({ id: 'size', label: sizeLabels[params.size] ?? params.size });
+    if (params.gender) filters.push({ id: 'gender', label: genderLabels[params.gender] ?? params.gender });
+    if (params.minAge !== undefined || params.maxAge !== undefined) {
+        filters.push({
+            id: 'age',
+            label: rangeLabel(agePresets, params.minAge, params.maxAge, `Edad ${params.minAge ?? 0}-${params.maxAge ?? '∞'}`),
+        });
+    }
+    if (params.minWeight !== undefined || params.maxWeight !== undefined) {
+        filters.push({
+            id: 'weight',
+            label: rangeLabel(weightPresets, params.minWeight, params.maxWeight, `Peso ${params.minWeight ?? 0}-${params.maxWeight ?? '∞'} kg`),
+        });
+    }
+    if (params.radius !== undefined) filters.push({ id: 'radius', label: `Hasta ${params.radius} km` });
     return filters;
 };
 
@@ -143,34 +175,54 @@ export function SearchResultsScreen() {
         search?: string;
         category?: string;
         size?: string;
+        gender?: string;
         location?: string;
         latitude?: string;
         longitude?: string;
         radius?: string;
+        minAge?: string;
+        maxAge?: string;
+        minWeight?: string;
+        maxWeight?: string;
         layout?: string;
     }>();
 
     const initialSearch = getParamValue(params.search);
     const initialCategory = getParamValue(params.category);
     const initialSize = getParamValue(params.size);
+    const initialGender = getParamValue(params.gender);
     const initialLocation = getParamValue(params.location);
     const initialLatitude = getNumericParam(params.latitude);
     const initialLongitude = getNumericParam(params.longitude);
     const initialRadius = getNumericParam(params.radius);
+    const initialMinAge = getNumericParam(params.minAge);
+    const initialMaxAge = getNumericParam(params.maxAge);
+    const initialMinWeight = getNumericParam(params.minWeight);
+    const initialMaxWeight = getNumericParam(params.maxWeight);
     const initialLayout = getParamValue(params.layout);
     const initialFetchParams = useMemo<FetchAnimalsParams>(() => ({
         search: initialSearch,
         category: initialCategory,
         size: initialSize,
+        gender: initialGender,
         location: initialLocation,
         ...(initialLatitude !== undefined ? { latitude: initialLatitude } : {}),
         ...(initialLongitude !== undefined ? { longitude: initialLongitude } : {}),
         ...(initialRadius !== undefined ? { radius: initialRadius } : {}),
+        ...(initialMinAge !== undefined ? { minAge: initialMinAge } : {}),
+        ...(initialMaxAge !== undefined ? { maxAge: initialMaxAge } : {}),
+        ...(initialMinWeight !== undefined ? { minWeight: initialMinWeight } : {}),
+        ...(initialMaxWeight !== undefined ? { maxWeight: initialMaxWeight } : {}),
     }), [
         initialCategory,
+        initialGender,
         initialLatitude,
         initialLocation,
         initialLongitude,
+        initialMaxAge,
+        initialMaxWeight,
+        initialMinAge,
+        initialMinWeight,
         initialRadius,
         initialSearch,
         initialSize,
@@ -196,6 +248,14 @@ export function SearchResultsScreen() {
         [animals],
     );
 
+    const mapCenter = useMemo(() => {
+        if (fetchParams.latitude !== undefined && fetchParams.longitude !== undefined) {
+            return { latitude: fetchParams.latitude, longitude: fetchParams.longitude };
+        }
+        if (userCoords) return userCoords;
+        return { latitude: -34.9214, longitude: -57.9544 };
+    }, [fetchParams.latitude, fetchParams.longitude, userCoords]);
+
     const activeFilters = useMemo(() => buildFilters(fetchParams), [fetchParams]);
 
     useEffect(() => {
@@ -212,7 +272,7 @@ export function SearchResultsScreen() {
 
         setLoading(true);
         try {
-            const nextAnimals = await fetchAnimals(fetchParams);
+            const nextAnimals = await fetchAnimals({ ...fetchParams, limit: 100 });
             const filtered = nextAnimals.filter((a) => a.userId !== currentUserId);
 
             const lat = fetchParams.latitude ?? userCoords?.latitude;
@@ -226,32 +286,29 @@ export function SearchResultsScreen() {
                 return a;
             });
 
-            // Check favorites for loaded animals
-            try {
-                if (currentUserId) {
-                    const favMap: Record<string, string> = {};
-                    await Promise.all(
-                        withDistance.map(async (animal) => {
-                            try {
-                                const fav = await animalService.checkFavorite(animal.id);
-                                if (fav) {
-                                    favMap[animal.id] = fav.id;
-                                }
-                            } catch {}
-                        })
-                    );
-                    setFavoriteIds(favMap);
-                }
-            } catch (error) {
-                console.warn('Error checking favorites:', error);
+            setAnimals(withDistance);
+
+            // Favoritos en segundo plano: no bloquean el render de resultados
+            if (currentUserId) {
+                void (async () => {
+                    try {
+                        const favMap: Record<string, string> = {};
+                        await Promise.all(
+                            withDistance.map(async (animal) => {
+                                try {
+                                    const fav = await animalService.checkFavorite(animal.id);
+                                    if (fav) {
+                                        favMap[animal.id] = fav.id;
+                                    }
+                                } catch {}
+                            })
+                        );
+                        setFavoriteIds(favMap);
+                    } catch (error) {
+                        console.warn('Error checking favorites:', error);
+                    }
+                })();
             }
-
-            const withFavorite = withDistance.map((a) => ({
-                ...a,
-                isFavorite: !!favoriteIds[a.id],
-            }));
-
-            setAnimals(withFavorite);
         } catch (error) {
             console.warn('Error loading animals', error);
             setAnimals([]);
@@ -356,25 +413,39 @@ export function SearchResultsScreen() {
     // Fit map coordinates when filtered animals list changes
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined;
-        if (layoutMode === 'map' && mapAnimals.length > 0 && mapRef.current) {
+        if (layoutMode !== 'map' || !mapRef.current) return;
+
+        if (mapAnimals.length > 0) {
             const coordinates = mapAnimals.map((a) => ({
                 latitude: a.latitude!,
                 longitude: a.longitude!,
             }));
 
-            if (coordinates.length > 0) {
-                timer = setTimeout(() => {
-                    mapRef.current?.fitToCoordinates(coordinates, {
-                        edgePadding: { top: 180, right: 60, bottom: 120, left: 60 },
-                        animated: true,
-                    });
-                }, 500);
-            }
+            timer = setTimeout(() => {
+                mapRef.current?.fitToCoordinates(coordinates, {
+                    edgePadding: { top: 180, right: 60, bottom: 120, left: 60 },
+                    animated: true,
+                });
+            }, 500);
+        } else {
+            // Sin resultados: centrar en el área del filtro (o la referencia disponible)
+            const radiusKm = fetchParams.radius ?? 25;
+            const delta = Math.max((radiusKm * 2.4) / 111, 0.05);
+            timer = setTimeout(() => {
+                mapRef.current?.animateToRegion(
+                    {
+                        ...mapCenter,
+                        latitudeDelta: delta,
+                        longitudeDelta: delta,
+                    },
+                    400,
+                );
+            }, 500);
         }
         return () => {
             if (timer) clearTimeout(timer);
         };
-    }, [layoutMode, mapAnimals]);
+    }, [layoutMode, mapAnimals, mapCenter, fetchParams.radius]);
 
     useEffect(() => {
         if (selectedAnimal && !animals.some((a) => a.id === selectedAnimal.id)) {
@@ -398,6 +469,9 @@ export function SearchResultsScreen() {
     };
 
     const handleRemoveFilter = (filterId: string) => {
+        if (filterId === 'search') {
+            setSearchText('');
+        }
         setFetchParams((current) => {
             if (filterId === 'location') {
                 const {
@@ -409,21 +483,44 @@ export function SearchResultsScreen() {
                 } = current;
                 return rest;
             }
+            if (filterId === 'radius') {
+                const { radius: _radius, ...rest } = current;
+                return rest;
+            }
+            if (filterId === 'age') {
+                const { minAge: _minAge, maxAge: _maxAge, ...rest } = current;
+                return rest;
+            }
+            if (filterId === 'weight') {
+                const { minWeight: _minWeight, maxWeight: _maxWeight, ...rest } = current;
+                return rest;
+            }
             return { ...current, [filterId]: undefined };
         });
     };
 
     const handleApplyFilters = (values: FilterValues) => {
+        // Centro del geo-filtro: localidad elegida > ubicación del usuario.
+        const hasPlace = values.latitude !== undefined && values.longitude !== undefined;
+        const center = hasPlace
+            ? { latitude: values.latitude!, longitude: values.longitude! }
+            : userCoords ?? undefined;
+        const radius = values.radius !== NO_RADIUS && center ? values.radius : undefined;
+
         const nextParams: FetchAnimalsParams = {
             search: searchText,
             category: values.category,
             location: values.location,
             size: values.size,
-            ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
-            ...(values.longitude !== undefined ? { longitude: values.longitude } : {}),
-            ...(values.latitude !== undefined && values.longitude !== undefined
-                ? { radius: values.radius }
+            gender: values.gender,
+            ...(center !== undefined
+                ? { latitude: center.latitude, longitude: center.longitude }
                 : {}),
+            ...(radius !== undefined ? { radius } : {}),
+            ...(values.minAge !== undefined ? { minAge: values.minAge } : {}),
+            ...(values.maxAge !== undefined ? { maxAge: values.maxAge } : {}),
+            ...(values.minWeight !== undefined ? { minWeight: values.minWeight } : {}),
+            ...(values.maxWeight !== undefined ? { maxWeight: values.maxWeight } : {}),
         };
         setLayoutMode('map');
         setSelectedAnimal(null);
@@ -457,12 +554,19 @@ export function SearchResultsScreen() {
                     </Text>
                 </TouchableOpacity>
 
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.filtersContainer}
-                    style={styles.filtersScroll}
-                >
+                <View style={styles.resultsPill}>
+                    {loading ? (
+                        <ActivityIndicator size="small" color={theme.colors.primary} />
+                    ) : (
+                        <Text style={styles.resultsPillText}>
+                            {animals.length === 1 ? '1 resultado' : `${animals.length} resultados`}
+                        </Text>
+                    )}
+                </View>
+            </View>
+
+            {activeFilters.length > 0 && (
+                <View style={styles.filtersContainer}>
                     {activeFilters.map((item) => (
                         <AppliedFilterBadge
                             key={item.id}
@@ -470,8 +574,8 @@ export function SearchResultsScreen() {
                             onRemove={() => handleRemoveFilter(item.id)}
                         />
                     ))}
-                </ScrollView>
-            </View>
+                </View>
+            )}
         </View>
     );
 
@@ -481,22 +585,28 @@ export function SearchResultsScreen() {
             onClose={() => setIsFilterSheetVisible(false)}
             onApply={handleApplyFilters}
             onClear={handleClearFilters}
+            hasUserLocation={!!userCoords}
             initialValues={{
                 category: fetchParams.category ?? '',
                 size: fetchParams.size ?? '',
+                gender: fetchParams.gender ?? '',
                 location: fetchParams.location ?? '',
-                radius: fetchParams.radius ?? 25,
-                ...(fetchParams.latitude !== undefined
+                radius: fetchParams.radius ?? NO_RADIUS,
+                ...(fetchParams.location && fetchParams.latitude !== undefined
                     ? { latitude: fetchParams.latitude }
                     : {}),
-                ...(fetchParams.longitude !== undefined
+                ...(fetchParams.location && fetchParams.longitude !== undefined
                     ? { longitude: fetchParams.longitude }
                     : {}),
+                ...(fetchParams.minAge !== undefined ? { minAge: fetchParams.minAge } : {}),
+                ...(fetchParams.maxAge !== undefined ? { maxAge: fetchParams.maxAge } : {}),
+                ...(fetchParams.minWeight !== undefined ? { minWeight: fetchParams.minWeight } : {}),
+                ...(fetchParams.maxWeight !== undefined ? { maxWeight: fetchParams.maxWeight } : {}),
             }}
         />
     );
 
-    if (loading) {
+    if (loading && animals.length === 0) {
         return (
             <View style={styles.centeredContainer}>
                 <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -539,7 +649,7 @@ export function SearchResultsScreen() {
                         const hasReferenceCoordinates =
                             (fetchParams.latitude !== undefined &&
                                 fetchParams.longitude !== undefined) ||
-                            userCoords !== null;
+                            userCoords != null;
                         const distText = hasReferenceCoordinates
                             ? formatDistance(item.distanceKm)
                             : 'Distancia no disponible';
@@ -581,8 +691,7 @@ export function SearchResultsScreen() {
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={{
-                    latitude: -34.9214,
-                    longitude: -57.9544,
+                    ...mapCenter,
                     latitudeDelta: 0.05,
                     longitudeDelta: 0.05,
                 }}
@@ -596,6 +705,21 @@ export function SearchResultsScreen() {
                     maximumZ={19}
                     tileSize={256}
                 />
+
+                {fetchParams.radius !== undefined &&
+                    fetchParams.latitude !== undefined &&
+                    fetchParams.longitude !== undefined && (
+                        <MapCircle
+                            center={{
+                                latitude: fetchParams.latitude,
+                                longitude: fetchParams.longitude,
+                            }}
+                            radius={fetchParams.radius * 1000}
+                            strokeColor="rgba(241, 156, 43, 0.55)"
+                            fillColor="rgba(241, 156, 43, 0.10)"
+                            strokeWidth={1.5}
+                        />
+                    )}
 
                 {mapAnimals.map((animal) => {
                     if (hiddenMarkerId === animal.id) return null;
@@ -706,15 +830,12 @@ const styles = StyleSheet.create({
         marginTop: 12,
         height: 34,
     },
-    filtersScroll: {
-        flexGrow: 0,
-        flex: 0,
-    },
     filtersContainer: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
         gap: 8,
-        paddingRight: 4,
-        paddingBottom: 8,
+        marginTop: 8,
     },
     layoutToggle: {
         height: 34,
@@ -734,12 +855,31 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontFamily: theme.typography.fontFamily.semiBold,
     },
+    resultsPill: {
+        height: 34,
+        minWidth: 60,
+        paddingHorizontal: 12,
+        borderRadius: 17,
+        backgroundColor: theme.colors.white,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.08,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    resultsPillText: {
+        color: theme.colors.textPrimary,
+        fontSize: 12,
+        fontFamily: theme.typography.fontFamily.semiBold,
+    },
     filterBadge: {
         height: 34,
         maxWidth: 132,
         paddingHorizontal: 12,
         borderRadius: 17,
-        backgroundColor: theme.colors.cream,
+        backgroundColor: theme.colors.white,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -754,7 +894,7 @@ const styles = StyleSheet.create({
         color: theme.colors.textPrimary,
         fontSize: 12,
         fontFamily: theme.typography.fontFamily.semiBold,
-        maxWidth: 120,
+        flexShrink: 1,
     },
     filterBadgeRemoveBtn: {
         width: 24,
