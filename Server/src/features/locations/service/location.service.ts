@@ -17,6 +17,8 @@ type GeorefLocality = {
   nombre: string;
   centroide: Coordinates;
   departamento?: GeorefEntity;
+  // Georef v2.0 llama "gobierno_local" a lo que antes era "municipio"
+  gobierno_local?: GeorefEntity;
   municipio?: GeorefEntity;
   provincia?: GeorefEntity;
 };
@@ -25,9 +27,19 @@ type UbicacionResponse = {
   ubicacion?: {
     provincia?: GeorefEntity;
     departamento?: GeorefEntity;
+    gobierno_local?: GeorefEntity;
     municipio?: GeorefEntity;
   };
 };
+
+function municipalityOf(
+  entity:
+    | { gobierno_local?: GeorefEntity; municipio?: GeorefEntity }
+    | null
+    | undefined,
+): GeorefEntity | undefined {
+  return entity?.gobierno_local ?? entity?.municipio;
+}
 
 type GeorefAddress = {
   altura?: {
@@ -304,8 +316,8 @@ export const locationService = {
         provinceName: ubicacion?.provincia?.nombre ?? locality?.provincia?.nombre ?? null,
         departmentId: ubicacion?.departamento?.id ?? locality?.departamento?.id ?? null,
         departmentName: ubicacion?.departamento?.nombre ?? locality?.departamento?.nombre ?? null,
-        municipalityId: ubicacion?.municipio?.id ?? locality?.municipio?.id ?? null,
-        municipalityName: ubicacion?.municipio?.nombre ?? locality?.municipio?.nombre ?? null,
+        municipalityId: municipalityOf(ubicacion)?.id ?? municipalityOf(locality)?.id ?? null,
+        municipalityName: municipalityOf(ubicacion)?.nombre ?? municipalityOf(locality)?.nombre ?? null,
         localityId: locality?.id ?? null,
         localityName: locality?.nombre ?? null,
       };
@@ -329,8 +341,9 @@ export const locationService = {
     if (!locality) return null;
 
     const areaFilter: AreaFilter = { localityId: locality.id };
-    if (locality.municipio?.id) {
-      areaFilter.municipalityId = locality.municipio.id;
+    const municipality = municipalityOf(locality);
+    if (municipality?.id) {
+      areaFilter.municipalityId = municipality.id;
     } else if (locality.departamento?.id) {
       areaFilter.departmentId = locality.departamento.id;
     } else if (locality.provincia?.id) {

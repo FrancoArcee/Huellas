@@ -18,7 +18,9 @@ function sleep(ms: number): Promise<void> {
 
 async function main(): Promise<void> {
   const posts = await prisma.post.findMany({
-    where: { provinceId: null },
+    where: {
+      OR: [{ provinceId: null }, { municipalityId: null }],
+    },
     select: { id: true, latitude: true, longitude: true, placeId: true, location: true },
   });
 
