@@ -96,6 +96,8 @@ export async function createPost(
  *   category   – filter by pet category (dog, cat, other)
  *   size       – filter by pet size (small, medium, large)
  *   location   – text search on location description
+ *   placeId    – Georef place id of a locality; filters by real
+ *                geographic containment (locality / municipality)
  *   latitude   – center latitude for geolocation search
  *   longitude  – center longitude for geolocation search
  *   radius     – search radius in km (requires latitude & longitude)
@@ -124,7 +126,7 @@ export async function listPosts(
     }
 
     const {
-      q, category, size, gender, location,
+      q, category, size, gender, location, placeId,
       latitude, longitude, radius,
       minAge, maxAge, minWeight, maxWeight,
       userId, page, limit,
@@ -132,7 +134,7 @@ export async function listPosts(
 
     const result = await animalService.listPosts(
       {
-        q, category, size, gender, location,
+        q, category, size, gender, location, placeId,
         latitude, longitude, radius,
         minAge, maxAge, minWeight, maxWeight,
         userId,

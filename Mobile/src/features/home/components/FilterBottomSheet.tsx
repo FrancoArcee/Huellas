@@ -19,6 +19,7 @@ export type FilterValues = {
   size: string;
   gender: string;
   location: string;
+  placeId?: string;
   latitude?: number;
   longitude?: number;
   radius: number; // 0 = sin límite de distancia
@@ -110,6 +111,7 @@ type SheetFilters = {
   size: string;
   gender: string;
   location: string;
+  placeId?: string;
   latitude?: number;
   longitude?: number;
   radius: number;
@@ -122,6 +124,7 @@ const toSheetFilters = (values: FilterValues): SheetFilters => ({
   size: values.size,
   gender: values.gender,
   location: values.location,
+  ...(values.placeId !== undefined ? { placeId: values.placeId } : {}),
   ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
   ...(values.longitude !== undefined ? { longitude: values.longitude } : {}),
   radius: values.radius,
@@ -186,6 +189,7 @@ export const FilterBottomSheet = ({
     initialValues.size,
     initialValues.gender,
     initialValues.location,
+    initialValues.placeId,
     initialValues.latitude,
     initialValues.longitude,
     initialValues.radius,
@@ -214,6 +218,7 @@ export const FilterBottomSheet = ({
       gender: filters.gender.trim(),
       location: filters.location.trim(),
       radius: filters.radius,
+      ...(filters.placeId !== undefined ? { placeId: filters.placeId } : {}),
       ...(filters.latitude !== undefined ? { latitude: filters.latitude } : {}),
       ...(filters.longitude !== undefined ? { longitude: filters.longitude } : {}),
       ...(agePreset?.min !== undefined ? { minAge: agePreset.min } : {}),
@@ -365,18 +370,29 @@ export const FilterBottomSheet = ({
                 value={filters.location}
                 onChangeText={(value) => {
                   setFilters((current) => {
-                    const { latitude: _latitude, longitude: _longitude, ...rest } = current;
+                    const {
+                      latitude: _latitude,
+                      longitude: _longitude,
+                      placeId: _placeId,
+                      ...rest
+                    } = current;
                     return { ...rest, location: value };
                   });
                 }}
                 onSelect={(location) => {
                   setFilters((current) => {
-                    const { latitude: _latitude, longitude: _longitude, ...rest } = current;
+                    const {
+                      latitude: _latitude,
+                      longitude: _longitude,
+                      placeId: _placeId,
+                      ...rest
+                    } = current;
                     return location
                       ? {
                           ...rest,
                           latitude: location.latitude,
                           longitude: location.longitude,
+                          ...(location.placeId ? { placeId: location.placeId } : {}),
                         }
                       : rest;
                   });

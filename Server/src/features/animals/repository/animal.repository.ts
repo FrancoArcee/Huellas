@@ -4,6 +4,7 @@
 
 import type { Prisma } from "@prisma/client";
 import prisma from "../../../config/database";
+import type { AreaFilter } from "../../locations/service/location.service";
 
 // ─── Types ─────────────────────────────────────
 
@@ -20,6 +21,7 @@ export interface PostFilters {
   size?: string;
   gender?: string;
   location?: string;
+  areaFilter?: AreaFilter;
   q?: string;
   // ── Geolocation filters ──
   latitude?: number;
@@ -182,8 +184,31 @@ export const animalRepository = {
     if (filters.gender) {
       where.gender = filters.gender;
     }
+    // ── Locality filter ──────────────────────────
+    // Cuando hay una localidad normalizada (Georef) se filtra por
+    // pertenencia real: ID exacto de localidad o su contenedor
+    // administrativo. El match textual queda como fallback en el OR
+    // para posts todavía no normalizados.
+    const areaConditions: Prisma.PostWhereInput[] = [];
+    if (filters.areaFilter?.localityId) {
+      areaConditions.push({ localityId: filters.areaFilter.localityId });
+    }
+    if (filters.areaFilter?.municipalityId) {
+      areaConditions.push({ municipalityId: filters.areaFilter.municipalityId });
+    }
+    if (filters.areaFilter?.departmentId) {
+      areaConditions.push({ departmentId: filters.areaFilter.departmentId });
+    }
+    if (filters.areaFilter?.provinceId) {
+      areaConditions.push({ provinceId: filters.areaFilter.provinceId });
+    }
     if (filters.location) {
-      where.location = { contains: filters.location, mode: "insensitive" };
+      areaConditions.push({
+        location: { contains: filters.location, mode: "insensitive" },
+      });
+    }
+    if (areaConditions.length > 0) {
+      where.OR = areaConditions;
     }
     if (filters.q) {
       where.name = { contains: filters.q, mode: "insensitive" };

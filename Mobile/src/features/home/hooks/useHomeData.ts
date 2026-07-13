@@ -43,6 +43,7 @@ export const useHomeData = () => {
     if (filters.size) params.size = filters.size;
     if (filters.gender) params.gender = filters.gender;
     if (filters.location) params.location = filters.location;
+    if (filters.placeId) params.placeId = filters.placeId;
     if (filters.minAge !== undefined) params.minAge = String(filters.minAge);
     if (filters.maxAge !== undefined) params.maxAge = String(filters.maxAge);
     if (filters.minWeight !== undefined) params.minWeight = String(filters.minWeight);

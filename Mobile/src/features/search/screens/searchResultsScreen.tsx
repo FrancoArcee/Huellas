@@ -177,6 +177,7 @@ export function SearchResultsScreen() {
         size?: string;
         gender?: string;
         location?: string;
+        placeId?: string;
         latitude?: string;
         longitude?: string;
         radius?: string;
@@ -192,6 +193,7 @@ export function SearchResultsScreen() {
     const initialSize = getParamValue(params.size);
     const initialGender = getParamValue(params.gender);
     const initialLocation = getParamValue(params.location);
+    const initialPlaceId = getParamValue(params.placeId);
     const initialLatitude = getNumericParam(params.latitude);
     const initialLongitude = getNumericParam(params.longitude);
     const initialRadius = getNumericParam(params.radius);
@@ -206,6 +208,7 @@ export function SearchResultsScreen() {
         size: initialSize,
         gender: initialGender,
         location: initialLocation,
+        ...(initialPlaceId ? { placeId: initialPlaceId } : {}),
         ...(initialLatitude !== undefined ? { latitude: initialLatitude } : {}),
         ...(initialLongitude !== undefined ? { longitude: initialLongitude } : {}),
         ...(initialRadius !== undefined ? { radius: initialRadius } : {}),
@@ -223,6 +226,7 @@ export function SearchResultsScreen() {
         initialMaxWeight,
         initialMinAge,
         initialMinWeight,
+        initialPlaceId,
         initialRadius,
         initialSearch,
         initialSize,
@@ -476,6 +480,7 @@ export function SearchResultsScreen() {
             if (filterId === 'location') {
                 const {
                     location: _location,
+                    placeId: _placeId,
                     latitude: _latitude,
                     longitude: _longitude,
                     radius: _radius,
@@ -511,6 +516,7 @@ export function SearchResultsScreen() {
             search: searchText,
             category: values.category,
             location: values.location,
+            ...(values.placeId ? { placeId: values.placeId } : {}),
             size: values.size,
             gender: values.gender,
             ...(center !== undefined
@@ -592,6 +598,9 @@ export function SearchResultsScreen() {
                 gender: fetchParams.gender ?? '',
                 location: fetchParams.location ?? '',
                 radius: fetchParams.radius ?? NO_RADIUS,
+                ...(fetchParams.location && fetchParams.placeId
+                    ? { placeId: fetchParams.placeId }
+                    : {}),
                 ...(fetchParams.location && fetchParams.latitude !== undefined
                     ? { latitude: fetchParams.latitude }
                     : {}),

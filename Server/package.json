@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "npx ts-node-dev prisma/seed.ts"
+    "prisma:seed": "npx ts-node-dev prisma/seed.ts",
+    "backfill:localities": "npx ts-node-dev --transpile-only prisma/backfill-localities.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
