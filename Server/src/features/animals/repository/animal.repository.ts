@@ -187,6 +187,8 @@ export const animalRepository = {
     }
     if (filters.status) {
       where.status = filters.status as any;
+    } else if (!filters.userId) {
+      where.status = { not: "ADOPTADO" as any };
     }
 
     // ── Range filters ────────────────────────────

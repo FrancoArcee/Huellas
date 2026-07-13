@@ -16,6 +16,7 @@ export const backendAnimalSchema = z.object({
   userId: z.string().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
+  status: z.string().optional(),
 });
 
 export const backendAnimalsResponseSchema = z.array(backendAnimalSchema);
@@ -32,6 +33,7 @@ export const animalSchema = z.object({
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   userId: z.string().optional(),
+  status: z.string().optional(),
 });
 
 export type AnimalDTO = z.infer<typeof animalSchema>;
@@ -49,4 +51,5 @@ export const mapBackendAnimalToDTO = (backend: BackendAnimalDTO): AnimalDTO => (
   latitude: backend.latitude,
   longitude: backend.longitude,
   userId: backend.userId,
+  status: backend.status,
 });
