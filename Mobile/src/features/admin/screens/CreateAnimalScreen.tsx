@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -28,6 +28,7 @@ import {
 import { SuccessCheckIcon } from '../../../shared/components/ui/SuccessCheckIcon';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
+import { storage } from '../../../shared/services/storage';
 
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 
@@ -59,6 +60,11 @@ export default function CreateAnimalScreen() {
   const [errors, setErrors] = useState<AnimalFormErrors>({});
   const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
   const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
+  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+
+  useEffect(() => {
+    storage.getLocationCoords().then(setUserCoords).catch(() => {});
+  }, []);
 
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
@@ -103,7 +109,7 @@ export default function CreateAnimalScreen() {
     if (step >= 3) return;
     const stepErrors = validateStep(formData, step);
     if (step === 2 && (formData.latitude === null || formData.longitude === null)) {
-      stepErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+      stepErrors.ubicacion = 'Seleccioná una dirección sugerida, usá tu ubicación actual o elegila en el mapa';
     }
     if (Object.keys(stepErrors).length > 0) {
       setErrors((prev) => ({ ...prev, ...stepErrors }));
@@ -115,7 +121,7 @@ export default function CreateAnimalScreen() {
   const handleSubmit = async () => {
     const formErrors = validateAll(formData);
     if (formData.latitude === null || formData.longitude === null) {
-      formErrors.ubicacion = 'Seleccioná una dirección sugerida o usá tu ubicación actual';
+      formErrors.ubicacion = 'Seleccioná una dirección sugerida, usá tu ubicación actual o elegila en el mapa';
     }
     const photosResult = animalPhotosSchema.safeParse(imagenes);
     if (!photosResult.success) {
@@ -250,6 +256,13 @@ export default function CreateAnimalScreen() {
               <Text style={styles.label}>Ubicación <Text style={styles.asterisk}>*</Text></Text>
               <AddressAutocomplete
                 value={formData.ubicacion}
+                allowMapPick
+                bias={userCoords ?? undefined}
+                initialCoordinates={
+                  formData.latitude !== null && formData.longitude !== null
+                    ? { latitude: formData.latitude, longitude: formData.longitude }
+                    : null
+                }
                 onChangeText={(text) => updateForm('ubicacion', text)}
                 onSelect={(location) => {
                   setFormData((current) => ({
