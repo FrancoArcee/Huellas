@@ -35,3 +35,12 @@ export const formatDistance = (distanceKm: number): string => {
   }
   return `${distanceKm.toFixed(1)} km`;
 };
+
+export const translateStatus = (status?: string): string => {
+  switch (status?.toUpperCase()) {
+    case 'EN_ADOPCION': return 'En adopción';
+    case 'EN_TRANSITO': return 'En tránsito';
+    case 'ADOPTADO': return 'Adoptado';
+    default: return status || 'En adopción';
+  }
+};

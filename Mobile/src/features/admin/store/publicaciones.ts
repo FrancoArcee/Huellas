@@ -18,6 +18,7 @@ export interface Publicacion {
   peso: string;
   genero: string;
   castrado: string;
+  estado: string;
   descripcion: string;
   imagen: string;
   imagenes: string[];
@@ -37,6 +38,7 @@ export interface PublicacionForm {
   peso: string;
   genero: string;
   castrado: string;
+  estado: string;
   descripcion: string;
   latitude: number | null;
   longitude: number | null;
@@ -78,6 +80,7 @@ function toPublicacion(post: AnimalPostRecord): Publicacion {
     peso: String(post.weight),
     genero: post.gender === 'female' ? 'Hembra' : 'Macho',
     castrado: post.neutered ? 'Si' : 'No',
+    estado: post.status === 'ADOPTADO' ? 'Adoptado' : post.status === 'EN_TRANSITO' ? 'En tránsito' : 'En adopción',
     descripcion: post.description ?? '',
     imagen: post.photosUrl[0] ?? '',
     imagenes: post.photosUrl,
@@ -105,6 +108,7 @@ function toPayload(form: PublicacionForm): AnimalPostPayload {
     category: 'dog',
     gender: form.genero === 'Hembra' ? 'female' : 'male',
     neutered: form.castrado === 'Si',
+    status: form.estado === 'Adoptado' ? 'ADOPTADO' : form.estado === 'En tránsito' ? 'EN_TRANSITO' : 'EN_ADOPCION',
     latitude: form.latitude!,
     longitude: form.longitude!,
     location: form.ubicacion.trim(),
