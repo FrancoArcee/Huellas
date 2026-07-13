@@ -21,6 +21,7 @@ import Location from '../../../assets/icons/location.svg';
 import { colors } from '../../../theme/index';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { FileText, AlertCircle } from 'lucide-react-native';
+import { getStatusColors } from '../../../shared/utils/translations';
 
 export function MisPublicacionesScreen() {
   const publicaciones = usePublicacionesStore((state) => state.publicaciones);
@@ -94,24 +95,22 @@ export function MisPublicacionesScreen() {
       <View style={styles.card}>
         <View style={styles.cardInfo}>
           <View>
-            <Text style={styles.dogName}>{item.nombre}</Text>
-            <Text style={styles.dogDetails}>
-              {item.tamano ? item.tamano + ' · ' : ''}{item.peso ? item.peso + ' kg · ' : ''}{item.edad}{' '}{item.unidadTiempo}
-            </Text>
-
-            <View style={styles.locationContainer}>
-              <Location width={14} height={14} color="#666666" style={styles.locationIcon} />
-              <Text style={styles.locationText}>{item.ubicacion}</Text>
+            <View style={styles.nameRow}>
+              <Text style={styles.dogName} numberOfLines={1}>{item.nombre}</Text>
+              {item.estado ? (
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColors(item.estado).bg }]}>
+                  <Text style={[styles.statusBadgeText, { color: getStatusColors(item.estado).color }]}>{item.estado}</Text>
+                </View>
+              ) : null}
             </View>
+            <Text style={styles.dogDetails}>
+              {item.castrado === "SI" ? "Castrado" + ' · ' : "Sin castrar" + ' · '}{item.genero}
+            </Text>
           </View>
 
-          <View style={styles.tagContainer}>
-            <View style={styles.tag}>
-              <Text style={styles.tagText}>{item.genero}</Text>
-            </View>
-            <View style={styles.tag}>
-              <Text style={styles.tagText}>{item.castrado}</Text>
-            </View>
+          <View style={styles.locationContainer}>
+            <Location width={14} height={14} color="#666666" style={styles.locationIcon} />
+            <Text style={styles.locationText}>{item.ubicacion}</Text>
           </View>
 
           <View style={styles.actionsRow}>
@@ -283,15 +282,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000000',
   },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 2,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+  },
   dogDetails: {
     fontSize: 12,
     color: colors.gray500,
-    marginTop: 2,
+    marginTop: 4,
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
   },
   locationIcon: {
     marginRight: 4,

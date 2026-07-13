@@ -27,7 +27,7 @@ import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
 import { animalService } from '../../animals/services/animalService';
-import { translateCategory, translateGender, formatAge, formatDistance, translateStatus } from '../../../shared/utils/translations';
+import { translateCategory, translateGender, formatAge, formatDistance, translateStatus, getStatusColors } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
 type LayoutMode = 'list' | 'map';
@@ -58,13 +58,13 @@ function CustomMarkerPin({ isSelected }: CustomMarkerPinProps) {
                     <Stop offset="1" stopColor="#FF9200" />
                 </LinearGradient>
             </Defs>
-            
+
             {/* Arrow/Triangle pointing down */}
             <Polygon
                 points="16,31 26,31 21,41"
                 fill={strokeColor}
             />
-            
+
             {/* Outer Circle (White Background with Border) */}
             <Circle
                 cx="21"
@@ -74,7 +74,7 @@ function CustomMarkerPin({ isSelected }: CustomMarkerPinProps) {
                 stroke={strokeColor}
                 strokeWidth="2"
             />
-            
+
             {/* Inner Orange Circle */}
             <Circle
                 cx="21"
@@ -82,7 +82,7 @@ function CustomMarkerPin({ isSelected }: CustomMarkerPinProps) {
                 r="12"
                 fill="url(#orangeGradient)"
             />
-            
+
             {/* Paw Print paths (scaled by 0.7 and centered at 21,18) */}
             <G transform="translate(21, 18) scale(0.7) translate(-20, -20)">
                 <Path d="M22.0479 16.0796C22.4162 16.2723 22.7503 16.3132 23.0576 16.2358L23.1875 16.1958C23.4686 16.0923 23.8807 15.8426 24.1426 15.6108C24.8513 14.9858 25.3795 13.9995 25.5791 12.856C25.6474 12.463 25.6638 12.2775 25.6621 11.8325V11.8306C25.6621 10.9732 25.5458 10.3913 25.3145 9.89307C24.95 9.10995 24.4052 8.65793 23.8135 8.52588C23.7506 8.51245 23.6455 8.50187 23.5293 8.50049C23.4118 8.49911 23.3273 8.50812 23.2939 8.51514C22.215 8.78035 21.3003 9.72674 20.8418 11.272V11.2729C20.6279 11.9935 20.5362 12.8878 20.6035 13.5132V13.5142C20.7394 14.7903 21.3089 15.6935 22.0479 16.0796Z" fill="white" />
@@ -122,7 +122,7 @@ const AppliedFilterBadge = ({
     label: string;
     onRemove: () => void;
 }) => (
-    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => {}}>
+    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => { }}>
         <Text numberOfLines={1} style={styles.filterBadgeText}>
             {label}
         </Text>
@@ -237,7 +237,7 @@ export function SearchResultsScreen() {
                                 if (fav) {
                                     favMap[animal.id] = fav.id;
                                 }
-                            } catch {}
+                            } catch { }
                         })
                     );
                     setFavoriteIds(favMap);
@@ -535,7 +535,7 @@ export function SearchResultsScreen() {
                         const type = translateCategory(item.type);
                         const gender = translateGender(item.gender);
                         const age = formatAge(parseInt(item.age, 10) || undefined);
-                        const details = [type, gender, age].filter(Boolean).join(' · ');
+                        const details = [type, age].filter(Boolean).join(' · ');
                         const hasReferenceCoordinates =
                             (fetchParams.latitude !== undefined &&
                                 fetchParams.longitude !== undefined) ||
@@ -549,6 +549,7 @@ export function SearchResultsScreen() {
                                 details={details}
                                 location={distText}
                                 image={item.photoUri}
+                                status={item.status}
                                 tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
                                 isLiked={!!favoriteIds[item.id]}
                                 onLikePress={() => handleFavoriteToggle(item.id)}
@@ -797,17 +798,15 @@ const styles = StyleSheet.create({
         fontFamily: theme.typography.fontFamily.semiBold,
     },
     listContent: {
-        alignItems: 'center',
-        paddingHorizontal: 20,
         gap: 16,
     },
-petCard: {
-    width: '100%',
-    maxWidth: 420,
-    height: 175,
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
+    petCard: {
+        width: '92%',
+        maxWidth: 360,
+        height: 175,
+        alignSelf: 'center',
+        marginBottom: 16,
+    },
 
     markerContainer: {
         width: 42,

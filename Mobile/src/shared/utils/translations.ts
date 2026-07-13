@@ -44,3 +44,19 @@ export const translateStatus = (status?: string): string => {
     default: return status || 'En adopción';
   }
 };
+
+export const getStatusColors = (status?: string): { bg: string; color: string } => {
+  const norm = status?.toUpperCase().replace(' ', '_');
+  switch (norm) {
+    case 'ADOPTADO':
+      return { bg: '#FED1D1', color: '#FF0707' };
+    case 'EN_TRANSITO':
+    case 'EN_TRÁNSITO':
+      return { bg: '#FDD9A8', color: '#FB7005' };
+    case 'EN_ADOPCION':
+    case 'EN_ADOPCIÓN':
+      return { bg: '#B5F3BF', color: '#007A14' };
+    default:
+      return { bg: '#B5F3BF', color: '#007A14' };
+  }
+};
