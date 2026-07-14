@@ -47,8 +47,7 @@ export const useHomeData = () => {
     if (filters.placeId) params.placeId = filters.placeId;
     if (filters.minAge !== undefined) params.minAge = String(filters.minAge);
     if (filters.maxAge !== undefined) params.maxAge = String(filters.maxAge);
-    if (filters.minWeight !== undefined) params.minWeight = String(filters.minWeight);
-    if (filters.maxWeight !== undefined) params.maxWeight = String(filters.maxWeight);
+    if (filters.neutered !== undefined) params.neutered = String(filters.neutered);
 
     // Centro del filtro de distancia: localidad elegida > ubicación del usuario
     const center =

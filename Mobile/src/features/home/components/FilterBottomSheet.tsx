@@ -26,8 +26,7 @@ export type FilterValues = {
   radius: number; // 0 = sin límite de distancia
   minAge?: number;
   maxAge?: number;
-  minWeight?: number;
-  maxWeight?: number;
+  neutered?: boolean;
 };
 
 interface FilterBottomSheetProps {
@@ -56,6 +55,11 @@ const categoryOptions: SelectOption[] = [
   { label: 'Todos', value: '' },
   { label: 'Perros', value: 'dog' },
   { label: 'Gatos', value: 'cat' },
+  { label: 'Aves', value: 'bird' },
+  { label: 'Conejos', value: 'rabbit' },
+  { label: 'Tortugas', value: 'turtle' },
+  { label: 'Hamsters', value: 'hamster' },
+  { label: 'Peces', value: 'fish' },
   { label: 'Otros', value: 'other' },
 ];
 
@@ -76,7 +80,12 @@ const statusOptions: SelectOption[] = [
   { label: 'Todos', value: '' },
   { label: 'En adopción', value: 'EN_ADOPCION' },
   { label: 'En tránsito', value: 'EN_TRANSITO' },
-  { label: 'Adoptado', value: 'ADOPTADO' },
+];
+
+const neuteredOptions: SelectOption[] = [
+  { label: 'Todos', value: '' },
+  { label: 'Si', value: 'true' },
+  { label: 'No', value: 'false' },
 ];
 
 const radiusOptions: SelectOption[] = [
@@ -95,15 +104,7 @@ export const agePresets: RangePreset[] = [
   { label: 'Cachorro (0 a 1 año)', chip: 'Cachorro', value: '0-1', min: 0, max: 1 },
   { label: 'Joven (1 a 3 años)', chip: 'Joven', value: '1-3', min: 1, max: 3 },
   { label: 'Adulto (3 a 8 años)', chip: 'Adulto', value: '3-8', min: 3, max: 8 },
-  { label: 'Senior (8+ años)', chip: 'Senior', value: '8+', min: 8 },
-];
-
-export const weightPresets: RangePreset[] = [
-  { label: 'Todos', value: '' },
-  { label: 'Hasta 5 kg', chip: 'Hasta 5 kg', value: '-5', max: 5 },
-  { label: '5 a 15 kg', chip: '5-15 kg', value: '5-15', min: 5, max: 15 },
-  { label: '15 a 30 kg', chip: '15-30 kg', value: '15-30', min: 15, max: 30 },
-  { label: 'Más de 30 kg', chip: '+30 kg', value: '30+', min: 30 },
+  { label: 'Adulto Mayor (8+ años)', chip: 'Adulto Mayor', value: '8+', min: 8 },
 ];
 
 const presetFromRange = (presets: RangePreset[], min?: number, max?: number) =>
@@ -113,20 +114,20 @@ const getOptionLabel = (options: SelectOption[], value: string | number) => {
   return options.find((option) => option.value === value)?.label ?? '';
 };
 
-type SelectKey = 'category' | 'size' | 'gender' | 'status' | 'ageRange' | 'weightRange' | 'radius';
+type SelectKey = 'category' | 'size' | 'gender' | 'status' | 'neutered' | 'ageRange' | 'radius';
 
 type SheetFilters = {
   category: string;
   size: string;
   gender: string;
   status: string;
+  neutered: string;
   location: string;
   placeId?: string;
   latitude?: number;
   longitude?: number;
   radius: number;
   ageRange: string;
-  weightRange: string;
 };
 
 const toSheetFilters = (values: FilterValues): SheetFilters => ({
@@ -134,13 +135,13 @@ const toSheetFilters = (values: FilterValues): SheetFilters => ({
   size: values.size,
   gender: values.gender,
   status: values.status,
+  neutered: values.neutered === undefined ? '' : String(values.neutered),
   location: values.location,
   ...(values.placeId !== undefined ? { placeId: values.placeId } : {}),
   ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
   ...(values.longitude !== undefined ? { longitude: values.longitude } : {}),
   radius: values.radius,
   ageRange: presetFromRange(agePresets, values.minAge, values.maxAge),
-  weightRange: presetFromRange(weightPresets, values.minWeight, values.maxWeight),
 });
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -207,8 +208,7 @@ export const FilterBottomSheet = ({
     initialValues.radius,
     initialValues.minAge,
     initialValues.maxAge,
-    initialValues.minWeight,
-    initialValues.maxWeight,
+    initialValues.neutered,
   ]);
 
   const updateFilter = <Key extends keyof SheetFilters>(
@@ -223,7 +223,6 @@ export const FilterBottomSheet = ({
 
   const handleApply = () => {
     const agePreset = agePresets.find((preset) => preset.value === filters.ageRange);
-    const weightPreset = weightPresets.find((preset) => preset.value === filters.weightRange);
     onApply?.({
       category: filters.category.trim(),
       size: filters.size.trim(),
@@ -236,8 +235,7 @@ export const FilterBottomSheet = ({
       ...(filters.longitude !== undefined ? { longitude: filters.longitude } : {}),
       ...(agePreset?.min !== undefined ? { minAge: agePreset.min } : {}),
       ...(agePreset?.max !== undefined ? { maxAge: agePreset.max } : {}),
-      ...(weightPreset?.min !== undefined ? { minWeight: weightPreset.min } : {}),
-      ...(weightPreset?.max !== undefined ? { maxWeight: weightPreset.max } : {}),
+      ...(filters.neutered === 'true' ? { neutered: true } : filters.neutered === 'false' ? { neutered: false } : {}),
     });
     onClose();
   };
@@ -365,15 +363,11 @@ export const FilterBottomSheet = ({
             {renderSelect('Tamaño', 'size', sizeOptions)}
             {renderSelect('Género', 'gender', genderOptions)}
             {renderSelect('Estado', 'status', statusOptions)}
+            {renderSelect('Castrado', 'neutered', neuteredOptions)}
             {renderSelect(
               'Edad',
               'ageRange',
               agePresets.map(({ label, value }) => ({ label, value })),
-            )}
-            {renderSelect(
-              'Peso',
-              'weightRange',
-              weightPresets.map(({ label, value }) => ({ label, value })),
             )}
 
             <View style={styles.fieldGroup}>

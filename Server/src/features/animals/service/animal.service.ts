@@ -161,8 +161,7 @@ export const animalService = {
       radius?: number;
       minAge?: number;
       maxAge?: number;
-      minWeight?: number;
-      maxWeight?: number;
+      neutered?: boolean;
       userId?: string;
     },
     page?: number,

@@ -2,6 +2,11 @@ export const translateCategory = (category: string): string => {
   switch (category?.toLowerCase()) {
     case 'dog': return 'Perro';
     case 'cat': return 'Gato';
+    case 'bird': return 'Ave';
+    case 'rabbit': return 'Conejo';
+    case 'turtle': return 'Tortuga';
+    case 'hamster': return 'Hamster';
+    case 'fish': return 'Pez';
     case 'other': return 'Otro';
     default: return category || 'Otro';
   }

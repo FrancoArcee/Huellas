@@ -39,10 +39,9 @@ export const CategoryCarousel = () => {
             key={id}
             style={styles.item}
             onPress={() => {
-              const backendCategory = id === 'dog' ? 'dog' : id === 'cat' ? 'cat' : 'other';
               router.push({
                 pathname: '/(tabs)/search',
-                params: { category: backendCategory, layout: 'list' },
+                params: { category: id, layout: 'list' },
               });
             }}
             activeOpacity={0.7}

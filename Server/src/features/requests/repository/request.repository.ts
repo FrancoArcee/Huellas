@@ -18,8 +18,7 @@ export interface SearchFilters {
   radius?: number;
   minAge?: number;
   maxAge?: number;
-  minWeight?: number;
-  maxWeight?: number;
+  neutered?: boolean;
   userId?: string;
 }
 
@@ -119,12 +118,8 @@ export const requestRepository = {
       };
     }
 
-    // ── Weight range filter ──
-    if (filters.minWeight !== undefined || filters.maxWeight !== undefined) {
-      where.weight = {
-        ...(filters.minWeight !== undefined && { gte: filters.minWeight }),
-        ...(filters.maxWeight !== undefined && { lte: filters.maxWeight }),
-      };
+    if (filters.neutered !== undefined) {
+      where.neutered = filters.neutered;
     }
 
     // ── Filter by post owner ──

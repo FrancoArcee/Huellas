@@ -21,7 +21,6 @@ import {
     FilterBottomSheet,
     NO_RADIUS,
     agePresets,
-    weightPresets,
     type FilterValues,
 } from '../../home/components/FilterBottomSheet';
 import { PetHorizontalCard } from '../../../shared/components/ui/PetHorizontalCard';
@@ -40,6 +39,11 @@ type LayoutMode = 'list' | 'map';
 const categoryLabels: Record<string, string> = {
     dog: 'Perros',
     cat: 'Gatos',
+    bird: 'Aves',
+    rabbit: 'Conejos',
+    turtle: 'Tortugas',
+    hamster: 'Hamsters',
+    fish: 'Peces',
     other: 'Otros',
 };
 
@@ -84,16 +88,13 @@ const buildFilters = (params: FetchAnimalsParams): FilterOption[] => {
     if (params.size) filters.push({ id: 'size', label: sizeLabels[params.size] ?? params.size });
     if (params.gender) filters.push({ id: 'gender', label: genderLabels[params.gender] ?? params.gender });
     if (params.status) filters.push({ id: 'status', label: translateStatus(params.status) });
+    if (params.neutered !== undefined) {
+        filters.push({ id: 'neutered', label: params.neutered ? 'Castrado' : 'No Castrado' });
+    }
     if (params.minAge !== undefined || params.maxAge !== undefined) {
         filters.push({
             id: 'age',
             label: rangeLabel(agePresets, params.minAge, params.maxAge, `Edad ${params.minAge ?? 0}-${params.maxAge ?? '∞'}`),
-        });
-    }
-    if (params.minWeight !== undefined || params.maxWeight !== undefined) {
-        filters.push({
-            id: 'weight',
-            label: rangeLabel(weightPresets, params.minWeight, params.maxWeight, `Peso ${params.minWeight ?? 0}-${params.maxWeight ?? '∞'} kg`),
         });
     }
     if (params.radius !== undefined) filters.push({ id: 'radius', label: `Hasta ${params.radius} km` });
@@ -107,7 +108,7 @@ const AppliedFilterBadge = ({
     label: string;
     onRemove: () => void;
 }) => (
-    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => { }}>
+    <View style={styles.filterBadge}>
         <Text numberOfLines={1} style={styles.filterBadgeText}>
             {label}
         </Text>
@@ -116,7 +117,7 @@ const AppliedFilterBadge = ({
                 <Path d="M18 6L6 18M6 6l12 12" stroke={theme.colors.textPrimary} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
             </Svg>
         </TouchableOpacity>
-    </TouchableOpacity>
+    </View>
 );
 
 export function SearchResultsScreen() {
@@ -137,8 +138,7 @@ export function SearchResultsScreen() {
         radius?: string;
         minAge?: string;
         maxAge?: string;
-        minWeight?: string;
-        maxWeight?: string;
+        neutered?: string;
         layout?: string;
     }>();
 
@@ -154,8 +154,7 @@ export function SearchResultsScreen() {
     const initialRadius = getNumericParam(params.radius);
     const initialMinAge = getNumericParam(params.minAge);
     const initialMaxAge = getNumericParam(params.maxAge);
-    const initialMinWeight = getNumericParam(params.minWeight);
-    const initialMaxWeight = getNumericParam(params.maxWeight);
+    const initialNeutered = params.neutered === 'true' ? true : params.neutered === 'false' ? false : undefined;
     const initialLayout = getParamValue(params.layout);
     const initialFetchParams = useMemo<FetchAnimalsParams>(() => ({
         search: initialSearch,
@@ -170,23 +169,21 @@ export function SearchResultsScreen() {
         ...(initialRadius !== undefined ? { radius: initialRadius } : {}),
         ...(initialMinAge !== undefined ? { minAge: initialMinAge } : {}),
         ...(initialMaxAge !== undefined ? { maxAge: initialMaxAge } : {}),
-        ...(initialMinWeight !== undefined ? { minWeight: initialMinWeight } : {}),
-        ...(initialMaxWeight !== undefined ? { maxWeight: initialMaxWeight } : {}),
+        ...(initialNeutered !== undefined ? { neutered: initialNeutered } : {}),
     }), [
+        initialSearch,
         initialCategory,
+        initialSize,
         initialGender,
         initialStatus,
-        initialLatitude,
         initialLocation,
-        initialLongitude,
-        initialMaxAge,
-        initialMaxWeight,
-        initialMinAge,
-        initialMinWeight,
         initialPlaceId,
+        initialLatitude,
+        initialLongitude,
         initialRadius,
-        initialSearch,
-        initialSize,
+        initialMinAge,
+        initialMaxAge,
+        initialNeutered,
     ]);
 
     const [isFilterSheetVisible, setIsFilterSheetVisible] = useState(false);
@@ -423,47 +420,69 @@ export function SearchResultsScreen() {
         }, 500);
     };
 
+    const updateUrlParams = (newParams: FetchAnimalsParams) => {
+        const stringified: Record<string, string> = {};
+        if (newParams.search) stringified.search = newParams.search;
+        if (newParams.category) stringified.category = newParams.category;
+        if (newParams.size) stringified.size = newParams.size;
+        if (newParams.gender) stringified.gender = newParams.gender;
+        if (newParams.status) stringified.status = newParams.status;
+        if (newParams.location) stringified.location = newParams.location;
+        if (newParams.placeId) stringified.placeId = newParams.placeId;
+        if (newParams.latitude !== undefined) stringified.latitude = String(newParams.latitude);
+        if (newParams.longitude !== undefined) stringified.longitude = String(newParams.longitude);
+        if (newParams.radius !== undefined) stringified.radius = String(newParams.radius);
+        if (newParams.minAge !== undefined) stringified.minAge = String(newParams.minAge);
+        if (newParams.maxAge !== undefined) stringified.maxAge = String(newParams.maxAge);
+        if (newParams.neutered !== undefined) stringified.neutered = String(newParams.neutered);
+
+        const allKeys = [
+            'search', 'category', 'size', 'gender', 'status', 'location', 
+            'placeId', 'latitude', 'longitude', 'radius', 'minAge', 'maxAge', 'neutered'
+        ];
+        allKeys.forEach((key) => {
+            if (!(key in stringified)) {
+                stringified[key] = '';
+            }
+        });
+
+        router.setParams(stringified);
+    };
+
     const handleSearchSubmit = (search: string) => {
         setLayoutMode('list');
         setSearchText(search);
         setSelectedAnimal(null);
-        setFetchParams((current) => ({ ...current, search }));
+        updateUrlParams({ ...fetchParams, search });
     };
 
     const handleRemoveFilter = (filterId: string) => {
         if (filterId === 'search') {
             setSearchText('');
         }
-        setFetchParams((current) => {
-            if (filterId === 'location') {
-                const {
-                    location: _location,
-                    placeId: _placeId,
-                    latitude: _latitude,
-                    longitude: _longitude,
-                    radius: _radius,
-                    ...rest
-                } = current;
-                return rest;
-            }
-            if (filterId === 'radius') {
-                const { radius: _radius, ...rest } = current;
-                return rest;
-            }
-            if (filterId === 'age') {
-                const { minAge: _minAge, maxAge: _maxAge, ...rest } = current;
-                return rest;
-            }
-            if (filterId === 'weight') {
-                const { minWeight: _minWeight, maxWeight: _maxWeight, ...rest } = current;
-                return rest;
-            }
-            return { ...current, [filterId]: undefined };
-        });
+        
+        const nextParams = { ...fetchParams };
+        if (filterId === 'location') {
+            delete nextParams.location;
+            delete nextParams.placeId;
+            delete nextParams.latitude;
+            delete nextParams.longitude;
+            delete nextParams.radius;
+        } else if (filterId === 'radius') {
+            delete nextParams.radius;
+        } else if (filterId === 'age') {
+            delete nextParams.minAge;
+            delete nextParams.maxAge;
+        } else if (filterId === 'neutered') {
+            delete nextParams.neutered;
+        } else {
+            delete (nextParams as any)[filterId];
+        }
+
+        updateUrlParams(nextParams);
     };
 
     const handleApplyFilters = (values: FilterValues) => {
-        // Centro del geo-filtro: localidad elegida > ubicación del usuario.
         const hasPlace = values.latitude !== undefined && values.longitude !== undefined;
         const center = hasPlace
             ? { latitude: values.latitude!, longitude: values.longitude! }
@@ -484,16 +503,15 @@ export function SearchResultsScreen() {
             ...(radius !== undefined ? { radius } : {}),
             ...(values.minAge !== undefined ? { minAge: values.minAge } : {}),
             ...(values.maxAge !== undefined ? { maxAge: values.maxAge } : {}),
-            ...(values.minWeight !== undefined ? { minWeight: values.minWeight } : {}),
-            ...(values.maxWeight !== undefined ? { maxWeight: values.maxWeight } : {}),
+            ...(values.neutered !== undefined ? { neutered: values.neutered } : {}),
         };
         setLayoutMode('map');
         setSelectedAnimal(null);
-        setFetchParams(nextParams);
+        updateUrlParams(nextParams);
     };
 
     const handleClearFilters = () => {
-        setFetchParams({ search: searchText });
+        updateUrlParams({ search: searchText });
     };
 
     const renderFloatingOverlay = () => (
@@ -576,8 +594,7 @@ export function SearchResultsScreen() {
                     : {}),
                 ...(fetchParams.minAge !== undefined ? { minAge: fetchParams.minAge } : {}),
                 ...(fetchParams.maxAge !== undefined ? { maxAge: fetchParams.maxAge } : {}),
-                ...(fetchParams.minWeight !== undefined ? { minWeight: fetchParams.minWeight } : {}),
-                ...(fetchParams.maxWeight !== undefined ? { maxWeight: fetchParams.maxWeight } : {}),
+                ...(fetchParams.neutered !== undefined ? { neutered: fetchParams.neutered } : {}),
             }}
         />
     );
@@ -860,7 +877,7 @@ const styles = StyleSheet.create({
     },
     filterBadge: {
         height: 34,
-        maxWidth: 132,
+        maxWidth: 200,
         paddingHorizontal: 12,
         borderRadius: 17,
         backgroundColor: theme.colors.white,
