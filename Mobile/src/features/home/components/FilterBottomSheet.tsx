@@ -18,6 +18,7 @@ export type FilterValues = {
   category: string;
   size: string;
   gender: string;
+  status: string;
   location: string;
   placeId?: string;
   latitude?: number;
@@ -44,6 +45,7 @@ const initialFilters: FilterValues = {
   category: '',
   size: '',
   gender: '',
+  status: '',
   location: '',
   radius: 25,
 };
@@ -68,6 +70,13 @@ const genderOptions: SelectOption[] = [
   { label: 'Todos', value: '' },
   { label: 'Macho', value: 'male' },
   { label: 'Hembra', value: 'female' },
+];
+
+const statusOptions: SelectOption[] = [
+  { label: 'Todos', value: '' },
+  { label: 'En adopción', value: 'EN_ADOPCION' },
+  { label: 'En tránsito', value: 'EN_TRANSITO' },
+  { label: 'Adoptado', value: 'ADOPTADO' },
 ];
 
 const radiusOptions: SelectOption[] = [
@@ -104,12 +113,13 @@ const getOptionLabel = (options: SelectOption[], value: string | number) => {
   return options.find((option) => option.value === value)?.label ?? '';
 };
 
-type SelectKey = 'category' | 'size' | 'gender' | 'ageRange' | 'weightRange' | 'radius';
+type SelectKey = 'category' | 'size' | 'gender' | 'status' | 'ageRange' | 'weightRange' | 'radius';
 
 type SheetFilters = {
   category: string;
   size: string;
   gender: string;
+  status: string;
   location: string;
   placeId?: string;
   latitude?: number;
@@ -123,6 +133,7 @@ const toSheetFilters = (values: FilterValues): SheetFilters => ({
   category: values.category,
   size: values.size,
   gender: values.gender,
+  status: values.status,
   location: values.location,
   ...(values.placeId !== undefined ? { placeId: values.placeId } : {}),
   ...(values.latitude !== undefined ? { latitude: values.latitude } : {}),
@@ -188,6 +199,7 @@ export const FilterBottomSheet = ({
     initialValues.category,
     initialValues.size,
     initialValues.gender,
+    initialValues.status,
     initialValues.location,
     initialValues.placeId,
     initialValues.latitude,
@@ -216,6 +228,7 @@ export const FilterBottomSheet = ({
       category: filters.category.trim(),
       size: filters.size.trim(),
       gender: filters.gender.trim(),
+      status: filters.status.trim(),
       location: filters.location.trim(),
       radius: filters.radius,
       ...(filters.placeId !== undefined ? { placeId: filters.placeId } : {}),
@@ -351,6 +364,7 @@ export const FilterBottomSheet = ({
             {renderSelect('Categoría', 'category', categoryOptions)}
             {renderSelect('Tamaño', 'size', sizeOptions)}
             {renderSelect('Género', 'gender', genderOptions)}
+            {renderSelect('Estado', 'status', statusOptions)}
             {renderSelect(
               'Edad',
               'ageRange',

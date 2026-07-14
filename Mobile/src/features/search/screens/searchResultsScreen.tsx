@@ -83,6 +83,7 @@ const buildFilters = (params: FetchAnimalsParams): FilterOption[] => {
     if (params.location) filters.push({ id: 'location', label: (params.location.split(',')[0] ?? params.location).trim() });
     if (params.size) filters.push({ id: 'size', label: sizeLabels[params.size] ?? params.size });
     if (params.gender) filters.push({ id: 'gender', label: genderLabels[params.gender] ?? params.gender });
+    if (params.status) filters.push({ id: 'status', label: translateStatus(params.status) });
     if (params.minAge !== undefined || params.maxAge !== undefined) {
         filters.push({
             id: 'age',
@@ -128,6 +129,7 @@ export function SearchResultsScreen() {
         category?: string;
         size?: string;
         gender?: string;
+        status?: string;
         location?: string;
         placeId?: string;
         latitude?: string;
@@ -144,6 +146,7 @@ export function SearchResultsScreen() {
     const initialCategory = getParamValue(params.category);
     const initialSize = getParamValue(params.size);
     const initialGender = getParamValue(params.gender);
+    const initialStatus = getParamValue(params.status);
     const initialLocation = getParamValue(params.location);
     const initialPlaceId = getParamValue(params.placeId);
     const initialLatitude = getNumericParam(params.latitude);
@@ -159,6 +162,7 @@ export function SearchResultsScreen() {
         category: initialCategory,
         size: initialSize,
         gender: initialGender,
+        status: initialStatus,
         location: initialLocation,
         ...(initialPlaceId ? { placeId: initialPlaceId } : {}),
         ...(initialLatitude !== undefined ? { latitude: initialLatitude } : {}),
@@ -171,6 +175,7 @@ export function SearchResultsScreen() {
     }), [
         initialCategory,
         initialGender,
+        initialStatus,
         initialLatitude,
         initialLocation,
         initialLongitude,
@@ -191,6 +196,7 @@ export function SearchResultsScreen() {
     );
     const [animals, setAnimals] = useState<AnimalDTO[]>([]);
     const [loading, setLoading] = useState(true);
+    const [overlayHeight, setOverlayHeight] = useState(0);
     const [selectedAnimal, setSelectedAnimal] = useState<AnimalDTO | null>(null);
     const [hiddenMarkerId, setHiddenMarkerId] = useState<string | null>(null);
     const [fetchParams, setFetchParams] = useState<FetchAnimalsParams>(initialFetchParams);
@@ -471,6 +477,7 @@ export function SearchResultsScreen() {
             ...(values.placeId ? { placeId: values.placeId } : {}),
             size: values.size,
             gender: values.gender,
+            status: values.status,
             ...(center !== undefined
                 ? { latitude: center.latitude, longitude: center.longitude }
                 : {}),
@@ -490,7 +497,14 @@ export function SearchResultsScreen() {
     };
 
     const renderFloatingOverlay = () => (
-        <View style={[styles.floatingOverlay, { paddingTop: insets.top + 16 }]}>
+        <View
+            style={[
+                styles.floatingOverlay,
+                { paddingTop: insets.top + 16 },
+                layoutMode === 'list' && styles.floatingOverlayList,
+            ]}
+            onLayout={(e) => setOverlayHeight(e.nativeEvent.layout.height)}
+        >
             <SearchBar
                 value={searchText}
                 onChangeText={setSearchText}
@@ -548,6 +562,7 @@ export function SearchResultsScreen() {
                 category: fetchParams.category ?? '',
                 size: fetchParams.size ?? '',
                 gender: fetchParams.gender ?? '',
+                status: fetchParams.status ?? '',
                 location: fetchParams.location ?? '',
                 radius: fetchParams.radius ?? NO_RADIUS,
                 ...(fetchParams.location && fetchParams.placeId
@@ -600,7 +615,10 @@ export function SearchResultsScreen() {
                     numColumns={1}
                     contentContainerStyle={[
                         styles.listContent,
-                        { paddingTop: insets.top + 130, paddingBottom: insets.bottom + 24 },
+                        {
+                            paddingTop: overlayHeight > 0 ? overlayHeight + 12 : insets.top + 130,
+                            paddingBottom: insets.bottom + 24,
+                        },
                     ]}
                     renderItem={({ item }) => {
                         const type = translateCategory(item.type);
@@ -777,6 +795,17 @@ const styles = StyleSheet.create({
         right: 0,
         paddingHorizontal: 20,
         zIndex: 10,
+    },
+    floatingOverlayList: {
+        backgroundColor: theme.colors.background,
+        paddingBottom: 12,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+        elevation: 4,
     },
     overlayActions: {
         flexDirection: 'row',

@@ -10,6 +10,7 @@ export interface FetchAnimalsParams {
   category?: string;
   size?: string;
   gender?: string;
+  status?: string;
   latitude?: number;
   longitude?: number;
   location?: string;
