@@ -31,8 +31,7 @@ export interface PostFilters {
   // ── Range filters ──
   minAge?: number;
   maxAge?: number;
-  minWeight?: number;
-  maxWeight?: number;
+  neutered?: boolean;
   // ── User filter ──
   userId?: string;
 }
@@ -227,11 +226,9 @@ export const animalRepository = {
         ...(filters.maxAge !== undefined && { lte: filters.maxAge }),
       };
     }
-    if (filters.minWeight !== undefined || filters.maxWeight !== undefined) {
-      where.weight = {
-        ...(filters.minWeight !== undefined && { gte: filters.minWeight }),
-        ...(filters.maxWeight !== undefined && { lte: filters.maxWeight }),
-      };
+
+    if (filters.neutered !== undefined) {
+      where.neutered = filters.neutered;
     }
 
     // ── User filter ──────────────────────────────

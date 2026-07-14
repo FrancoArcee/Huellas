@@ -126,17 +126,17 @@ export async function listPosts(
     }
 
     const {
-      q, category, size, gender, status, location, placeId,
+      q, category, size, gender, status, neutered, location, placeId,
       latitude, longitude, radius,
-      minAge, maxAge, minWeight, maxWeight,
+      minAge, maxAge,
       userId, page, limit,
     } = parsed.data;
 
     const result = await animalService.listPosts(
       {
-        q, category, size, gender, status, location, placeId,
+        q, category, size, gender, status, neutered, location, placeId,
         latitude, longitude, radius,
-        minAge, maxAge, minWeight, maxWeight,
+        minAge, maxAge,
         userId,
       },
       page,

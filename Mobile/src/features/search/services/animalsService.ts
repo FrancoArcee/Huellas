@@ -18,8 +18,7 @@ export interface FetchAnimalsParams {
   radius?: number;
   minAge?: number;
   maxAge?: number;
-  minWeight?: number;
-  maxWeight?: number;
+  neutered?: boolean;
   limit?: number;
 }
 

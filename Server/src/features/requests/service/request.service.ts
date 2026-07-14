@@ -43,13 +43,6 @@ export const requestService = {
       }
     }
 
-    // ── Validate weight range ──
-    if (filters.minWeight !== undefined && filters.maxWeight !== undefined) {
-      if (filters.minWeight > filters.maxWeight) {
-        throw HttpError.badRequest("minWeight cannot be greater than maxWeight");
-      }
-    }
-
     return requestRepository.searchPosts(filters, page, limit);
   },
 };

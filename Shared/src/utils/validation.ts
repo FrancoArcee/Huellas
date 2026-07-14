@@ -8,7 +8,7 @@ import { z } from "zod";
 
 export const contactTypeSchema = z.enum(["WhatsApp", "Telegram", "Instagram", "Discord", "Facebook", "Messenger"]);
 export const petSizeSchema = z.enum(["small", "medium", "large"]);
-export const petCategorySchema = z.enum(["dog", "cat", "other"]);
+export const petCategorySchema = z.enum(["dog", "cat", "bird", "rabbit", "turtle", "hamster", "fish", "other"]);
 export const postStatusSchema = z.enum(["ADOPTADO", "EN_TRANSITO", "EN_ADOPCION"]);
 
 // ─── Contact Validation Helper ────────────────
@@ -207,7 +207,8 @@ export const postSearchSchema = z.object({
   category: petCategorySchema.optional(),
   size: petSizeSchema.optional(),
   gender: z.enum(["male", "female"]).optional(),
-  status: postStatusSchema.optional(),
+  status: z.enum(["EN_TRANSITO", "EN_ADOPCION"]).optional(),
+  neutered: z.preprocess((val) => val === 'true' || val === true ? true : val === 'false' || val === false ? false : undefined, z.boolean().optional()).optional(),
   location: z.string().optional(),
   placeId: z.string().min(1).max(500).optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),
@@ -215,8 +216,6 @@ export const postSearchSchema = z.object({
   radius: z.coerce.number().positive().optional(),
   minAge: z.coerce.number().int().min(0).optional(),
   maxAge: z.coerce.number().int().min(0).optional(),
-  minWeight: z.coerce.number().positive().optional(),
-  maxWeight: z.coerce.number().positive().optional(),
   userId: z.string().min(1).max(128).optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
