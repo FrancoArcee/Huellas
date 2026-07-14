@@ -11,6 +11,7 @@ export interface SearchFilters {
   q?: string;
   category?: string;
   size?: string;
+  status?: string;
   location?: string;
   latitude?: number;
   longitude?: number;
@@ -84,6 +85,11 @@ export const requestRepository = {
     // ── Exact size filter ──
     if (filters.size) {
       where.size = filters.size;
+    }
+
+    // ── Exact status filter ──
+    if (filters.status) {
+      where.status = filters.status as any;
     }
 
     // ── Location filter (case-insensitive contains) ──

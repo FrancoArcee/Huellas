@@ -20,6 +20,7 @@ export interface AnimalPostRecord {
   birthDate: string | null;
   description: string | null;
   photosUrl: string[];
+  status: string;
   clinicalHistory?: ClinicalHistoryItem[];
   createdAt: string;
   updatedAt: string;
@@ -40,6 +41,7 @@ export interface AnimalPostPayload {
   placeId?: string;
   birthDate?: string;
   description?: string;
+  status: string;
 }
 
 function appendAsset(form: FormData, asset: ImagePickerAsset): void {

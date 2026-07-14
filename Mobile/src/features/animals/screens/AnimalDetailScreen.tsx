@@ -24,7 +24,7 @@ import FacebookSvg from '../../../assets/icons/socialNetwork/facebook.svg';
 import MessengerSvg from '../../../assets/icons/socialNetwork/messenger.svg';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { openContactApp } from '../../../shared/utils/contact-apps';
-import { translateCategory, translateGender, translateSize } from '../../../shared/utils/translations';
+import { translateCategory, translateGender, translateSize, translateStatus } from '../../../shared/utils/translations';
 import { animalService, type AnimalPost } from '../services/animalService';
 import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import { ClinicalHistoryButton } from '../components/ClinicalHistoryButton';
@@ -321,6 +321,9 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
 
             <View style={styles.tagsRow}>
               <View style={styles.tag}>
+                <CustomText style={styles.tagText}>{translateStatus(post.status)}</CustomText>
+              </View>
+              <View style={styles.tag}>
                 <CustomText style={styles.tagText}>{translateGender(post.gender)}</CustomText>
               </View>
               <View style={styles.tag}>
@@ -547,11 +550,13 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   tagsRow: {
-    width: '80%',
-    maxWidth: 302,
+    width: '90%',
+    maxWidth: 360,
     alignSelf: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
     marginTop: 17,
   },
   tag: {

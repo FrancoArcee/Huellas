@@ -9,6 +9,7 @@ import { z } from "zod";
 export const contactTypeSchema = z.enum(["WhatsApp", "Telegram", "Instagram", "Discord", "Facebook", "Messenger"]);
 export const petSizeSchema = z.enum(["small", "medium", "large"]);
 export const petCategorySchema = z.enum(["dog", "cat", "other"]);
+export const postStatusSchema = z.enum(["ADOPTADO", "EN_TRANSITO", "EN_ADOPCION"]);
 
 // ─── Contact Validation Helper ────────────────
 
@@ -173,6 +174,7 @@ export const createPostSchema = z.object({
   birthDate:  z.string().datetime().optional(),
   description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl:  z.array(z.string().url()).optional(),
+  status:     postStatusSchema.optional(),
   }).superRefine((data, ctx) => {
   validateBirthDateAndAge(data, ctx);
 });
@@ -193,6 +195,7 @@ export const updatePostSchema = z.object({
   birthDate:  z.string().datetime().optional(),
   description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl:   z.array(z.string().url()).optional(),
+  status:      postStatusSchema.optional(),
   }).superRefine((data, ctx) => {
   validateBirthDateAndAge(data, ctx);
 });
@@ -204,6 +207,7 @@ export const postSearchSchema = z.object({
   category: petCategorySchema.optional(),
   size: petSizeSchema.optional(),
   gender: z.enum(["male", "female"]).optional(),
+  status: postStatusSchema.optional(),
   location: z.string().optional(),
   placeId: z.string().min(1).max(500).optional(),
   latitude: z.coerce.number().min(-90).max(90).optional(),

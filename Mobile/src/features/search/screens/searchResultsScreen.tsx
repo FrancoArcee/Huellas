@@ -32,7 +32,7 @@ import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
 import { animalService } from '../../animals/services/animalService';
-import { translateCategory, translateGender, formatAge, formatDistance } from '../../../shared/utils/translations';
+import { translateCategory, translateGender, formatAge, formatDistance, translateStatus, getStatusColors } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
 type LayoutMode = 'list' | 'map';
@@ -106,7 +106,7 @@ const AppliedFilterBadge = ({
     label: string;
     onRemove: () => void;
 }) => (
-    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => {}}>
+    <TouchableOpacity activeOpacity={0.85} style={styles.filterBadge} onPress={() => { }}>
         <Text numberOfLines={1} style={styles.filterBadgeText}>
             {label}
         </Text>
@@ -606,7 +606,7 @@ export function SearchResultsScreen() {
                         const type = translateCategory(item.type);
                         const gender = translateGender(item.gender);
                         const age = formatAge(parseInt(item.age, 10) || undefined);
-                        const details = [type, gender, age].filter(Boolean).join(' · ');
+                        const details = [type, age].filter(Boolean).join(' · ');
                         const hasReferenceCoordinates =
                             (fetchParams.latitude !== undefined &&
                                 fetchParams.longitude !== undefined) ||
@@ -620,6 +620,7 @@ export function SearchResultsScreen() {
                                 details={details}
                                 location={distText}
                                 image={item.photoUri}
+                                status={item.status}
                                 tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
                                 isLiked={!!favoriteIds[item.id]}
                                 onLikePress={() => handleFavoriteToggle(item.id)}
@@ -743,7 +744,7 @@ export function SearchResultsScreen() {
                             </TouchableOpacity>
                         </View>
                         <Text numberOfLines={1} style={styles.inlineCardInfo}>
-                            {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)}
+                            {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)} · {translateStatus(selectedAnimal.status)}
                         </Text>
                         <Text numberOfLines={1} style={styles.inlineCardMeta}>
                             {formatAge(parseInt(selectedAnimal.age, 10) || undefined)} · {selectedAnimal.weightKg} kg
@@ -891,17 +892,15 @@ const styles = StyleSheet.create({
         fontFamily: theme.typography.fontFamily.semiBold,
     },
     listContent: {
-        alignItems: 'center',
-        paddingHorizontal: 20,
         gap: 16,
     },
-petCard: {
-    width: '100%',
-    maxWidth: 420,
-    height: 175,
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
+    petCard: {
+        width: '92%',
+        maxWidth: 360,
+        height: 175,
+        alignSelf: 'center',
+        marginBottom: 16,
+    },
 
     markerContainer: {
         width: 42,

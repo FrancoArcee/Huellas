@@ -49,6 +49,7 @@ export default function CreateAnimalScreen() {
     peso: '',
     genero: '',
     castrado: '',
+    estado: '',
     descripcion: '',
     latitude: null,
     longitude: null,
@@ -56,7 +57,7 @@ export default function CreateAnimalScreen() {
   });
   const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | null>(null);
+  const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | 'estado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
   const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
   const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
@@ -69,6 +70,7 @@ export default function CreateAnimalScreen() {
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
+  const estados = ['En adopción', 'En tránsito'];
 
   const agregarImagen = async () => {
     if (imagenes.length >= MAX_IMAGENES) return;
@@ -333,6 +335,29 @@ export default function CreateAnimalScreen() {
                 </View>
               )}
               {renderError('castrado')}
+
+              <Text style={styles.label}>Estado <Text style={styles.asterisk}>*</Text></Text>
+              <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'estado' ? null : 'estado')}>
+                <Text style={{ color: formData.estado ? '#000' : '#999' }}>{formData.estado || 'Seleccionar...'}</Text>
+                <ChevronDown width={20} height={20} color="#555" />
+              </TouchableOpacity>
+              {openSelect === 'estado' && (
+                <View style={styles.selectOptions}>
+                  {estados.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={styles.selectOption}
+                      onPress={() => {
+                        updateForm('estado', option);
+                        setOpenSelect(null);
+                      }}
+                    >
+                      <Text style={styles.selectOptionText}>{option}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              {renderError('estado')}
 
               <TouchableOpacity style={styles.primaryButton} onPress={handleSiguiente}>
                 <Text style={styles.primaryButtonText}>Continuar</Text>

@@ -152,6 +152,7 @@ export const animalService = {
       category?: string;
       size?: string;
       gender?: string;
+      status?: string;
       location?: string;
       placeId?: string;
       q?: string;
