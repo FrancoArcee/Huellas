@@ -212,7 +212,7 @@ export const useHomeData = () => {
       }
     } catch (error: any) {
       console.warn('Error toggling favorite:', error.response?.data || error.message);
-      
+
       const isAlreadyDeleted = wasFavorite && (error.response?.status === 404 || error.response?.data?.error === "NOT_FOUND");
 
       if (!isAlreadyDeleted) {

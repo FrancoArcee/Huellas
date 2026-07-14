@@ -20,6 +20,7 @@ export interface PostFilters {
   size?: string;
   location?: string;
   q?: string;
+  status?: string;
   // ── Geolocation filters ──
   latitude?: number;
   longitude?: number;
@@ -183,6 +184,11 @@ export const animalRepository = {
     }
     if (filters.q) {
       where.name = { contains: filters.q, mode: "insensitive" };
+    }
+    if (filters.status) {
+      where.status = filters.status as any;
+    } else if (!filters.userId) {
+      where.status = { not: "ADOPTADO" as any };
     }
 
     // ── Range filters ────────────────────────────

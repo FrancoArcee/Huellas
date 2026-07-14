@@ -7,7 +7,7 @@ import { animalService } from '../../src/features/animals/services/animalService
 import { useAuthStore } from '../../src/shared/store/authStore';
 import { storage } from '../../src/shared/services/storage';
 import { getDistanceKm } from '../../src/shared/utils/distance';
-import { translateCategory, translateGender, formatAge, formatDistance } from '../../src/shared/utils/translations';
+import { translateCategory, translateGender, formatAge, formatDistance, translateStatus, getStatusColors } from '../../src/shared/utils/translations';
 import { theme } from '../../src/theme';
 
 export default function FavoritesRoute() {
@@ -120,7 +120,7 @@ export default function FavoritesRoute() {
                 const petType = translateCategory(pet.category);
                 const petGender = translateGender(pet.gender);
                 const petAge = formatAge(pet.age);
-                const details = [petType, petGender, petAge].filter(Boolean).join(' · ');
+                const details = [petType, petAge].filter(Boolean).join(' · ');
 
                 const imageSource = pet.photosUrl?.[0] || '';
 
@@ -128,7 +128,6 @@ export default function FavoritesRoute() {
                 if (pet.weight !== undefined) {
                   tags.push(`${pet.weight} KG`);
                 }
-
                 return (
                   <PetHorizontalCard
                     key={pet.id}
@@ -136,6 +135,7 @@ export default function FavoritesRoute() {
                     details={details}
                     location={distanceText}
                     image={imageSource}
+                    status={pet.status}
                     tags={tags}
                     isLiked={true}
                     onButtonPress={() => openDetail(pet.id)}
@@ -177,13 +177,14 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingTop: 12,
+    gap: 16,
   },
   petCard: {
     width: '92%',
     maxWidth: 360,
-    height: 210,
+    height: 175,
     alignSelf: 'center',
-    marginBottom: 34,
+    marginBottom: 16,
   },
   centerContainer: {
     flex: 1,

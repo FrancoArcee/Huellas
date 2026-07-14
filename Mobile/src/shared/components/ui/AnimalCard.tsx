@@ -4,6 +4,7 @@ import LikeIcon from "../../../assets/icons/like.svg";
 import { Animal } from "../../../../../Shared/types/animal";
 import { Link } from 'expo-router';
 import { colors } from '../../../theme/index';
+import { translateStatus } from '../../../shared/utils/translations';
 
 interface AnimalCardProps extends Animal {
   isFavorite?: boolean;
@@ -21,6 +22,7 @@ export function AnimalCard({
   weightKg,
   isFavorite = false,
   onFavoritePress,
+  status,
 }: AnimalCardProps) {
   const imageSource =
     typeof photoUri === "string" ? { uri: photoUri } : photoUri;
@@ -61,7 +63,7 @@ export function AnimalCard({
           <View style={styles.gradient}>
             <Text style={styles.animalName}>{name}</Text>
             <Text style={styles.animalDetails}>
-              {type} · {gender} · {age}
+              {type} · {gender} · {age}{status ? ` · ${translateStatus(status)}` : ''}
             </Text>
             <Text style={styles.animalWeight}>{weightKg} KG</Text>
           </View>

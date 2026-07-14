@@ -94,6 +94,7 @@ const baseAnimalFormSchema = z.object({
   castrado: z.enum(['Si', 'No'], {
     message: 'Seleccioná una opción válida',
   }),
+  estado: z.string().min(1, 'El estado es obligatorio'),
   descripcion: z
     .string()
     .max(255, 'La descripción no puede superar los 255 caracteres'),
@@ -173,7 +174,7 @@ export function validateStep(
     return errors;
   }
   if (step === 2) {
-    return validateFields(formData, ['ubicacion', 'peso', 'genero', 'castrado']);
+    return validateFields(formData, ['ubicacion', 'peso', 'genero', 'castrado', 'estado']);
   }
   return validateFields(formData, ['descripcion']);
 }

@@ -9,4 +9,5 @@ export interface Animal {
   weightKg: number;
   latitude?: number;
   longitude?: number;
+  status?: string;
 }

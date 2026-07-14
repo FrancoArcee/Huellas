@@ -11,19 +11,21 @@ import {
 } from 'react-native';
 import Location from '../../../assets/icons/location.svg';
 import LikeIcon from '../../../assets/icons/like.svg';
+import { translateStatus, getStatusColors } from '../../utils/translations';
 
 interface PetHorizontalCardProps {
   name: string;
   details: string;
   location: string;
   image: ImageSourcePropType | string;
-  tags?: string[];
+  tags?: (string | { text: string; bg?: string; color?: string })[];
   buttonText?: string;
   isLiked?: boolean;
   onPress?: () => void;
   onButtonPress?: () => void;
   onLikePress?: () => void;
   style?: ViewStyle;
+  status?: string;
 }
 
 export function PetHorizontalCard({
@@ -38,6 +40,7 @@ export function PetHorizontalCard({
   onButtonPress,
   onLikePress,
   style,
+  status,
 }: PetHorizontalCardProps) {
   const imageSource = typeof image === 'string' ? { uri: image } : image;
 
@@ -51,30 +54,21 @@ export function PetHorizontalCard({
         style,
       ]}
     >
-      {onLikePress && (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
-          accessibilityState={{ selected: isLiked }}
-          style={styles.likeButton}
-          onPress={(event) => {
-            event?.stopPropagation?.();
-            onLikePress();
-          }}
-        >
-          <LikeIcon
-            width={22}
-            height={21}
-            fill={isLiked ? '#FFB0B0' : 'none'}
-            stroke={isLiked ? '#FFB0B0' : '#FFB0B0'}
-          />
-        </Pressable>
-      )}
+
 
       <View style={styles.cardInfo}>
         <View>
-          <Text style={styles.petName}>{name}</Text>
-          <Text style={styles.petDetails}>{details}</Text>
+          <View style={styles.nameRow}>
+            <Text style={styles.petName} numberOfLines={1}>{name}</Text>
+            {status ? (
+              <View style={[styles.statusBadge, { backgroundColor: getStatusColors(status).bg }]}>
+                <Text style={[styles.statusBadgeText, { color: getStatusColors(status).color }]}>
+                  {translateStatus(status)}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+          <Text style={styles.petDetails} numberOfLines={1}>{details}</Text>
 
           <View style={styles.locationContainer}>
             <Location width={13} height={13} color="#666666" style={styles.locationIcon} />
@@ -84,26 +78,56 @@ export function PetHorizontalCard({
 
         {tags.length > 0 && (
           <View style={styles.tagContainer}>
-            {tags.map((tag) => (
-              <View style={styles.tag} key={tag}>
-                <Text style={styles.tagText}>{tag}</Text>
-              </View>
-            ))}
+            {tags.map((tag, idx) => {
+              const isObject = typeof tag === 'object' && tag !== null;
+              const text = isObject ? tag.text : tag;
+              const customBg = isObject && tag.bg ? tag.bg : '#e3d7ff';
+              const customColor = isObject && tag.color ? tag.color : '#8e44ad';
+              return (
+                <View style={[styles.tag, { backgroundColor: customBg }]} key={idx}>
+                  <Text style={[styles.tagText, { color: customColor }]}>{text}</Text>
+                </View>
+              );
+            })}
           </View>
         )}
 
-        {onButtonPress && (
+        {(onButtonPress || onLikePress) && (
           <View style={styles.actionsRow}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={(event) => {
-                event.stopPropagation();
-                onButtonPress();
-              }}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.buttonText}>{buttonText}</Text>
-            </TouchableOpacity>
+            {onButtonPress && (
+              <TouchableOpacity
+                style={styles.button}
+                onPress={(event) => {
+                  event.stopPropagation();
+                  onButtonPress();
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.buttonText}>{buttonText}</Text>
+              </TouchableOpacity>
+            )}
+
+            {onLikePress && (
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+                accessibilityState={{ selected: isLiked }}
+                style={styles.actionsLikeButton}
+                onPress={(event) => {
+                  event.stopPropagation();
+                  onLikePress();
+                }}
+                activeOpacity={0.8}
+              >
+                <LikeIcon
+                  width={20}
+                  height={19}
+                  fill={isLiked ? '#FFB0B0' : 'none'}
+                  stroke={isLiked ? '#FFB0B0' : '#FFFFFF'}
+                  strokeWidth={2.2}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         )}
       </View>
@@ -183,6 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 9,
+    gap: 8,
   },
   button: {
     backgroundColor: '#f39c12',
@@ -198,18 +223,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 13,
   },
-  likeButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
+  actionsLikeButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#737272',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.85)',
-    zIndex: 10,
-    elevation: 5,
+    alignItems: 'center',
   },
   imageContainer: {
     width: '40%',
@@ -219,5 +239,23 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 4,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statusBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
 });

@@ -13,6 +13,7 @@ export interface AnimalPost {
   location: string;
   latitude?: number;
   longitude?: number;
+  status: string;
   photosUrl: string[];
   userId: string;
   user: {
