@@ -17,8 +17,29 @@ type GeorefLocality = {
   nombre: string;
   centroide: Coordinates;
   departamento?: GeorefEntity;
+  // Georef v2.0 llama "gobierno_local" a lo que antes era "municipio"
+  gobierno_local?: GeorefEntity;
+  municipio?: GeorefEntity;
   provincia?: GeorefEntity;
 };
+
+type UbicacionResponse = {
+  ubicacion?: {
+    provincia?: GeorefEntity;
+    departamento?: GeorefEntity;
+    gobierno_local?: GeorefEntity;
+    municipio?: GeorefEntity;
+  };
+};
+
+function municipalityOf(
+  entity:
+    | { gobierno_local?: GeorefEntity; municipio?: GeorefEntity }
+    | null
+    | undefined,
+): GeorefEntity | undefined {
+  return entity?.gobierno_local ?? entity?.municipio;
+}
 
 type GeorefAddress = {
   altura?: {
@@ -54,6 +75,53 @@ export interface LocationSuggestion {
   formattedAddress: string;
   latitude: number;
   longitude: number;
+}
+
+/**
+ * Datos administrativos normalizados (Georef) de un punto geográfico.
+ * Se persisten en el Post para poder filtrar por pertenencia real
+ * a una localidad/municipio en lugar de comparar texto libre.
+ */
+export interface NormalizedArea {
+  provinceId: string | null;
+  provinceName: string | null;
+  departmentId: string | null;
+  departmentName: string | null;
+  municipalityId: string | null;
+  municipalityName: string | null;
+  localityId: string | null;
+  localityName: string | null;
+}
+
+/**
+ * Condiciones de pertenencia derivadas de una localidad elegida en el
+ * filtro. Solo se completa el nivel más específico disponible además
+ * del ID exacto de la localidad.
+ */
+export interface AreaFilter {
+  localityId?: string;
+  municipalityId?: string;
+  departmentId?: string;
+  provinceId?: string;
+}
+
+/**
+ * Extrae el ID de localidad Georef de un placeId propio.
+ * Formatos: "georef:localidad:<id>" y
+ * "georef:direccion:<calleId>:<altura>:<localidadId>".
+ */
+export function localityIdFromPlaceId(
+  placeId: string | null | undefined,
+): string | null {
+  if (!placeId) return null;
+  const parts = placeId.split(":");
+  if (parts[0] !== "georef") return null;
+  if (parts[1] === "localidad" && parts[2]) return parts[2];
+  if (parts[1] === "direccion") {
+    const localityId = parts[4];
+    return localityId && localityId !== "sin-localidad" ? localityId : null;
+  }
+  return null;
 }
 
 async function georefGet<T>(
@@ -203,7 +271,87 @@ function localitySuggestion(locality: GeorefLocality): LocationSuggestion | null
   };
 }
 
+async function findLocalityById(id: string): Promise<GeorefLocality | null> {
+  const response = await georefGet<LocalitiesResponse>("localidades", { id });
+  return response.localidades?.[0] ?? null;
+}
+
 export const locationService = {
+  /**
+   * Reverse geocoding: normaliza un punto (lat, lon) a provincia /
+   * departamento / municipio usando Georef, y completa localidad
+   * a partir del placeId si está disponible.
+   *
+   * Nunca lanza: ante un error de Georef devuelve null para que la
+   * creación del post no falle (los campos quedan sin normalizar).
+   */
+  async normalizeArea(
+    latitude: number,
+    longitude: number,
+    placeId?: string | null,
+  ): Promise<NormalizedArea | null> {
+    try {
+      const localityId = localityIdFromPlaceId(placeId);
+      const [ubicacionResult, localityResult] = await Promise.allSettled([
+        georefGet<UbicacionResponse>("ubicacion", {
+          lat: latitude,
+          lon: longitude,
+        }),
+        localityId
+          ? findLocalityById(localityId)
+          : Promise.resolve<GeorefLocality | null>(null),
+      ]);
+
+      const ubicacion = ubicacionResult.status === "fulfilled"
+        ? ubicacionResult.value.ubicacion
+        : undefined;
+      const locality = localityResult.status === "fulfilled"
+        ? localityResult.value
+        : null;
+
+      if (!ubicacion && !locality) return null;
+
+      return {
+        provinceId: ubicacion?.provincia?.id ?? locality?.provincia?.id ?? null,
+        provinceName: ubicacion?.provincia?.nombre ?? locality?.provincia?.nombre ?? null,
+        departmentId: ubicacion?.departamento?.id ?? locality?.departamento?.id ?? null,
+        departmentName: ubicacion?.departamento?.nombre ?? locality?.departamento?.nombre ?? null,
+        municipalityId: municipalityOf(ubicacion)?.id ?? municipalityOf(locality)?.id ?? null,
+        municipalityName: municipalityOf(ubicacion)?.nombre ?? municipalityOf(locality)?.nombre ?? null,
+        localityId: locality?.id ?? null,
+        localityName: locality?.nombre ?? null,
+      };
+    } catch (error) {
+      console.error("normalizeArea error:", error);
+      return null;
+    }
+  },
+
+  /**
+   * Resuelve el placeId de una localidad elegida en el filtro a las
+   * condiciones de pertenencia: ID exacto de localidad + el contenedor
+   * administrativo más específico (municipio > departamento > provincia).
+   * Devuelve null si el placeId no es una localidad Georef válida.
+   */
+  async resolveAreaFilter(placeId: string): Promise<AreaFilter | null> {
+    const localityId = localityIdFromPlaceId(placeId);
+    if (!localityId) return null;
+
+    const locality = await findLocalityById(localityId);
+    if (!locality) return null;
+
+    const areaFilter: AreaFilter = { localityId: locality.id };
+    const municipality = municipalityOf(locality);
+    if (municipality?.id) {
+      areaFilter.municipalityId = municipality.id;
+    } else if (locality.departamento?.id) {
+      areaFilter.departmentId = locality.departamento.id;
+    } else if (locality.provincia?.id) {
+      areaFilter.provinceId = locality.provincia.id;
+    }
+    return areaFilter;
+  },
+
   async autocomplete(input: string, bias?: LocationBias): Promise<LocationSuggestion[]> {
     const [addressesResult, localitiesResult] = await Promise.allSettled([
       georefGet<AddressesResponse>("direcciones", {

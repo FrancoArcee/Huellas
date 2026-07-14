@@ -114,6 +114,16 @@ model Post {
   longitude   Float
   location    String                        // Descripción textual (ej: "Parque Centenario, CABA")
   placeId     String?
+  // ── Localidad normalizada (Georef) ──
+  // Se completa con reverse geocoding al crear/actualizar el post.
+  provinceId       String?
+  provinceName     String?
+  departmentId     String?
+  departmentName   String?
+  municipalityId   String?
+  municipalityName String?
+  localityId       String?
+  localityName     String?
   // ── Opcionales ──
   birthDate   DateTime?
   description String?
@@ -131,6 +141,9 @@ model Post {
   @@index([category])
   @@index([size])
   @@index([latitude, longitude])            // Índice compuesto para búsquedas geográficas
+  @@index([localityId])                     // Filtro por localidad normalizada
+  @@index([municipalityId])                 // Filtro por municipio normalizado
+  @@index([departmentId])                   // Filtro por departamento normalizado
 }
 
 model Favorite {

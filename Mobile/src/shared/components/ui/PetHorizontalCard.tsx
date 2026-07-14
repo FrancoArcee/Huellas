@@ -25,7 +25,7 @@ interface PetHorizontalCardProps {
   onButtonPress?: () => void;
   onLikePress?: () => void;
   style?: ViewStyle;
-  status?: string;
+  status?: string | undefined;
 }
 
 export function PetHorizontalCard({

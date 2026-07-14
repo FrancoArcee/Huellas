@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -19,25 +20,20 @@ import {
   type LocationSuggestion,
   type SelectedLocation,
 } from '../../services/locationService';
+import { formatReverseGeocode } from '../../utils/geocoding';
+import { MapLocationPicker } from './MapLocationPicker';
 
 interface AddressAutocompleteProps {
   value: string;
   onChangeText: (value: string) => void;
   onSelect: (location: SelectedLocation | null) => void;
   placeholder?: string;
-  bias?: LocationBias;
+  bias?: LocationBias | undefined;
   allowCurrentLocation?: boolean;
+  allowMapPick?: boolean;
+  // Semilla del mapa: la ubicación ya seleccionada (clave al editar)
+  initialCoordinates?: { latitude: number; longitude: number } | null | undefined;
   style?: StyleProp<ViewStyle>;
-}
-
-function formatReverseGeocode(address: Location.LocationGeocodedAddress): string {
-  return [
-    [address.street, address.streetNumber].filter(Boolean).join(' '),
-    address.district,
-    address.city,
-    address.region,
-    address.country,
-  ].filter(Boolean).join(', ');
 }
 
 export const AddressAutocomplete = ({
@@ -47,6 +43,8 @@ export const AddressAutocomplete = ({
   placeholder = 'Buscá una dirección',
   bias,
   allowCurrentLocation = true,
+  allowMapPick = false,
+  initialCoordinates,
   style,
 }: AddressAutocompleteProps) => {
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
@@ -54,7 +52,11 @@ export const AddressAutocomplete = ({
   const [error, setError] = useState('');
   const [focused, setFocused] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState(value);
+  const [mapVisible, setMapVisible] = useState(false);
   const requestId = useRef(0);
+
+  // El shim web de react-native-maps renderiza un mapa vacío: ocultamos la opción
+  const mapPickAvailable = allowMapPick && Platform.OS !== 'web';
 
   useEffect(() => {
     if (!focused) setSelectedDescription(value);
@@ -148,8 +150,18 @@ export const AddressAutocomplete = ({
     }
   };
 
+  const handleMapConfirm = (selected: SelectedLocation) => {
+    setError('');
+    setSelectedDescription(selected.formattedAddress);
+    onChangeText(selected.formattedAddress);
+    onSelect(selected);
+    setSuggestions([]);
+    setMapVisible(false);
+  };
+
   const showPanel = focused && (
     allowCurrentLocation ||
+    mapPickAvailable ||
     loading ||
     suggestions.length > 0 ||
     Boolean(error)
@@ -181,6 +193,19 @@ export const AddressAutocomplete = ({
             </Pressable>
           )}
 
+          {mapPickAvailable && (
+            <Pressable
+              onPress={() => {
+                setFocused(false);
+                setMapVisible(true);
+              }}
+              style={styles.currentLocation}
+            >
+              <LocationIcon width={18} height={18} color={theme.colors.primary} />
+              <Text style={styles.currentLocationText}>Elegir en el mapa</Text>
+            </Pressable>
+          )}
+
           {suggestions.map((suggestion) => (
             <Pressable
               key={suggestion.placeId}
@@ -200,6 +225,15 @@ export const AddressAutocomplete = ({
 
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </View>
+      )}
+
+      {mapPickAvailable && (
+        <MapLocationPicker
+          visible={mapVisible}
+          initialLocation={initialCoordinates}
+          onConfirm={handleMapConfirm}
+          onClose={() => setMapVisible(false)}
+        />
       )}
     </View>
   );

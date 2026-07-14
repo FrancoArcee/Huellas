@@ -4,6 +4,34 @@
 
 import prisma from "../../../config/database";
 import { animalRepository } from "../repository/animal.repository";
+import {
+  locationService,
+  type AreaFilter,
+} from "../../locations/service/location.service";
+
+// ─── Helpers ───────────────────────────────────
+
+/**
+ * Normaliza la ubicación del post (provincia / departamento / municipio /
+ * localidad Georef) a partir de sus coordenadas y placeId. Devuelve {}
+ * si faltan coordenadas o Georef no responde: la creación no debe fallar
+ * por esto (el post sigue siendo encontrable por radio).
+ */
+async function normalizedAreaFields(
+  latitude: unknown,
+  longitude: unknown,
+  placeId: unknown,
+): Promise<Record<string, string | null>> {
+  if (typeof latitude !== "number" || typeof longitude !== "number") {
+    return {};
+  }
+  const area = await locationService.normalizeArea(
+    latitude,
+    longitude,
+    typeof placeId === "string" ? placeId : undefined,
+  );
+  return area ? { ...area } : {};
+}
 
 // ─── Errors ────────────────────────────────────
 
@@ -42,10 +70,16 @@ export const animalService = {
    */
   async createPost(data: Record<string, unknown>, userId: string) {
     const { userId: _ignoredUserId, ...postData } = data;
+    const areaFields = await normalizedAreaFields(
+      postData.latitude,
+      postData.longitude,
+      postData.placeId,
+    );
     return prisma.$transaction(async (tx) => {
       const post = await tx.post.create({
         data: {
           ...postData,
+          ...areaFields,
           user: {
             connect: { id: userId },
           },
@@ -73,7 +107,20 @@ export const animalService = {
       throw new ForbiddenError("You are not allowed to update this post");
     }
 
-    return animalRepository.update(id, data);
+    // Re-normaliza la localidad si cambió la ubicación del post
+    const locationChanged =
+      data.latitude !== undefined ||
+      data.longitude !== undefined ||
+      data.placeId !== undefined;
+    const areaFields = locationChanged
+      ? await normalizedAreaFields(
+          data.latitude ?? existing.latitude,
+          data.longitude ?? existing.longitude,
+          data.placeId ?? existing.placeId,
+        )
+      : {};
+
+    return animalRepository.update(id, { ...data, ...areaFields });
   },
 
   /**
@@ -94,13 +141,20 @@ export const animalService = {
 
   /**
    * List posts with optional filters, geolocation search, and pagination.
+   *
+   * When `placeId` references a Georef locality, it is resolved to
+   * normalized area conditions (locality / municipality / department)
+   * so posts are matched by real geographic containment instead of
+   * matching the free-text location field.
    */
   async listPosts(
     filters: {
       category?: string;
       size?: string;
+      gender?: string;
       status?: string;
       location?: string;
+      placeId?: string;
       q?: string;
       latitude?: number;
       longitude?: number;
@@ -114,6 +168,15 @@ export const animalService = {
     page?: number,
     limit?: number,
   ) {
-    return animalRepository.list(filters, page, limit);
+    let areaFilter: AreaFilter | undefined;
+    if (filters.placeId) {
+      try {
+        areaFilter = (await locationService.resolveAreaFilter(filters.placeId)) ?? undefined;
+      } catch (error) {
+        // Georef caído: degradamos al filtro textual sin romper la búsqueda
+        console.error("resolveAreaFilter error:", error);
+      }
+    }
+    return animalRepository.list({ ...filters, areaFilter }, page, limit);
   },
 };
