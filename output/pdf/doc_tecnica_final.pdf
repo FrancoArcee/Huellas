@@ -1,0 +1,3945 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<<
+/Producer (ReportLab PDF Library \055 \050opensource\051)
+/Author (Huellas \055 revision tecnica)
+/CreationDate (D\07220260713230555\05503\04700\047)
+/Creator (\050unspecified\051)
+/ModDate (D\07220260713230555\05503\04700\047)
+/Subject (API\054 servicios\054 seguridad\054 datos y performance)
+/Title (Huellas \055 Documentacion tecnica consolidada)
+/Trapped (\057False)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 10
+/Kids [ 4 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 27 0 R 35 0 R 37 0 R 39 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Contents 5 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+5 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 1359
+>>
+stream
+Gatm:gMYb*&:O:Sb[\)N0Vh6r@c*>*h<q!cEm]6M89C/O,V#%KG(G,?%OkP#@QOnM^p#D*L?+aY<sB@'/H1qE^hEhi*uV9cMBsrB";IKe]NEr@0(I+3m8OX_k:-^.F2Br&\9GDK-H3'*[idNR&t&f0.\ea(_Pt\W!.VVrMqO%8Kq^jQ#p_"Yi"6,kN8ubQ-nd&0pp;f!Xnt>Up]e]!3-m,FaHsLNV(2KK6sT,2,VkMjcBAR_#?S&HdgisrY(a]VXXuC]D6)t[9Z@oHLgo.9]!cgjX`UB]lpu1[PeCmgA=Ia]Q*=3h&S[ga!_Ab.JR3_=7lHfe*p1kf.[Y3pEq)*d#JK[%(8:JXd(%6J%OqRG*l<ilgoc#))BO5^ceuun*O(lML&3slQd.P$/IbjPo*g(#M*S.<6V$4$K&GmpJ-IJM1P#b1BGpfm,S_dGfS4f26#IF2C!)N)>^6FpGIT67(&:[/E-0`eVm(0q]HQK[WK?j"h:t^LVNJbe)NCO=F&K)*kE$(7:.Ud\Lc'k8k`S>Q`oWL:'#NcjQ\;9qBSD3ELKo(*XieKIV3*'EK`4(-ZE8IL\f*poL2Z,?D%3'0)Kb)Pp^Z=M\$j\ll1ZA0)>85ASG9^]`Cq1N?GB1RYMZue`Kej4!+5A+mg]1$k<D!45Js*PI?.1%Af-J^PL].UXtIBS)]]u)5MUR+IJN[VL,a\+?o`:W0Yo^)gtRp[0,+"?!4JjfF-XF]&=C<!B>Cl^C.-O]h@@h8(RC"%;gFn[,^Y95r!amK/jgq270^FG&Y+Kk._%*fT8MV0b`?XQqEal&3=duZe!sp'>LaIhW&JR))iI,Pb5Qn[qeZqV:;DSn00EZCUS7%leR&]#!:YChM%'`,G<$GP\?+XMMWgpf5'fp^'K9"b*$d>IHp\\$CE[`1+i;c5OJIq]`UtXL96.Q5;1/rFbC.Wgj&$\\q;,`#V'KkT#gHoHndjPbCar@>8JpHTd2g3fe4s+@Z.!0O<>6eb*#DN>/,XNA,($peqd@T5j/DJh_oqb@EhS+mSR32#KW_YM^__c'Kgd07:@5<0J$e(fkh[;ror?L"$!I^Sn.&4$^7K]MY1>a)h&b-Ve4i4F\_;-WgB`UJ_eqh_GMLFMqkG9F,YPGV_^K/</V!`;`,['RDGXl6Rc<g\6jXSp.$T19KCe#TC)R)ijOBOQhO%.89%RJ9UVC89K5J3R`%eN;LX8(a[2M`rRF3_>buaY1*Qs8A$(S,>>E*rgWPXHLQZsE%%l1ep7;(31`%`Z,?%GIlS3aCc@F;>7Ae6=6_K$Y(9j#,==A+_ZS4U\+C70BEGWiNF&%)Z*BSs@N2mmoQ8GtTodU2#c9tG*8">VP-#@c-gOT~>
+endstream
+endobj
+6 0 obj
+<<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+>>
+endobj
+7 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+8 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+9 0 obj
+<<
+/BaseFont /Courier
+/Encoding /WinAnsiEncoding
+/Name /F3
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+10 0 obj
+<<
+/BaseFont /Helvetica-Oblique
+/Encoding /WinAnsiEncoding
+/Name /F4
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+11 0 obj
+<<
+/Contents 12 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+12 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 4012
+>>
+stream
+GauHNgN)%<&q/qEoV:Co&-d>\:U7iJjjG_+Ptc+l.Q%8N$4[=q!%;&Uqsf#ZAoOG3b-FC4&t(PC>PIdS1Yi-=ZLOP`s!CC5G;D;V8W[n)G"9EU4IVhiGW,D6A4<(?glSTcj:YV#m73:+PFkA/ol3rm(Khr>ieSd?6naUejEmS37mYKbb%Wor-Vilh-/u]M,I1Q9NbjcV`CMTL:ro\-h;WZ/N1Bhb,-h9r8'`J%r9IsBIXX$uqB++G=/Rtnj3-,tl.OT5c,QZJB;[-7dHgt[hXG'A)`n,]/<@dEaRYnSK>-a<ihb2=^^B'\fN`if5%Je:(,Sf9.HfBYU`W.;7s9.<fM4,*HhSQk[a0d]f*f6!\:<<j[=NftKm"2E&7ZV[WGke&PSHnr'eF]0(3Q$XF#bnQ8Wt>kb(11Xaa=[fL+q8Mlrl$I6BX,Ao*YQJ%J#G\@Gk@`D+=RIj6K-5L^p=(YJD=n&M***XQ+l9kTir7OehV?H($SU8lGL/:"E&4+?(S!/rPdMmUZ\*BL2)o2Af5p`.eIs'OqYiAXcus$Sg"N6Qt'i*7d]kQ=+"NIPDZ-YSWlBQl:=G%IRnLWWaD:;lU[ZZ3'T;=];_Gn1QITrj8]R\iup$3D]7PVX#_4Qh$7*HC$4f1PnE`]<m.6l"&W*UN\VgkNPKnZ%qrog&Bb[XkVYn8BU$d<Xfs^luJ8%.3O7C*jXRqF%Ib2B2ke9>2SIF,,ripJg>QnLQWI#81XCs@gG^dPB4=#k_oJagBJ=fkgD)*oTS%t^qofTl`37QDr.%WSc439s1h1UD6QY<&8"pCR,AI/01i=t73bBel.AdTh__CC7n7imaS`cRS$t"drbOX]o5G#Qf^aC!lnm1gV+&HU/;K.k7R&jaZ'Rm;0Ahraqfa<d^XcOtE;YN/WZEotUHU"@XY=9a8Z9cnrWjJpZF[#-RXUKZ"Uo]uG"`tRc-Zb`HnK#O;9>Y(8.E=)M^4M,'`@r9BAY`R38!VZ.E%<J>2>IoP+Cm*,(>VH"e0*"Ti>J%IrdKn/%3Y46FcY<]U^'9fE%MZM^.Um5DT:l=f$67An7kA+MBbm.I\8\?7=NiTkc[fk"+!/2:St7E&cA;XELDA[-@BdfZJG6G<0p4;X@kWdLk;+49km(Z_amfAQ)8C.M/+Ll#*X:_QcE>r4NgFZQrnYdgH)Ah8)m*o5qJ7-r`!M)9a\976.<o/C.e0L=^(1=)cK$)Ep9P4g*4I;Iuokcqko/Hjpur<9a%AF,O:i8q>dF*[=snR)p%JB#Ol9:0*bcrOm`*$H+!pCCO0TN!Q'5\:#tm3#e6'^_mJ:.q\=?cN%S5I#XmB`s<07lBi,FJBuh)=Q9:oBAic0"j2.*Y<7kODJq;&l6GQb)n"jOJZt:a-&bhEd`EjbI7XB@f8V?D.$SdheOf^A,gut1\O^)]&HmE,'Prr/o`>`@WldTU/"-.0q<lLIln<OsfF%Q4<k4Ym8`"&neWbhg<Z,Bo\PJDRiF;IC>4Sa\XEd?^[`"l[Ne^G#EiVknIR>)938b<e3[XUS"8"ng_U3(7@ZHW3P,A.5/L^#Ajl!ONn*P&N0@H_Lf=k_#pUKEu8b_cf7"n`N]k"E@\u[0L'AuuDq3L7X-BM2;Lqj!m*8Ye:*4JPFahTGB(gUQ'iQlaLQ1K-]iKW![am\co@HVXUae>o$6^o9Q9H5^pkGtV`FQS;$dYZ1]*>&^7lN]PdMo=?sHfMBEd<3fMk@?Y#m/r;5X+&DR_fgYjeCk*I>n#HZK=4q'.795LITh<h=eUP'mOGos^[)HAJhH7*G3H4s+.6?*Qgik$&.-Iiha^/0'at-g<W0eM#V",dgrJq:`>cmY*1csd_"22[T@59"jJoR2rPT]'XQNk/D^J;pIm-D^Ek"Vj'W7Z/ndYA,q'62S-^aMa<\+e'F(:hDWP],L59]KaQ\kDhSTm;W)7H*h#KT:(m(XN%-n9j'D>s/u"3J-=`@,_F,ZiY2VS#->o2NPY@igKRVC@dRM/6^//kSae\$/V+nm]M\0ZdnV92K\ieAXAYIJXm1e;[8ieHu[O<-/"<?9.5[h'orG45nGppV(MV*/dR8,[I$<DS.\"VUl'Ek?H@-l[q*pr5.cPEK7uN.%0Ze@\[D?UlT*[B>'H7E6Jo$")-(Srj>Lj[!pare*6GaM\7C]qCI%YI,8q%SP6)$H2I39pP:-YcZ=-T%4kVEEqW.#[_`p4#PI`A3EoZSB[1`4HQA;V*It&1Te@iAj66u1CB`Dr\Q[B+"e!`67*ks)ShC[]i%Tl2.$rmHmhM7.'ENJckch>'%*]F;Gn@RK)k34%5XDV)NJ%9NiWMM4QZA<Qb8!==Wp#FL\4#C=]#)koLeFnQHZLXa,J'SOi*\pN?gb$'q8gdt'u(jPX/V8EY9qTk[p@DZBM$]L1:eR@Ha?X*5!"p+EMldKWDm\uM?cbap,>s.-W`pZ:R$aE;R'70a4`5PenMJu[Gie4WOCoC_VrURFo-H)I8(MZ^Rgu,msSQ%mW:.\('q&+q%>:ia2iHa2fQupo)PWE.p-](T620tN^HX;'C)XO/h(LuP]Ar)3<6*%7"J!s(G]D2U3eQ%SH2gpc_/fCV&Z>98#m<W4a'dnTp8:)Ye"@=e.$!<nVkJlV?@_=G&LUD7fuG`$6,!u)RcZq\Onq_6.\Z^@<]>T)S=c`mW=CHFc;<?nN]SRhJ]Nk7^:ArI\pUkFSm%*j4M:a3^g8cb.RgY7':)_T$m_ngroc94cOAMZA<?JMLl>Z([G<PgD*U'SMkB)E<p1I@b=a"ROh[t\\k\Q8<n&YR8Q6>OT0J`p)LPsP,]oMF%P+gQ].WLTkm&e;;9_\V&Uej\$>dFL['c#H4,@8<Ur4PF*en9Ejn$bTr5c4l5Oq.`g]$/7`TbHUW2i5ektI0knlY60fD(A%?=^9+CqtLJ:'0MfDaFT8)EC]D?o/e!jRB3h#IS19XY,.^+\Lc20Gam/hFHJGB[*De$/<^6W%),:_[!!JHQ%<NhVn!1dsEl-o\!l#t6kk<YWNfR\I;KTI?rm#-u.<U3K.%;>ccMP4sX(=KGQk(;;H7%+%&T?E7T&D<QeU;@D")+#UM*&*V*8(`hAMHQ=81/,*,lE6'aJcOqb<r-3@(G'S8=58k#A,A&4FgY]E?<'4Pph/0n#HV3:b<!]!MTuR,'Hmk,<oC.)pbC$j"D\"<AgPm58<,?'f?tFc]DNM+mZY)l4U>dZo:^8CSM%!6q9C#LNKW*ObMY`R6>uMXQ'iu+\fu#%<=h6bSF&VY$&/C,Rb2!49g\'pS=JOP*V4ipJ.^`GFBmo>t5Y$fGV.7,^Y@Hor/,,BoYo=p6Kla_:^)g(IB@GQ/o(;9ZJ#)H-Q5;8(%A_8GSaQgPGBT*)o&nYH4#hG.b@s74lW%96q0"`E-Du(<f,#DgK!dN-3=TS/8qYV`EM,WmbDrS8RFF_G>*iF\l*;XJ,rV-f/Rducp/^na;80<>D_UPP.u"-a()uc!Y#h+<C%)I.)X>82Vbe#u3be)4,FpZ'rI2_)^qSgoi9IgQC_,Jc*D_,I4$C3MnSbc(jDo`$m.1*--]TchInn0:]q^d+_:OHrgl>G`[+HiK>1ZKjT4R(4^HnP`P+/Y:GC:sZGBga7,-pjC]<YJunsqQYGUT!GBN*sS3&W"r],lIU@[e.>+24Rhg]@kjW&Nf!:RV'g-2a<rb;#@Zi+k6_SfYS;?<utl<tuu/aV>h>]!aIY\&/Y\T=4)X=+lhSo^,W.mp5[bVD*k=/dZkX,/Z?fAKEeWp\>'Zb'BVf@5$$:iDORpo,JP(m*aeJ&k;c(NGF5#*u9u>o4i<N:M8-#X-g1kZE7i-)CkQYARA%:a0WWJKnijRgGN?9c<iph6g>%9ou53tmK;^a3]0"NpTB4aK`3F$;Y=0pO\s4B1qf)nqNa>_1S5\dO,`qO[Qi?8?dn;HhqHAJI+&n$V$Go%Ff0]5Dj49.Ig]GWo1\]oReE1Zg;kU6kZ3-\]?oJ<]j\I>S?&=k"O_A5DkAaoPqMjt4+<ZiIVPJ0*7O-O7!8RS~>
+endstream
+endobj
+13 0 obj
+<<
+/Contents 14 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+14 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 4115
+>>
+stream
+Gb!#_Bli#e)ZK/3JWF\MVKa3)c?:0t:"+(peWsil3h>NN'WeN3OX^n)CB+/p00kYa@o7?,AilF%+opU+hYWJT9`26XB=qjCfn)r5\!Ua5`=9.Y_e"aI2Hq1"IUn,7@lXQG_LT?T,;Qqd[+WEV,HQ38PVG*RX>#T"(7G8)\STMQ2_`J&pY2C+>oqCL*I,f4,2WeqAiOB:RP$*k7hWJZ!eMK%^bKR]kNlSYU#EU)<j(-G%p-+/o@$@Pra>*gS$T.sZe(,aZ^5T:Zc2:touj\jDqO&.[eQ.H1RuOpn=JUenQfaOG3%Ys>NjWLFOrJL..VSU?\mI49_+,o"cMt`ZHCi,Z^e!49Pr8PqlohTY_PD(1`Y+krBC570o<]d>[\!D2i+\t,Hl&djt+V(;.OeB37#`09pU0pZV&/=''Hr$oJZ<B#\OG@h9G)0Q"6CF]m"o,"19embmB!;1'5o5_0En*QKO%;K1cB$'P@-3)k#GR=Y67,L.>'r9e;dJK26p,kOGAsDNd'%9D3oOU>4ZBr&Tu7&EV2GmQHU!\q]U[a4\e7)80\;\2eW*cj1j=i5G2G!)V@n[mu1#"([79g&lg,h[Q[SX.]\N]5Q\Se>j]un:e'GV>%`>8lTofA!mt1Ft<GAXtUU<&L<7<OBJ4'a!//Q":>EhjMYG]6@4Oigj"kB3fer8YtP&/i#Md%2k&PL99I1"hp5X\,*m(jgpJ\@+&&L6fN.k,*f(/r`I&nH!"r[)I$N_mi\1R(O5>*mfEa7A([gYg->+-?%4*`;)kL%l9mJa-U9$m]Uj:0_p2c4kCcPq%mn""_8<d;7`MUccp.XsB'G/TM.+UtH(!H:ta7XQfF"g*r%+=IF^ui!TiW0,WOZn:@!hqYJ5+OA\lACo:"GBeY`<rjOjiCV:@[.&U'/hM,Em5s_k/E5,$npVLafSO=U*t&paF75Bk/4"BO/E)5na':uFhiAO.e"oLXfJpd$)AI4KifX4<TIru3>$%uUsfc+bBJ44Bds;^(SCe)f/sfd?ZMmb/LU3,2m,Z9s&W`jL^hg)o?fWt9d0!ba_JtL6),@&\N#==.A#^6[49,V:ZmMtVAJf'=n;]pY+lSn@ssn+Wf/!;pha=_'s2`h'&u'0(T.Sp.S7UeJ-+i"+"!H5F#Pr18@b@YnQW5fTq2IeAt'=>.78l8+eVqTfP.T'=Tt/^0_$tA!0Wqoq0J5;$(qL/]N@Ou4t;t(M0r=m)itA*\k1>M+@?B*PI?JkMd_M-`mtRT)1er0\<:B=HhREp!'EGn#P]@+ZM[O"@XXV?)Ss-mF7=r-;5*k&q)+ZQ4@7^qlV3i>ALDOl==d@CNNH]W'sJD`P=ae3)l[RIFUutDnc-)3Ym#j0Sd_Fr`q2enY</)a)3FsX5V-f.gDs7Ldbd?McjlJV:N+P6))c]jp/^S<DXbSMi7"/s"5@O>B?orm<7KBd;ZkcgLSDT@XF+mrjkkWg#1RbQ2r%$WC*.W%jnK0+oX?dLe,CK<BnOM+Ji;uh+qJ"')eDKrnm1`36hrXs$OjcdZcU5mL27.%'rW-"[QP?o>G(u06D4i`8:0]i",J-(%k:Fk8+E2!"\NFV$(BJB.t>h^JqGr))WRpHnl5`7`ogMJL*/&dZLTHF9?rtXSF%*4o--\H+:LXTQZ1&EZ+LJ+(_K;)N[df1j97%I"<-Tc==+30$b/I'c?S4X@g*8q%`QlIbT-)OHg121I\3oZ`-)ZrA-Qj#[us4/?DZg^'%^?5^V$r^p2Zeg4+660bd2H9i3rHGODnu.N];1jFuk,p/nUFX8dTLUHhf.(*.aVHroH5U>/=LYH?hKZio++k*@q2r#ciURYQeC,hac;4rQV9jnWBj,0o>dm/rp]V=UtDLoj?nK/OuJVJ$39gH^BGaVnSeQaiP/*h9LOa$r<1*6R_Y?,;R+]m$1*b^72c/a:$5^rAH*5ZOAaIbt?`ta>%.;?ocCRA,m_t1WqcSL4AP1"Y<lpri`,f`Dqo]!039tfIR3@YNge43ms/89IV<D,D5B1=h[H8):<h/@k6g/O<r-`Wjf,^Dul?X6H+dM.HjZO\>?\YJ!S#dHX/t61=QjdTERCk&3mhS?!tEUmSVPQ.=86bFZn&)>LH`HFG>A4rG=FVR1,>F7[Ng>=pQ7]!*/GeX>5@8b_mj@/'Ukrs30Bu3kouarpoDW&E)0@Mt9.te!o9T&cgK<a=d]l5R_VXG1SL0Cd[/%h>>AMjT:lIo9XA(p0<cqOBL2(&jhiZ=kD`A\Y_C'LXiYsCH=<3dRSs$4+_,.RAReCF,e=s7MjG3#`;09`,>^+DNdkZ@;ZBJ*8]n.Ac3Jkr-brZ$b^%rqXWM$V-D).P)LFt.*(idb8cr4%O7q>0?S<fhnLR8D7`7ZTR;-+Q9#<*aQqe6h1Z]%JLOeCL0!q+&8-t4*m-KHqSJEKqd]\-HR54*?VB!CRNqN_Q$"(a.R%8p/n2\`YXfG9`X!d#n(=7.g%3nmCb^S7$`G@O]3.HBg>GA>m:*$49g2r:R-SK]C!A'hGo1%[U%T$$?aUS"N[?4^$WJ#1*-uRnP5RCJ_Cp_oq?&_o1oS:KR'2:mAVW=18X)[n)E7LHdQ6%T!SD;D#;fs^S!(WQ-/@Mnpqe1LUleJ@s!!e^m$KmZj\C=n(oTbJ`>a/&P-[TS2\?4e15kt9pdhR@!"tu[[3hZ;Pkt`pdob1(f4gMcT<G+N&D7^0c)9nTY@MJS%U?:d3suG@D_VF9j2^u^`H;+U`Ur'IH9PaIHh@dW5T\N&m.iQGR?r+u:?Ts<T>7:XF3o47*o</W81(;j&:'7+Qit^*87)gb:7!A-f?[45JPf0.J*Ho<_<tn;B5MHtD[oQ[-H*Qd#r2=F&8<\BZgq6n>,J?FLJHA`FJmjYX>lO!G8D=fXAE$g1:nu[(MQP[Y:I`q2kg'Q<]=1S&Oh%+V4JPmUV%K!n\<SE+\VH]Fa%K-nD<bM%_ZVf?i"Nqm.6scLAPQ:mN\6s=)e&'qqW">>X.jGNlOGZRco2plUM/2PK1O"-"F[h-FW4XOm>JtK^rB4EKP(5kY,ErW(\pN`-GaZj?QRO"Jp3,SA%GQ2c-17BVuO/>kn[NBW2[19_DF_ab`qScG9/9'8Fo7-C[]^<'76@K5O:lC%Y@oO^'ilD,"U<M*-JV%oZj0!CekqDSTJc:c@$,jB5'p9R:34`^-BJQmsL'm#p?SMD+R#/sJDQHsj2*4tisJQ,(jPQ@Es9L/mjISaoK!)\AlXZH>q*Cb!%G7W==KbE$6P5Bq,e1$I'[g/ndW/73jNU)HY&D+f#9:r_q3(?qsR\ltn'-t\pJ2?oQhY1Le$o>-G9YZ1!fK.Q(tbT`!V+IsYDYYSS,,</3V!E;<GJo0:uGO^W)Rkk2a"`Ki5n40=GT/I+ndU^$_0O;..8S]e6jRD6:hs7GCO*"E,$DdOQ0^mXtHX+Q.._RMtp0!7;Ue+(8i#o_2(sPEKp_Ts%1X[F\`M]_3N=:p.Vl*LLJoY"kiZ/N_G+PV]KRTE2>S\/<`Dbi_T^mn4faKVI6IE!=Hust1er[7i"Am8o>44K&:dpCNKl[UX?m%(9&li)1=sfG-N'0(NDP73sXp(:c+,@m:='',@(*>G:Nbr^-W9+Ct(rTF:IRh,Y28hUCnF_2O]eC2u1p6CX0%,.+Z#$3PCn&1M$2'-@lc9iRjWCNmKq`:`<S]"-O\`trnc_WE_3uYbnXms9%T[._\+C^'&^<!K-M`lW7mp4C@?7fhStf0-bXDQ$duP"8ICZ.j[a)'mQtUrZ-/L""dFbE)rD$eULOi<#;LQ1uQ\(DMUGduhTr*f8pVuar7\j*1Qq&sV#;M9OfM/4*+08)73oqU=ki#OE@=';)Cm'iae^mEZbG:W/O$Io*,bI6IA?W^ViCObka10:l5=M@cp;;/IB?b9_"t/G1eclL!c*)%&hiN-cF-X#qSEt]&TN4s_F'_n3q.kIZd'?Rn;Q8BK#PrG*1g;i?pBsQ-A99E*.CA_k:a;a8Bfg,!0;mXZDXbU!nkFVbFLr%A0Y#lGX@Bc:ik*aPAu&_jghfl*7bS$GOOIR07bZ/OkfsBITN<bY>:o2a7n5WE_.ZM"d"r['QEAEdLE30o^8iMT((@Y_4%jDA<3ee_g5"Mt<E*L!rr_AkVn`~>
+endstream
+endobj
+15 0 obj
+<<
+/Contents 16 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+16 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 3976
+>>
+stream
+Gb!Sp=``@V&q8H9kf7Ze@sB(mV-L;X4%^qcV:p]I*Zu(6_93ul4QOT?r:b&Y[ktuGB4/9Ujg$lh!&fiJh2ST=l_*2Y?2bco!M5q$r07c'!U!OW>Ju-b1H7BZ\2b\'Aa6-#`,imN+MMH7ScKp>+(2'$#;K=%d65hM^scO>A\f!qb9`V?36eK04s#M=L2-n=I7J?A+K":JRK_s85`.M9("0cb353qDG.'/JO#WGb-'p=_mGd3nm._g@IfWliI<"etad_n^(T23/_"l*12lA<hT>:883<)QtN0q>Q@m+:Xk$()e_mckb[<-gf]&aLDpRT%j&+#Tp4Gb4l&0rE+,k)LiF0<&p6Sk78m*0%m)*Yq_VWCoTGPmnREWGju67i@fi8\HDfnG>8!?UDTNCDTS,gMR/LGV[IB0jaoUsk1Ga)'SP2RlN^A+/W5`tYUMSbED_VNOre^iaeZC79pn'DU!ma)ar@PUcqALgsZ'<d./SE,$"i8.dQ'%IkBWlA0o79ObfLi\KKo%<+@1-74DcHq>QKobt0F3K@\aX_l?qON+#d@hKS/h]n_RrI:h/QqSB&rH(;8"e6=b&YHk:lWC=HeAP?uf_qh;*`^f,SSr;4#'!/a/;:/AWl^B:_4tdd:lT)O2a[b[Xd?qXV*KMa2`d\,SfCf;O=554m/4]j,YU*kK4PY8ZZ1Ni&FlI8ksb]bK36\%]`];[!R!Cq_6@b8>F*$bLmKY#;SEbDL,lIt:MI>L;`H#!,sY9Y+\UF,FqM'WIP=B:ZUTBm?3c71Q$C[bPlLU@I)I!R(-4*Ml/kFg:7bq:Q+e(iV7N`a9s@:gNKVV4Q;^mW>o?NAmgGH<r;np5&C?q!P4\/R1B*OZ_Lf`M9/2^\]Z:R+9!AHXit,6'%G5B>=>t^F@7FRV9GE@#ePARE(\O(V5$hWC8cL944T6/WMsFW^Wdbd%9=ph7(:%:ir#fA;r)Z7<:GXP]8j`FIKF@kpFn[,U;Ph;MP4NTSr-JQ!<QZ?n8sN:]ZCFAr'1R&n>#>>:%W02d4TkBo@[7Ht\n=7A1/][02t?J^iopBgkijsJ*S9@q,UdQUF%0)oDMNi0P)3(boWU62rCqI%;lBmcTV=]LY(qt"#[PCqg*iE\7$L6i!95kkBM*hJ@gNU'B0ehYRt@s\F\EsZcm$Napq8@!6C"<A=1puElg;_)YYm#o]STQ<GV"BH*=V7qI9RIac;ujI@<J.%8bR(^&G&]-K90R-(Pq;gD%IG:W//E!j.*I;.QN/8Pp%W:?XjK`(tIb&Ar*%CKkQq+=hWN]*^M!`.Bs1m$mo6M1r"Krhep1JQC_/l=\Dsli'kd:jE,[h=UZr5APb">]-58TISD+t01GqBXiQ@m:Ta+!Zg]c,Gsu;M*PI1cH-m&c^\-e*E(#X/NbB>MM5\&7.e7iS:):K5,<ubH1\oY*>+9qJLn"Hl"&rY8/SZD97A75m($Ydj/;89HjQtt*A36@sMOXr!Kp&>Y8YPVeiA:4f-K=,B8Q0%D,7&Q1,cJC3\.[/N.SF0,AdP1^Uo8bObut@1hsp0uN?!YFjD7E0@J_SlQL2\!,UJ.$^ucM@?!!1/h:hFRW#s1`k[\D@f35@kVpNGED.mR;1$RhdDs@D<f?M65SK[fl:6nT*R?f0.?7340d7AEJ$[#X@VI(nfdA&&9m?-g=-(%,X-IFDRTKJ&j;5-Xh-/NPaWbg;Q&lf9`1D=*B>BKTNKP29^m&"/67Ar,EBafKG*@/'VJNpL-h$>jTfU5"rFL#CNTc';FL.-80ca:^2qO[W<5#TBuB`#jfc_BeOAJZQXd5Mr#L!HmEAN[2%HVE-(fOj?%UXi@jSqM=W%F?WK:IFohEnRLE8;*m1EN.e+_.sW(*ap8&VI.^P(TU)E4gAl34:ZWZp:-Z$a/o4&cQskq89X7OA!:1J-+:=O#M1O%chq##o.e1Mb'&^JO\2<#fknR">6a;R26[\\fc$0NKN$BEkn8f1-lR\mDa$?:VH@F8,%<RV^Qj^d"@<e]A1U24>:C`HTOcT20NOr8AZW-V')4;I>WHRDW[1^VD\BRW%>-VJP3"/f/kZU]m:qD#W":de!b?mX)s"tcV+f8b==KQhJ^q9DTjmiHpP4VFnFeX#/7u$Hac\%am(eLTW-0$3,T;N+4@#:Q_t:QX5!D]6;W_LHW"_E9$7_n(>X=@%NEcF/Y"e*LD2MejF7dW_QK9@(<Q1+k8(a^1R`!Ec]sjlJ2#`@OP'bS7Q4^XJ&-Y2=dmUEuAUmn:#TPCE9-a't"@ptoOnsaS+kiD..aWX[JgHRQia9/-Mn8HR2FOgoGtmsEF*,qF@94\>ZOspPg3/DZeO5:7&5i#N!7(MBaO0N3T,PSuBL<ui3\cb0\2V8j.\`HMCR1d_8jm0(^ZLuBo*AY)X/oF-Pf3[$fb%0nNMXls8I:#k9eUdF"t>P_7dd/CPKl<0Y'Mm\V6oUdbbA[0k:)n+Ru,;5k6>/G+fMsUau<#qc0=>):6Qt1W_T-Zf9qYIn%7\>L=#R>Co6*#8@kgb-.CV)bbiFMREVPLAh(,:ZB<<e4f_3o.c<'6GS%L$X6H5g/>d,#`,$?65MW4GZ+;BUB6$03io_%m?HOr`UTih4P2[\)'da\q*@fD#(1rX_==,aT5kOtc,Nl8SqW%P,EC]:&HhO]5]d!oT4fh03,SS3Y<bQJl2<,;S)Y,p]HIV3[L+?Uf>#HW2@MQHW"_1l]n.g8QBQ9IcUSnanA(!cQVCdL_?g%Ra$!`u1(o)BeE%#_g7l&2@iU(q(drTkPE/3!"<jQ'#]2\IZIa&05FLg+LC9O)TT*?pRn'#,,+_$PE2Dh&!g=iS<gN[KUnS=Tm4sD>;f"S?=0-8/;/!enDLF_(ur3<;7?<+K!rbbOFbhM;epN<;OL1@3QV)(o?4d8ca8#U(JldH-e5<V#Yr,0I`X+N9<mqg0!qSOcM,K-;(ju91mQ>9:04;3':I;lONg1ie51$;_>$f-iOq)<D=QUBhG$Tl=egD+mlqn57=*9;h/8V.eDUE9'mP>qb29"%Wf&hUD4Dd#S@d&CI5X<?f7,be_1%YCbqp3TIW9=8$43)eVB?#caO)*OeG'UT^OF>1<lX%M=4Fq?\6%jB`bnRLMYn:>7jMi[<=boO]U2TS]8f.E[>DK#or,%\qCVZar:LolF@XfPEdMlk#TWAd`Jd7ePu1N)6_Z:MM5]2ga^JjLGaQDaWH59DJm3tbXf,J4P2KmS)LlD))BFV4I";g$J1i]aY:&Virg&c^'c%%+I1lDWFV-S(LKK^;FLA1T_%9759_m>=Dd@Ctcdah<*N[3?uLBnDIGgWCOFV7$u20U7m*&^?)L6)Y5TNcg7Z#CO9"G.r$&GU.MJ[mD6a<5pE.fe91QiH;)ej<4Dg89'WI*A5r[EK9*KX-t1U^i&]*\_R3pUEWapd]B0/SP=R$dF]p":mRd<AY4F!HhbB*g;XHso5D3>(`GSYck;.!kb_"j/h4U"ddHQS0HH"F-SjIYhe[R@6UG$qBb)m\5g".nZ[mk'Mn",)iMPNnDYg]AqmV(M-'r=*qB;21)L\F\i(A\E&Q5cNd6^+74VgCDH6GsUNfF[;+eijkq-m<N\6F''Ge!dY%IIul:#3UgI*l7[1%.Q%'o&7%YZ(:^N8(JL=4g[O4dtep$K0"u,"'OrU0#5'92NeEFeUIm1%q\Y9Bn3@:H<[E72lBAk5*V;nZ,)&*f_nF[cQ*a2B."pM6P+__uQ83m[C)\3;Fhpc8m]&W3_&5Demkum:F;cgZEHhm34H^i9CtROe6bT[DKJ,D>k<T9N6Nd"s/Z>d9#m`F=K[Y,-4tdm,#/'qb<GLp@q\.,P!;mNdBcLIVoI^[B,`(3f?aBCFE_08`_Dg6_Hk![cU]n(E^rlZ/@0EAQp8SmfmW:)RD&!UV+t8B2KTRkDQk8,>([/(?>d:\en^op/P@A#J.Q9I>8\/R\?_8XR"H48H(8G[B>_Ol)Y_i*i5u"-.aZJVEh[Ai8B(jZd6k~>
+endstream
+endobj
+17 0 obj
+<<
+/Contents 18 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+18 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 2819
+>>
+stream
+Gau0F968lJ%_hgAi96_Oe=tg"*2X_1aZ/BANZYlgXZ`m7]$60Z.XF)EeGf4H84fq,gi>L-<[rsE(I3?Jp^o(^2Z@.]h]rGOG7BK)%%%.K\%k,LKBk<Q\_d4lB18E8g^pP8UaNBUgQ*N`/jJ^]W:,':G`ft>.#oFU6QG2R%_``_Fqb'H;[-<MeDc-F==asK0ETG*j2gqe>4$%o%YQ)j)MDTNlh"H*@$)1K5*!iqs3I0uZa7P"JH#ZjIm1I>FE2hYG]`fX*3N(tc;0K2rrL_YiVGK:b]73KiB5:.of]O,-h_Mo]lZ.Yh$^;,Ne:'jQf;?&;AG9#85q'?$Jkc((O!<-CaU(ChJU5nq4,NH]tb#qp)D_m!FN0e?4-*C`arDgKpu7s//hA#UjJhn>%KJNWIdSbKhU!0';NNo(8D@JYdrBi?cdnP5FV0I*GCi$FW,paDhYV?U#V8b9mQs^r6ur/j<Q:N9f`dOESn+\QoD#LT&i'H"fbnH"6:pHR3H$2;:Vsi7$1$SU"Ihoq.TN1C*EF4K9+LVd1SIn2mB"n9k%n:[]T"C<jZ2*H&U\rgq(>P0k)2BSV7h8]4V](,DN-is.@+HgTk*4EmYf_@K2;(P1KchR_siZRoLc;^754ZVW.?E-@8usZHfuak6gYP"&r`pESXKM<Eg(/n;d)j-rorB'nCb\XnQ.&68)Y9BFAXYmU[RI#I1Z<i`dr%Gp^n7/3n&sgSdaDbnCEtS1F1d'015W&-_,M9f)=1<rsQ2(Y$Ttr$X'mf@KPLq6"R'rXR4A5d;`E@NW6B10D4u!Fh#IDh$NJoF)/.31r.us"Nq/2GD((&3cQJpcHd?K^+NZU)3/U'gq(!BBkUT::.D<f1CVJg7t/]jUXgMcdVHmD/g]&T7%@d5p)L<NR\=`eA6E.1uqJ;6&[6':mQI!(m=sB8n*aGk^<&(JZ^)!Y%rfr'R5N']eZju_"=&;6u7'H@"/$jE4<JDg+fLIP"C9^9%]ll_4JA8cMA`aYnd%<`QIfQ$D*.X&36'p-3-.I\sIo(9&<0k,@o)$3!>;)L*t78E;`UBCK[W@R>D<>1i4OVWpHD9a*pnmhMCe8VmL#M*k-q()T911Gsf2!RsJkYLg.sD<n*+4.r.'9qe1$aBaPM2"l=(j?X[!R>e5OqbU]#"TM^2IddEh/;<!.''5"O49N+R8Iis4(T8+pjnD3\M\dOVkl?Xm7F5Tm!O:sstl\)26D&9;"C5/stBLi\Uk]E1;W\'Y[E1:#"7A]F+86+4!=2X4=[^l:16Vn^oe-AetWYF)ho"+h'Wq8aTc)gLf!8>_G$CMTpn7K/VRo?[f0pjB(,(Rb9>-SZcNQa+;n[tBb8cqbl4)_^C;FhE>UtE?>E1=7B%<oGQN0SKdUN`GHeq_g?H/B<T@5qmP+;Xl;@R9p$s.-O@-ZiG?E.eS78MOH+.\nHtBT5'PA4`)\dh0KVDCccS9([@JRN`832U%;,=#nTg32_.P9^Wm]F)U5@#@6.S*GUU)oL`*oQo3s^k`?[#()_"(cnnZ-C>V/#i1(8ciapqm.aVN@\cYV2Yj]m#"n27M?:11K/8am03Mi&*HaMhLCd$%r!CG-0Io)Vcc%+4/GGA?6<X7X>WK,j1I%kbX3TKc\PGfqVrkpl[HJ%h>bq#B!::KtXkI`4\cE#/`_;S/D6#sPt6eO)u0!Pm6U!\&S,]mW]S0&o-GJ%3hnn.OU>ER]\6Di9-1i9*2V:JTl/S1:fY8RB>%piO@^9#94?Jn*p$]ap#4g1iudaRFb\P%V$\>+WE&D%dBItIHsD]tSu4RE.knaG)32%_=rqRV2M'dcD]jQhC`f:pHK',=n&l;o[9Q153YKiT%JA::)`d;3`]*KAdegn_rbK$AOjBc.,b[^Fel)hr6/Zl/V-Q@;(55?cr$o\HBb1[6k-ICEiRRV`u>DI'C_p$-bM);AFjOa2\J%J.*DB:P3@$nnA!?ac9LCk#\b@t"sm/m)FNO9>?`(Yd52cL"e&XTYtip2(S4HV]p^aa7<W>mZcoV<7TBT#Y[>YoRV+B_>^`l!^su;E8Z]b$#XrU&]>#nTm9b@1FV$?#>%MN14C&e8.p7DL`5U^2bln<.Q)*L=:u74ToRj;Fm=J/h"Aoq.//t0^,%dYGg<;pN"Vk)&@(W.A#)uUWm#Q\NHW*3F-$onr@hBLY9VfeAF#=Q6.bT4tJ>35:ld[Q59dFa,pa\MjKY\XO2DJI!R`j5CS1+:@\qVYa&D_U;7e*3<i=kD8]^&S6;=u./)iq)fqH4%!ZYd'71NTB@_;0dDa)pqZEA:iOK>do5`XHc5^SPAL2@SF\W?IcE#*/:d,?I/dTb'k7[iaYk0lkdXMJARBHe?*u>#qF'hJhFd,'u,23r7=8LuC]nc8JO^)<_o$p.]IN<bkP'm*dZn-cW@8A/c<Ji8m[>qe@3F(n>/8QDtEaSb&$-oL$5A/GO7b>K.Z2`1!6rct!cJ7;RYY?IW/+XhnI@BqL/iKD=a6?'Aq"B$JboC?nQF%Q:``fo*1[_"%G5nihZ'B0QG!$>lnUTS.%6&5;Yau/bq)`1,Kq:L?;D5D/&L#].0-m>a(6+7^Is-3,ll"Z]BF=:=aF&NB4X>j3l0g2b#:@";,jih=qNCt#TSfUEck]U9aCKq+9X.FeP7NbB.3_-=U2LP2cqf<$Q_g]3qF6/[H1G$@f(rkYOi\S]oR5Ous*2=P$Bb<+NQjgal#.GYR(eb(:gb^Z^-S#f/M$\#Vj*7WO*Fdifg=p90D=;_+d$dQNl;V_hj88^Rcn<m5/"`PUhqk-Y!54R5I9VW<?jU!@=$f[bXNhLNj<)DEE:`h+8.c;ZN~>
+endstream
+endobj
+19 0 obj
+<<
+/Contents 20 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font <<
+/F1 7 0 R
+/F1-0 21 0 R
+/F1-1 22 0 R
+/F1-2 23 0 R
+/F2 8 0 R
+/F2-0 24 0 R
+/F2-1 25 0 R
+/F2-2 26 0 R
+/F3 9 0 R
+/F4 10 0 R
+>>
+/ProcSet [ /ImageB /ImageC /ImageI /PDF /Text ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Annots [ ]
+/Parent 2 0 R
+>>
+endobj
+20 0 obj
+<<
+/Length 25793
+>>
+stream
+q
+q
+q
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.843137 .878431 .905882 RG
+.4 w
+n 48.18898 807.874 m 547.0866 807.874 l S
+.086275 .196078 .309804 rg
+BT /F2 7 Tf 8.4 TL ET
+BT 1 0 0 1 48.18898 818.6457 Tm (HUELLAS  |  DOCUMENTACION TECNICA) Tj T* ET
+.392157 .458824 .529412 rg
+BT /F1 7 Tf 8.4 TL ET
+BT 1 0 0 1 446.6996 818.6457 Tm (Revision de codigo - 13/07/2026) Tj T* ET
+.843137 .878431 .905882 RG
+n 48.18898 28.34646 m 547.0866 28.34646 l S
+.392157 .458824 .529412 rg
+BT /F1 7 Tf 8.4 TL ET
+BT 1 0 0 1 48.18898 18.99213 Tm (Uso interno - consolidado tecnico) Tj T* ET
+BT 1 0 0 1 519.4576 18.99213 Tm (Pagina 6) Tj T* ET
+Q
+q
+1 0 0 1 54.18898 765.7008 cm
+q
+.086275 .196078 .309804 rg
+BT 1 0 0 1 0 4 Tm /F2 18 Tf 22 TL (5. Diagramas de secuencia de flujos principales) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 757.0008 cm
+q
+.7 w
+1 J
+.843137 .878431 .905882 RG
+n 0 0 m 486.8976 0 l S
+Q
+Q
+q
+1 0 0 1 54.18898 732.0008 cm
+q
+.156863 .470588 .654902 rg
+BT 1 0 0 1 0 3.5 Tm /F2 12.5 Tf 16 TL (Flujo A - inicio de sesion y uso de sesion) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 323.0638 cm
+.086275 .196078 .309804 rg
+BT /F2 8.4 Tf 10.08 TL ET
+BT 1 0 0 1 0 393.937 Tm (A. Autenticacion por email y validacion de una ruta protegida) Tj T* ET
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+-9 381.937 m
+39 381.937 l
+41.764 381.937 44 384.173 44 386.937 c
+44 391.937 l
+44 394.701 41.764 396.937 39 396.937 c
+-9 396.937 l
+-11.764 396.937 -14 394.701 -14 391.937 c
+-14 386.937 l
+-14 384.173 -11.764 381.937 -9 381.937 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 2.90025 386.937 Tm (Usuario) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 15 381.937 m 15 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+108.2244 381.937 m
+156.2244 381.937 l
+158.9884 381.937 161.2244 384.173 161.2244 386.937 c
+161.2244 391.937 l
+161.2244 394.701 158.9884 396.937 156.2244 396.937 c
+108.2244 396.937 l
+105.4604 396.937 103.2244 394.701 103.2244 391.937 c
+103.2244 386.937 l
+103.2244 384.173 105.4604 381.937 108.2244 381.937 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 116.5139 386.937 Tm (App movil) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 132.2244 381.937 m 132.2244 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+225.4488 381.937 m
+273.4488 381.937 l
+276.2128 381.937 278.4488 384.173 278.4488 386.937 c
+278.4488 391.937 l
+278.4488 394.701 276.2128 396.937 273.4488 396.937 c
+225.4488 396.937 l
+222.6848 396.937 220.4488 394.701 220.4488 391.937 c
+220.4488 386.937 l
+220.4488 384.173 222.6848 381.937 225.4488 381.937 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 230.4818 386.937 Tm (API Express) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 249.4488 381.937 m 249.4488 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+342.6732 381.937 m
+390.6732 381.937 l
+393.4372 381.937 395.6732 384.173 395.6732 386.937 c
+395.6732 391.937 l
+395.6732 394.701 393.4372 396.937 390.6732 396.937 c
+342.6732 396.937 l
+339.9092 396.937 337.6732 394.701 337.6732 391.937 c
+337.6732 386.937 l
+337.6732 384.173 339.9092 381.937 342.6732 381.937 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 348.9802 386.937 Tm (Better Auth) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 366.6732 381.937 m 366.6732 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+459.8976 381.937 m
+507.8976 381.937 l
+510.6616 381.937 512.8976 384.173 512.8976 386.937 c
+512.8976 391.937 l
+512.8976 394.701 510.6616 396.937 507.8976 396.937 c
+459.8976 396.937 l
+457.1336 396.937 454.8976 394.701 454.8976 391.937 c
+454.8976 386.937 l
+454.8976 384.173 457.1336 381.937 459.8976 381.937 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 465.1159 386.937 Tm (PostgreSQL) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 483.8976 381.937 m 483.8976 8 l S
+[] 0 d
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 15 368.937 m 132.2244 368.937 l S
+[] 0 d
+n 132.2244 368.937 m 128.2244 371.437 l S
+n 132.2244 368.937 m 128.2244 366.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 41.50608 372.937 Tm (ingresa email + password) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 132.2244 358.437 m 249.4488 358.437 l S
+[] 0 d
+n 249.4488 358.437 m 245.4488 360.937 l S
+n 249.4488 358.437 m 245.4488 355.937 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 154.8828 362.437 Tm (POST /api/auth/sign-in/email) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 347.937 m 366.6732 347.937 l S
+[] 0 d
+n 366.6732 347.937 m 362.6732 350.437 l S
+n 366.6732 347.937 m 362.6732 345.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 285.1333 351.937 Tm (handler /api/auth/*) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 366.6732 337.437 m 483.8976 337.437 l S
+[] 0 d
+n 483.8976 337.437 m 479.8976 339.937 l S
+n 483.8976 337.437 m 479.8976 334.937 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 386.0321 341.437 Tm (consulta usuario / crea Session) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 483.8976 326.937 m 366.6732 326.937 l S
+[] 0 d
+n 366.6732 326.937 m 370.6732 329.437 l S
+n 366.6732 326.937 m 370.6732 324.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 404.6375 330.937 Tm (usuario + sesion) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 366.6732 316.437 m 249.4488 316.437 l S
+[] 0 d
+n 249.4488 316.437 m 253.4488 318.937 l S
+n 249.4488 316.437 m 253.4488 313.937 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 292.6732 320.437 Tm (token y user) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 249.4488 305.937 m 132.2244 305.937 l S
+[] 0 d
+n 132.2244 305.937 m 136.2244 308.437 l S
+n 132.2244 305.937 m 136.2244 303.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 172.9346 309.937 Tm (respuesta 200) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 132.2244 295.437 m 132.2244 295.437 l S
+[] 0 d
+n 132.2244 295.437 m 136.2244 297.937 l S
+n 132.2244 295.437 m 136.2244 292.937 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 87.15718 299.437 Tm (guarda token/user en AsyncStorage) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 132.2244 284.937 m 249.4488 284.937 l S
+[] 0 d
+n 249.4488 284.937 m 245.4488 287.437 l S
+n 249.4488 284.937 m 245.4488 282.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 156.6061 288.937 Tm (Authorization: Bearer token) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 274.437 m 366.6732 274.437 l S
+[] 0 d
+n 366.6732 274.437 m 362.6732 276.937 l S
+n 366.6732 274.437 m 362.6732 271.937 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 285.2943 278.437 Tm (getSession\(token\)) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 366.6732 263.937 m 249.4488 263.937 l S
+[] 0 d
+n 249.4488 263.937 m 253.4488 266.437 l S
+n 249.4488 263.937 m 253.4488 261.437 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 282.7801 267.937 Tm (usuario valido o 401) Tj T* ET
+Q
+q
+1 0 0 1 54.18898 290.8638 cm
+q
+BT 1 0 0 1 0 17.1 Tm 13.1 TL /F1 9.1 Tf .141176 .192157 .243137 rg (El interceptor Axios adjunta el token en cada solicitud. Ante 401 borra token y usuario locales y desautentica el store. La) Tj T* (sesion se conserva en la tabla Session y se valida en cada ruta protegida mediante ) Tj /F3 9.1 Tf (auth.api.getSession) Tj /F1 9.1 Tf (.) Tj T* ET
+Q
+Q
+ 
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-0 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+46.18898 360 502.8976 372 re
+f*
+0.156863 0.470588 0.654902 rg
+BT
+/F2-0 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 708 Tm
+(Flujo A \055 inicio de sesion y uso de sesion) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 686 Tm
+(A\056 Autenticacion por email y validacion de una ruta protegida) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 652 m
+87.18898 652 l
+89.95298 652 92.18898 654.236 92.18898 657 c
+92.18898 663 l
+92.18898 665.764 89.95298 668 87.18898 668 c
+39.18898 668 l
+36.42498 668 34.18898 665.764 34.18898 663 c
+34.18898 657 l
+34.18898 654.236 36.42498 652 39.18898 652 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 657.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 652 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 652 m
+204.4134 652 l
+207.1774 652 209.4134 654.236 209.4134 657 c
+209.4134 663 l
+209.4134 665.764 207.1774 668 204.4134 668 c
+156.4134 668 l
+153.6494 668 151.4134 665.764 151.4134 663 c
+151.4134 657 l
+151.4134 654.236 153.6494 652 156.4134 652 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 657.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 652 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 652 m
+321.6378 652 l
+324.4018 652 326.6378 654.236 326.6378 657 c
+326.6378 663 l
+326.6378 665.764 324.4018 668 321.6378 668 c
+273.6378 668 l
+270.8738 668 268.6378 665.764 268.6378 663 c
+268.6378 657 l
+268.6378 654.236 270.8738 652 273.6378 652 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 657.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 652 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 652 m
+438.8622 652 l
+441.6262 652 443.8622 654.236 443.8622 657 c
+443.8622 663 l
+443.8622 665.764 441.6262 668 438.8622 668 c
+390.8622 668 l
+388.0982 668 385.8622 665.764 385.8622 663 c
+385.8622 657 l
+385.8622 654.236 388.0982 652 390.8622 652 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 396.897 657.4 Tm
+(Better Auth) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 652 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+508.0866 652 m
+556.0866 652 l
+558.8506 652 561.0866 654.236 561.0866 657 c
+561.0866 663 l
+561.0866 665.764 558.8506 668 556.0866 668 c
+508.0866 668 l
+505.3226 668 503.0866 665.764 503.0866 663 c
+503.0866 657 l
+503.0866 654.236 505.3226 652 508.0866 652 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 513.0159 657.4 Tm
+(PostgreSQL) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 652 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 634 m
+180.4134 634 l
+S
+[ ] 0 d
+n
+180.4134 634 m
+176.4134 636.4 l
+S
+n
+180.4134 634 m
+176.4134 631.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 89.41093 638 Tm
+(ingresa email \053 password) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 621 m
+297.6378 621 l
+S
+[ ] 0 d
+n
+297.6378 621 m
+293.6378 623.4 l
+S
+n
+297.6378 621 m
+293.6378 618.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 202.7536 625 Tm
+(POST \057api\057auth\057sign\055in\057email) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 608 m
+414.8622 608 l
+S
+[ ] 0 d
+n
+414.8622 608 m
+410.8622 610.4 l
+S
+n
+414.8622 608 m
+410.8622 605.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.1194 612 Tm
+(handler \057api\057auth\057\052) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+414.8622 595 m
+532.0866 595 l
+S
+[ ] 0 d
+n
+532.0866 595 m
+528.0866 597.4 l
+S
+n
+532.0866 595 m
+528.0866 592.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 433.8737 599 Tm
+(consulta usuario \057 crea Session) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 582 m
+414.8622 582 l
+S
+[ ] 0 d
+n
+414.8622 582 m
+418.8622 584.4 l
+S
+n
+414.8622 582 m
+418.8622 579.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 452.6438 586 Tm
+(usuario \053 sesion) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 569 m
+297.6378 569 l
+S
+[ ] 0 d
+n
+297.6378 569 m
+301.6378 571.4 l
+S
+n
+297.6378 569 m
+301.6378 566.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 340.7261 573 Tm
+(token y user) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 556 m
+180.4134 556 l
+S
+[ ] 0 d
+n
+180.4134 556 m
+184.4134 558.4 l
+S
+n
+180.4134 556 m
+184.4134 553.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 220.9651 560 Tm
+(respuesta 200) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 543 m
+148.4134 543 l
+S
+n
+148.4134 543 m
+152.4134 545.4 l
+S
+n
+148.4134 543 m
+152.4134 540.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 109.9473 547 Tm
+(guarda token\057user en AsyncStorage) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 530 m
+297.6378 530 l
+S
+[ ] 0 d
+n
+297.6378 530 m
+293.6378 532.4 l
+S
+n
+297.6378 530 m
+293.6378 527.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 204.4921 534 Tm
+(Authorization\072 Bearer token) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 517 m
+414.8622 517 l
+S
+[ ] 0 d
+n
+414.8622 517 m
+410.8622 519.4 l
+S
+n
+414.8622 517 m
+410.8622 514.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.2819 521 Tm
+(getSession\050token\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 504 m
+297.6378 504 l
+S
+[ ] 0 d
+n
+297.6378 504 m
+301.6378 506.4 l
+S
+n
+297.6378 504 m
+301.6378 501.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 330.7454 508 Tm
+(usuario valido o 401) Tj
+T*
+ET
+Q
+
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-1 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+46.18898 360 502.8976 440 re
+f*
+0.156863 0.470588 0.654902 rg
+BT
+/F2-1 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 748 Tm
+(Flujo A \055 inicio de sesion y uso de sesion) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 726 Tm
+(A\056 Autenticacion por email y validacion de una ruta protegida) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 692 m
+87.18898 692 l
+89.95298 692 92.18898 694.236 92.18898 697 c
+92.18898 703 l
+92.18898 705.764 89.95298 708 87.18898 708 c
+39.18898 708 l
+36.42498 708 34.18898 705.764 34.18898 703 c
+34.18898 697 l
+34.18898 694.236 36.42498 692 39.18898 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 697.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 692 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 692 m
+204.4134 692 l
+207.1774 692 209.4134 694.236 209.4134 697 c
+209.4134 703 l
+209.4134 705.764 207.1774 708 204.4134 708 c
+156.4134 708 l
+153.6494 708 151.4134 705.764 151.4134 703 c
+151.4134 697 l
+151.4134 694.236 153.6494 692 156.4134 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 697.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 692 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 692 m
+321.6378 692 l
+324.4018 692 326.6378 694.236 326.6378 697 c
+326.6378 703 l
+326.6378 705.764 324.4018 708 321.6378 708 c
+273.6378 708 l
+270.8738 708 268.6378 705.764 268.6378 703 c
+268.6378 697 l
+268.6378 694.236 270.8738 692 273.6378 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 697.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 692 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 692 m
+438.8622 692 l
+441.6262 692 443.8622 694.236 443.8622 697 c
+443.8622 703 l
+443.8622 705.764 441.6262 708 438.8622 708 c
+390.8622 708 l
+388.0982 708 385.8622 705.764 385.8622 703 c
+385.8622 697 l
+385.8622 694.236 388.0982 692 390.8622 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 396.897 697.4 Tm
+(Better Auth) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 692 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+508.0866 692 m
+556.0866 692 l
+558.8506 692 561.0866 694.236 561.0866 697 c
+561.0866 703 l
+561.0866 705.764 558.8506 708 556.0866 708 c
+508.0866 708 l
+505.3226 708 503.0866 705.764 503.0866 703 c
+503.0866 697 l
+503.0866 694.236 505.3226 692 508.0866 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 513.0159 697.4 Tm
+(PostgreSQL) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 692 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 674 m
+180.4134 674 l
+S
+[ ] 0 d
+n
+180.4134 674 m
+176.4134 676.4 l
+S
+n
+180.4134 674 m
+176.4134 671.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 89.41093 678 Tm
+(ingresa email \053 password) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 661 m
+297.6378 661 l
+S
+[ ] 0 d
+n
+297.6378 661 m
+293.6378 663.4 l
+S
+n
+297.6378 661 m
+293.6378 658.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 202.7536 665 Tm
+(POST \057api\057auth\057sign\055in\057email) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 648 m
+414.8622 648 l
+S
+[ ] 0 d
+n
+414.8622 648 m
+410.8622 650.4 l
+S
+n
+414.8622 648 m
+410.8622 645.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.1194 652 Tm
+(handler \057api\057auth\057\052) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+414.8622 635 m
+532.0866 635 l
+S
+[ ] 0 d
+n
+532.0866 635 m
+528.0866 637.4 l
+S
+n
+532.0866 635 m
+528.0866 632.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 433.8737 639 Tm
+(consulta usuario \057 crea Session) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 622 m
+414.8622 622 l
+S
+[ ] 0 d
+n
+414.8622 622 m
+418.8622 624.4 l
+S
+n
+414.8622 622 m
+418.8622 619.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 452.6438 626 Tm
+(usuario \053 sesion) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 609 m
+297.6378 609 l
+S
+[ ] 0 d
+n
+297.6378 609 m
+301.6378 611.4 l
+S
+n
+297.6378 609 m
+301.6378 606.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 340.7261 613 Tm
+(token y user) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 596 m
+180.4134 596 l
+S
+[ ] 0 d
+n
+180.4134 596 m
+184.4134 598.4 l
+S
+n
+180.4134 596 m
+184.4134 593.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 220.9651 600 Tm
+(respuesta 200) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 583 m
+148.4134 583 l
+S
+n
+148.4134 583 m
+152.4134 585.4 l
+S
+n
+148.4134 583 m
+152.4134 580.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 109.9473 587 Tm
+(guarda token\057user en AsyncStorage) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 570 m
+297.6378 570 l
+S
+[ ] 0 d
+n
+297.6378 570 m
+293.6378 572.4 l
+S
+n
+297.6378 570 m
+293.6378 567.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 204.4921 574 Tm
+(Authorization\072 Bearer token) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 557 m
+414.8622 557 l
+S
+[ ] 0 d
+n
+414.8622 557 m
+410.8622 559.4 l
+S
+n
+414.8622 557 m
+410.8622 554.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.2819 561 Tm
+(getSession\050token\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 544 m
+297.6378 544 l
+S
+[ ] 0 d
+n
+297.6378 544 m
+301.6378 546.4 l
+S
+n
+297.6378 544 m
+301.6378 541.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 330.7454 548 Tm
+(usuario valido o 401) Tj
+T*
+ET
+Q
+
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-2 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+0 360 595.2756 440 re
+f*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 18 Tf
+21.6 TL
+ET
+BT
+1 0 0 1 48.18898 765 Tm
+(5\056 Diagramas de secuencia de flujos principales) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+0.7 w
+n
+48.18898 750 m
+547.0866 750 l
+S
+0.156863 0.470588 0.654902 rg
+BT
+/F2-2 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 720 Tm
+(Flujo A \055 inicio de sesion y uso de sesion) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 698 Tm
+(A\056 Autenticacion por email y validacion de una ruta protegida) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 664 m
+87.18898 664 l
+89.95298 664 92.18898 666.236 92.18898 669 c
+92.18898 675 l
+92.18898 677.764 89.95298 680 87.18898 680 c
+39.18898 680 l
+36.42498 680 34.18898 677.764 34.18898 675 c
+34.18898 669 l
+34.18898 666.236 36.42498 664 39.18898 664 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 669.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 664 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 664 m
+204.4134 664 l
+207.1774 664 209.4134 666.236 209.4134 669 c
+209.4134 675 l
+209.4134 677.764 207.1774 680 204.4134 680 c
+156.4134 680 l
+153.6494 680 151.4134 677.764 151.4134 675 c
+151.4134 669 l
+151.4134 666.236 153.6494 664 156.4134 664 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 669.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 664 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 664 m
+321.6378 664 l
+324.4018 664 326.6378 666.236 326.6378 669 c
+326.6378 675 l
+326.6378 677.764 324.4018 680 321.6378 680 c
+273.6378 680 l
+270.8738 680 268.6378 677.764 268.6378 675 c
+268.6378 669 l
+268.6378 666.236 270.8738 664 273.6378 664 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 669.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 664 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 664 m
+438.8622 664 l
+441.6262 664 443.8622 666.236 443.8622 669 c
+443.8622 675 l
+443.8622 677.764 441.6262 680 438.8622 680 c
+390.8622 680 l
+388.0982 680 385.8622 677.764 385.8622 675 c
+385.8622 669 l
+385.8622 666.236 388.0982 664 390.8622 664 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 396.897 669.4 Tm
+(Better Auth) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 664 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+508.0866 664 m
+556.0866 664 l
+558.8506 664 561.0866 666.236 561.0866 669 c
+561.0866 675 l
+561.0866 677.764 558.8506 680 556.0866 680 c
+508.0866 680 l
+505.3226 680 503.0866 677.764 503.0866 675 c
+503.0866 669 l
+503.0866 666.236 505.3226 664 508.0866 664 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 513.0159 669.4 Tm
+(PostgreSQL) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 664 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 646 m
+180.4134 646 l
+S
+[ ] 0 d
+n
+180.4134 646 m
+176.4134 648.4 l
+S
+n
+180.4134 646 m
+176.4134 643.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 89.41093 650 Tm
+(ingresa email \053 password) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 633 m
+297.6378 633 l
+S
+[ ] 0 d
+n
+297.6378 633 m
+293.6378 635.4 l
+S
+n
+297.6378 633 m
+293.6378 630.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 202.7536 637 Tm
+(POST \057api\057auth\057sign\055in\057email) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 620 m
+414.8622 620 l
+S
+[ ] 0 d
+n
+414.8622 620 m
+410.8622 622.4 l
+S
+n
+414.8622 620 m
+410.8622 617.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.1194 624 Tm
+(handler \057api\057auth\057\052) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+414.8622 607 m
+532.0866 607 l
+S
+[ ] 0 d
+n
+532.0866 607 m
+528.0866 609.4 l
+S
+n
+532.0866 607 m
+528.0866 604.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 433.8737 611 Tm
+(consulta usuario \057 crea Session) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 594 m
+414.8622 594 l
+S
+[ ] 0 d
+n
+414.8622 594 m
+418.8622 596.4 l
+S
+n
+414.8622 594 m
+418.8622 591.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 452.6438 598 Tm
+(usuario \053 sesion) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 581 m
+297.6378 581 l
+S
+[ ] 0 d
+n
+297.6378 581 m
+301.6378 583.4 l
+S
+n
+297.6378 581 m
+301.6378 578.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 340.7261 585 Tm
+(token y user) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 568 m
+180.4134 568 l
+S
+[ ] 0 d
+n
+180.4134 568 m
+184.4134 570.4 l
+S
+n
+180.4134 568 m
+184.4134 565.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 220.9651 572 Tm
+(respuesta 200) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 555 m
+148.4134 555 l
+S
+n
+148.4134 555 m
+152.4134 557.4 l
+S
+n
+148.4134 555 m
+152.4134 552.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 109.9473 559 Tm
+(guarda token\057user en AsyncStorage) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 542 m
+297.6378 542 l
+S
+[ ] 0 d
+n
+297.6378 542 m
+293.6378 544.4 l
+S
+n
+297.6378 542 m
+293.6378 539.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 204.4921 546 Tm
+(Authorization\072 Bearer token) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 529 m
+414.8622 529 l
+S
+[ ] 0 d
+n
+414.8622 529 m
+410.8622 531.4 l
+S
+n
+414.8622 529 m
+410.8622 526.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 333.2819 533 Tm
+(getSession\050token\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 516 m
+297.6378 516 l
+S
+[ ] 0 d
+n
+297.6378 516 m
+301.6378 518.4 l
+S
+n
+297.6378 516 m
+301.6378 513.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 330.7454 520 Tm
+(usuario valido o 401) Tj
+T*
+ET
+Q
+
+
+endstream
+endobj
+21 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+22 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+23 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+24 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+25 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+26 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+27 0 obj
+<<
+/Contents 28 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font <<
+/F1 7 0 R
+/F1-0 29 0 R
+/F1-1 30 0 R
+/F1-2 31 0 R
+/F2 8 0 R
+/F2-0 32 0 R
+/F2-1 33 0 R
+/F2-2 34 0 R
+/F3 9 0 R
+/F4 10 0 R
+>>
+/ProcSet [ /ImageB /ImageC /ImageI /PDF /Text ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Annots [ ]
+/Parent 2 0 R
+>>
+endobj
+28 0 obj
+<<
+/Length 28074
+>>
+stream
+q
+q
+q
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.843137 .878431 .905882 RG
+.4 w
+n 48.18898 807.874 m 547.0866 807.874 l S
+.086275 .196078 .309804 rg
+BT /F2 7 Tf 8.4 TL ET
+BT 1 0 0 1 48.18898 818.6457 Tm (HUELLAS  |  DOCUMENTACION TECNICA) Tj T* ET
+.392157 .458824 .529412 rg
+BT /F1 7 Tf 8.4 TL ET
+BT 1 0 0 1 446.6996 818.6457 Tm (Revision de codigo - 13/07/2026) Tj T* ET
+.843137 .878431 .905882 RG
+n 48.18898 28.34646 m 547.0866 28.34646 l S
+.392157 .458824 .529412 rg
+BT /F1 7 Tf 8.4 TL ET
+BT 1 0 0 1 48.18898 18.99213 Tm (Uso interno - consolidado tecnico) Tj T* ET
+BT 1 0 0 1 519.4576 18.99213 Tm (Pagina 7) Tj T* ET
+Q
+q
+1 0 0 1 54.18898 771.7008 cm
+q
+.156863 .470588 .654902 rg
+BT 1 0 0 1 0 3.5 Tm /F2 12.5 Tf 16 TL (Flujo B - crear publicacion con fotos y normalizacion geografica) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 392.5276 cm
+.086275 .196078 .309804 rg
+BT /F2 8.4 Tf 10.08 TL ET
+BT 1 0 0 1 0 364.1732 Tm (B. Alta de publicacion y escritura transaccional) Tj T* ET
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+-9 352.1732 m
+39 352.1732 l
+41.764 352.1732 44 354.4092 44 357.1732 c
+44 362.1732 l
+44 364.9372 41.764 367.1732 39 367.1732 c
+-9 367.1732 l
+-11.764 367.1732 -14 364.9372 -14 362.1732 c
+-14 357.1732 l
+-14 354.4092 -11.764 352.1732 -9 352.1732 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 2.90025 357.1732 Tm (Usuario) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 15 352.1732 m 15 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+108.2244 352.1732 m
+156.2244 352.1732 l
+158.9884 352.1732 161.2244 354.4092 161.2244 357.1732 c
+161.2244 362.1732 l
+161.2244 364.9372 158.9884 367.1732 156.2244 367.1732 c
+108.2244 367.1732 l
+105.4604 367.1732 103.2244 364.9372 103.2244 362.1732 c
+103.2244 357.1732 l
+103.2244 354.4092 105.4604 352.1732 108.2244 352.1732 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 116.5139 357.1732 Tm (App movil) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 132.2244 352.1732 m 132.2244 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+225.4488 352.1732 m
+273.4488 352.1732 l
+276.2128 352.1732 278.4488 354.4092 278.4488 357.1732 c
+278.4488 362.1732 l
+278.4488 364.9372 276.2128 367.1732 273.4488 367.1732 c
+225.4488 367.1732 l
+222.6848 367.1732 220.4488 364.9372 220.4488 362.1732 c
+220.4488 357.1732 l
+220.4488 354.4092 222.6848 352.1732 225.4488 352.1732 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 230.4818 357.1732 Tm (API Express) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 249.4488 352.1732 m 249.4488 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+342.6732 352.1732 m
+390.6732 352.1732 l
+393.4372 352.1732 395.6732 354.4092 395.6732 357.1732 c
+395.6732 362.1732 l
+395.6732 364.9372 393.4372 367.1732 390.6732 367.1732 c
+342.6732 367.1732 l
+339.9092 367.1732 337.6732 364.9372 337.6732 362.1732 c
+337.6732 357.1732 l
+337.6732 354.4092 339.9092 352.1732 342.6732 352.1732 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 356.1985 357.1732 Tm (Georef) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 366.6732 352.1732 m 366.6732 8 l S
+[] 0 d
+.917647 .952941 .972549 rg
+.156863 .470588 .654902 RG
+n
+450.9164 352.1732 m
+516.8789 352.1732 l
+519.6429 352.1732 521.8789 354.4092 521.8789 357.1732 c
+521.8789 362.1732 l
+521.8789 364.9372 519.6429 367.1732 516.8789 367.1732 c
+450.9164 367.1732 l
+448.1524 367.1732 445.9164 364.9372 445.9164 362.1732 c
+445.9164 357.1732 l
+445.9164 354.4092 448.1524 352.1732 450.9164 352.1732 c
+h
+B*
+.086275 .196078 .309804 rg
+BT /F2 6.5 Tf 7.8 TL ET
+BT 1 0 0 1 453.9164 357.1732 Tm (PostgreSQL / disco) Tj T* ET
+[2 2] 0 d
+.843137 .878431 .905882 RG
+n 483.8976 352.1732 m 483.8976 8 l S
+[] 0 d
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 15 339.1732 m 132.2244 339.1732 l S
+[] 0 d
+n 132.2244 339.1732 m 128.2244 341.6732 l S
+n 132.2244 339.1732 m 128.2244 336.6732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 32.94915 343.1732 Tm (completa formulario y elige fotos) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 132.2244 328.6732 m 249.4488 328.6732 l S
+[] 0 d
+n 249.4488 328.6732 m 245.4488 331.1732 l S
+n 249.4488 328.6732 m 245.4488 326.1732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 148.5266 332.6732 Tm (POST /animals multipart + Bearer) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 318.1732 m 249.4488 318.1732 l S
+[] 0 d
+n 249.4488 318.1732 m 253.4488 320.6732 l S
+n 249.4488 318.1732 m 253.4488 315.6732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 219.9332 322.1732 Tm (Multer filtra tipo/tamano) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 307.6732 m 249.4488 307.6732 l S
+[] 0 d
+n 249.4488 307.6732 m 253.4488 310.1732 l S
+n 249.4488 307.6732 m 253.4488 305.1732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 210.5147 311.6732 Tm (Zod normaliza y valida campos) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 297.1732 m 366.6732 297.1732 l S
+[] 0 d
+n 366.6732 297.1732 m 362.6732 299.6732 l S
+n 366.6732 297.1732 m 362.6732 294.6732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 269.2822 301.1732 Tm (normaliza area \(lat/lon/placeId\)) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 366.6732 286.6732 m 249.4488 286.6732 l S
+[] 0 d
+n 249.4488 286.6732 m 253.4488 289.1732 l S
+n 249.4488 286.6732 m 253.4488 284.1732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 283.7208 290.6732 Tm (area o degradacion) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 276.1732 m 483.8976 276.1732 l S
+[] 0 d
+n 483.8976 276.1732 m 479.8976 278.6732 l S
+n 483.8976 276.1732 m 479.8976 273.6732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 326.4735 280.1732 Tm (guarda fotos en /uploads/animal) Tj T* ET
+.113725 .541176 .541176 RG
+.113725 .541176 .541176 rg
+.8 w
+n 249.4488 265.6732 m 483.8976 265.6732 l S
+[] 0 d
+n 483.8976 265.6732 m 479.8976 268.1732 l S
+n 483.8976 265.6732 m 479.8976 263.1732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 324.6796 269.6732 Tm (transaccion Post + ClinicalHistory) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 483.8976 255.1732 m 249.4488 255.1732 l S
+[] 0 d
+n 249.4488 255.1732 m 253.4488 257.6732 l S
+n 249.4488 255.1732 m 253.4488 252.6732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 353.0172 259.1732 Tm (ids y URLs) Tj T* ET
+.392157 .458824 .529412 RG
+.392157 .458824 .529412 rg
+[3 2] 0 d
+.8 w
+n 249.4488 244.6732 m 132.2244 244.6732 l S
+[] 0 d
+n 132.2244 244.6732 m 136.2244 247.1732 l S
+n 132.2244 244.6732 m 136.2244 242.1732 l S
+BT /F1 5.65 Tf 6.78 TL ET
+BT 1 0 0 1 171.2085 248.6732 Tm (201 publicacion) Tj T* ET
+Q
+q
+1 0 0 1 54.18898 360.3276 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 17.1 Tm /F1 9.1 Tf 13.1 TL (Si Zod, Georef o la logica falla tras recibir archivos, el controlador elimina las fotos nuevas cuando corresponde. La) Tj T* (creacion de Post y ClinicalHistory se realiza dentro de una transaccion Prisma; el disco no participa de esa transaccion.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 328.3276 cm
+q
+.086275 .196078 .309804 rg
+BT 1 0 0 1 0 4 Tm /F2 18 Tf 22 TL (6. Seguridad y manejo de datos) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 319.6276 cm
+q
+.7 w
+1 J
+.843137 .878431 .905882 RG
+n 0 0 m 486.8976 0 l S
+Q
+Q
+q
+1 0 0 1 54.18898 294.6276 cm
+q
+.156863 .470588 .654902 rg
+BT 1 0 0 1 0 3.5 Tm /F2 12.5 Tf 16 TL (6.1 Autenticacion, sesiones y tokens) Tj T* ET
+Q
+Q
+q
+1 0 0 1 54.18898 134.1776 cm
+q
+.086275 .196078 .309804 rg
+n 0 155.45 498.8976 -16.7 re f*
+.960784 .968627 .976471 rg
+n 0 114.25 498.8976 -24.5 re f*
+.960784 .968627 .976471 rg
+n 0 65.25 498.8976 -16.25 re f*
+.960784 .968627 .976471 rg
+n 0 24.5 498.8976 -24.5 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 5 142.75 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 1.45 Tm /F2 7.25 Tf 8.7 TL (Aspecto) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 142.75 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 1.45 Tm /F2 7.25 Tf 8.7 TL (Estado implementado) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 126.5 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Mecanismo) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 118.25 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 9.65 Tm /F1 6.85 Tf 8.25 TL (Sesion stateful de Better Auth; token opaco almacenado en Session.token. El plugin bearer permite enviarlo en) Tj T* (Authorization.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 102 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Expiracion) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 93.75 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 9.65 Tm /F1 6.85 Tf 8.25 TL (No se configura session en config/auth.ts. Better Auth v1.6.15 usa por defecto expiresIn = 7 dias \(604800 s\), confirmado en) Tj T* (la dependencia instalada.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 77.5 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Renovacion) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 69.25 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 9.65 Tm /F1 6.85 Tf 8.25 TL (La dependencia tiene updateAge por defecto de 86400 s \(1 dia\). Al consultar sesion puede renovar la vigencia tras ese) Tj T* (umbral; no hay refresh token propio en el cliente.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 53 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Validacion) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 53 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL -0.031228 Tw (requireAuth extrae solo el prefijo Bearer y consulta auth.api.getSession. Falta token, token vencido o invalido devuelven 401.) Tj T* 0 Tw ET
+Q
+Q
+q
+1 0 0 1 5 36.75 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Cliente) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 28.5 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 9.65 Tm /F1 6.85 Tf 8.25 TL (AsyncStorage guarda auth_token y auth_user. initialize valida GET /users/{id}; logout llama sign-out y siempre limpia) Tj T* (almacenamiento.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 12.25 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 1.4 Tm /F1 6.85 Tf 8.25 TL (Revocacion) Tj T* ET
+Q
+Q
+q
+1 0 0 1 115.5512 4 cm
+q
+.141176 .192157 .243137 rg
+BT 1 0 0 1 0 9.65 Tm /F1 6.85 Tf 8.25 TL (Sign-out y borrado de Session por Better Auth. No hay lista de dispositivos, limite de sesiones ni revocacion administrativa) Tj T* (configurados.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.086275 .196078 .309804 RG
+.5 w
+n 0 138.75 m 498.8976 138.75 l S
+.843137 .878431 .905882 RG
+.28 w
+n 0 155.45 m 498.8976 155.45 l S
+n 0 0 m 498.8976 0 l S
+n 0 0 m 0 155.45 l S
+n 498.8976 0 m 498.8976 155.45 l S
+n 0 138.75 m 498.8976 138.75 l S
+n 0 114.25 m 498.8976 114.25 l S
+n 0 89.75 m 498.8976 89.75 l S
+n 0 65.25 m 498.8976 65.25 l S
+n 0 49 m 498.8976 49 l S
+n 0 24.5 m 498.8976 24.5 l S
+n 110.5512 0 m 110.5512 155.45 l S
+Q
+Q
+Q
+ 
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-0 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+46.18898 360 502.8976 372 re
+f*
+0.156863 0.470588 0.654902 rg
+BT
+/F2-0 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 716 Tm
+(Flujo B \055 crear publicacion con fotos y normalizacion geografica) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 694 Tm
+(B\056 Alta de publicacion y escritura transaccional) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 660 m
+87.18898 660 l
+89.95298 660 92.18898 662.236 92.18898 665 c
+92.18898 671 l
+92.18898 673.764 89.95298 676 87.18898 676 c
+39.18898 676 l
+36.42498 676 34.18898 673.764 34.18898 671 c
+34.18898 665 l
+34.18898 662.236 36.42498 660 39.18898 660 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 665.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 660 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 660 m
+204.4134 660 l
+207.1774 660 209.4134 662.236 209.4134 665 c
+209.4134 671 l
+209.4134 673.764 207.1774 676 204.4134 676 c
+156.4134 676 l
+153.6494 676 151.4134 673.764 151.4134 671 c
+151.4134 665 l
+151.4134 662.236 153.6494 660 156.4134 660 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 665.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 660 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 660 m
+321.6378 660 l
+324.4018 660 326.6378 662.236 326.6378 665 c
+326.6378 671 l
+326.6378 673.764 324.4018 676 321.6378 676 c
+273.6378 676 l
+270.8738 676 268.6378 673.764 268.6378 671 c
+268.6378 665 l
+268.6378 662.236 270.8738 660 273.6378 660 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 665.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 660 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 660 m
+438.8622 660 l
+441.6262 660 443.8622 662.236 443.8622 665 c
+443.8622 671 l
+443.8622 673.764 441.6262 676 438.8622 676 c
+390.8622 676 l
+388.0982 676 385.8622 673.764 385.8622 671 c
+385.8622 665 l
+385.8622 662.236 388.0982 660 390.8622 660 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 404.2263 665.4 Tm
+(Georef) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 660 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+498.1441 660 m
+566.0291 660 l
+568.7931 660 571.0291 662.236 571.0291 665 c
+571.0291 671 l
+571.0291 673.764 568.7931 676 566.0291 676 c
+498.1441 676 l
+495.3801 676 493.1441 673.764 493.1441 671 c
+493.1441 665 l
+493.1441 662.236 495.3801 660 498.1441 660 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-0 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 501.6441 665.4 Tm
+(PostgreSQL \057 disco) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 660 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 642 m
+180.4134 642 l
+S
+[ ] 0 d
+n
+180.4134 642 m
+176.4134 644.4 l
+S
+n
+180.4134 642 m
+176.4134 639.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 80.77828 646 Tm
+(completa formulario y elige fotos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 629 m
+297.6378 629 l
+S
+[ ] 0 d
+n
+297.6378 629 m
+293.6378 631.4 l
+S
+n
+297.6378 629 m
+293.6378 626.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 196.3411 633 Tm
+(POST \057animals multipart \053 Bearer) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 616 m
+265.6378 616 l
+S
+n
+265.6378 616 m
+269.6378 618.4 l
+S
+n
+265.6378 616 m
+269.6378 613.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 242.861 620 Tm
+(Multer filtra tipo\057tamano) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 603 m
+265.6378 603 l
+S
+n
+265.6378 603 m
+269.6378 605.4 l
+S
+n
+265.6378 603 m
+269.6378 600.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 233.3591 607 Tm
+(Zod normaliza y valida campos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 590 m
+414.8622 590 l
+S
+[ ] 0 d
+n
+414.8622 590 m
+410.8622 592.4 l
+S
+n
+414.8622 590 m
+410.8622 587.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 317.1281 594 Tm
+(normaliza area \050lat\057lon\057placeId\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 577 m
+297.6378 577 l
+S
+[ ] 0 d
+n
+297.6378 577 m
+301.6378 579.4 l
+S
+n
+297.6378 577 m
+301.6378 574.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 331.6944 581 Tm
+(area o degradacion) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 564 m
+532.0866 564 l
+S
+[ ] 0 d
+n
+532.0866 564 m
+528.0866 566.4 l
+S
+n
+532.0866 564 m
+528.0866 561.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 374.3067 568 Tm
+(guarda fotos en \057uploads\057animal) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 551 m
+532.0866 551 l
+S
+[ ] 0 d
+n
+532.0866 551 m
+528.0866 553.4 l
+S
+n
+532.0866 551 m
+528.0866 548.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 372.497 555 Tm
+(transaccion Post \053 ClinicalHistory) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 538 m
+297.6378 538 l
+S
+[ ] 0 d
+n
+297.6378 538 m
+301.6378 540.4 l
+S
+n
+297.6378 538 m
+301.6378 535.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 401.0853 542 Tm
+(ids y URLs) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 525 m
+180.4134 525 l
+S
+[ ] 0 d
+n
+180.4134 525 m
+184.4134 527.4 l
+S
+n
+180.4134 525 m
+184.4134 522.6 l
+S
+BT
+/F1-0 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 219.2238 529 Tm
+(201 publicacion) Tj
+T*
+ET
+Q
+
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-1 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+46.18898 360 502.8976 440 re
+f*
+0.156863 0.470588 0.654902 rg
+BT
+/F2-1 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 748 Tm
+(Flujo B \055 crear publicacion con fotos y normalizacion geografica) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 726 Tm
+(B\056 Alta de publicacion y escritura transaccional) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 692 m
+87.18898 692 l
+89.95298 692 92.18898 694.236 92.18898 697 c
+92.18898 703 l
+92.18898 705.764 89.95298 708 87.18898 708 c
+39.18898 708 l
+36.42498 708 34.18898 705.764 34.18898 703 c
+34.18898 697 l
+34.18898 694.236 36.42498 692 39.18898 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 697.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 692 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 692 m
+204.4134 692 l
+207.1774 692 209.4134 694.236 209.4134 697 c
+209.4134 703 l
+209.4134 705.764 207.1774 708 204.4134 708 c
+156.4134 708 l
+153.6494 708 151.4134 705.764 151.4134 703 c
+151.4134 697 l
+151.4134 694.236 153.6494 692 156.4134 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 697.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 692 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 692 m
+321.6378 692 l
+324.4018 692 326.6378 694.236 326.6378 697 c
+326.6378 703 l
+326.6378 705.764 324.4018 708 321.6378 708 c
+273.6378 708 l
+270.8738 708 268.6378 705.764 268.6378 703 c
+268.6378 697 l
+268.6378 694.236 270.8738 692 273.6378 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 697.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 692 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 692 m
+438.8622 692 l
+441.6262 692 443.8622 694.236 443.8622 697 c
+443.8622 703 l
+443.8622 705.764 441.6262 708 438.8622 708 c
+390.8622 708 l
+388.0982 708 385.8622 705.764 385.8622 703 c
+385.8622 697 l
+385.8622 694.236 388.0982 692 390.8622 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 404.2263 697.4 Tm
+(Georef) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 692 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+498.1441 692 m
+566.0291 692 l
+568.7931 692 571.0291 694.236 571.0291 697 c
+571.0291 703 l
+571.0291 705.764 568.7931 708 566.0291 708 c
+498.1441 708 l
+495.3801 708 493.1441 705.764 493.1441 703 c
+493.1441 697 l
+493.1441 694.236 495.3801 692 498.1441 692 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-1 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 501.6441 697.4 Tm
+(PostgreSQL \057 disco) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 692 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 674 m
+180.4134 674 l
+S
+[ ] 0 d
+n
+180.4134 674 m
+176.4134 676.4 l
+S
+n
+180.4134 674 m
+176.4134 671.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 80.77828 678 Tm
+(completa formulario y elige fotos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 661 m
+297.6378 661 l
+S
+[ ] 0 d
+n
+297.6378 661 m
+293.6378 663.4 l
+S
+n
+297.6378 661 m
+293.6378 658.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 196.3411 665 Tm
+(POST \057animals multipart \053 Bearer) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 648 m
+265.6378 648 l
+S
+n
+265.6378 648 m
+269.6378 650.4 l
+S
+n
+265.6378 648 m
+269.6378 645.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 242.861 652 Tm
+(Multer filtra tipo\057tamano) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 635 m
+265.6378 635 l
+S
+n
+265.6378 635 m
+269.6378 637.4 l
+S
+n
+265.6378 635 m
+269.6378 632.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 233.3591 639 Tm
+(Zod normaliza y valida campos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 622 m
+414.8622 622 l
+S
+[ ] 0 d
+n
+414.8622 622 m
+410.8622 624.4 l
+S
+n
+414.8622 622 m
+410.8622 619.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 317.1281 626 Tm
+(normaliza area \050lat\057lon\057placeId\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 609 m
+297.6378 609 l
+S
+[ ] 0 d
+n
+297.6378 609 m
+301.6378 611.4 l
+S
+n
+297.6378 609 m
+301.6378 606.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 331.6944 613 Tm
+(area o degradacion) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 596 m
+532.0866 596 l
+S
+[ ] 0 d
+n
+532.0866 596 m
+528.0866 598.4 l
+S
+n
+532.0866 596 m
+528.0866 593.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 374.3067 600 Tm
+(guarda fotos en \057uploads\057animal) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 583 m
+532.0866 583 l
+S
+[ ] 0 d
+n
+532.0866 583 m
+528.0866 585.4 l
+S
+n
+532.0866 583 m
+528.0866 580.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 372.497 587 Tm
+(transaccion Post \053 ClinicalHistory) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 570 m
+297.6378 570 l
+S
+[ ] 0 d
+n
+297.6378 570 m
+301.6378 572.4 l
+S
+n
+297.6378 570 m
+301.6378 567.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 401.0853 574 Tm
+(ids y URLs) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 557 m
+180.4134 557 l
+S
+[ ] 0 d
+n
+180.4134 557 m
+184.4134 559.4 l
+S
+n
+180.4134 557 m
+184.4134 554.6 l
+S
+BT
+/F1-1 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 219.2238 561 Tm
+(201 publicacion) Tj
+T*
+ET
+Q
+
+
+Q
+
+q
+0.0 0.0 595.2756 841.8898 re
+W
+n
+1 0 0 1 0 0 cm
+BT
+/F1-2 12 Tf
+14.4 TL
+ET
+1 1 1 rg
+n
+0 360 595.2756 440 re
+f*
+0.156863 0.470588 0.654902 rg
+BT
+/F2-2 13 Tf
+15.6 TL
+ET
+BT
+1 0 0 1 56.18898 760 Tm
+(Flujo B \055 crear publicacion con fotos y normalizacion geografica) Tj
+T*
+ET
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 8.2 Tf
+9.84 TL
+ET
+BT
+1 0 0 1 56.18898 738 Tm
+(B\056 Alta de publicacion y escritura transaccional) Tj
+T*
+ET
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+39.18898 704 m
+87.18898 704 l
+89.95298 704 92.18898 706.236 92.18898 709 c
+92.18898 715 l
+92.18898 717.764 89.95298 720 87.18898 720 c
+39.18898 720 l
+36.42498 720 34.18898 717.764 34.18898 715 c
+34.18898 709 l
+34.18898 706.236 36.42498 704 39.18898 704 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 50.90308 709.4 Tm
+(Usuario) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+63.18898 704 m
+63.18898 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+156.4134 704 m
+204.4134 704 l
+207.1774 704 209.4134 706.236 209.4134 709 c
+209.4134 715 l
+209.4134 717.764 207.1774 720 204.4134 720 c
+156.4134 720 l
+153.6494 720 151.4134 717.764 151.4134 715 c
+151.4134 709 l
+151.4134 706.236 153.6494 704 156.4134 704 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 164.4612 709.4 Tm
+(App movil) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+180.4134 704 m
+180.4134 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+273.6378 704 m
+321.6378 704 l
+324.4018 704 326.6378 706.236 326.6378 709 c
+326.6378 715 l
+326.6378 717.764 324.4018 720 321.6378 720 c
+273.6378 720 l
+270.8738 720 268.6378 717.764 268.6378 715 c
+268.6378 709 l
+268.6378 706.236 270.8738 704 273.6378 704 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 278.379 709.4 Tm
+(API Express) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+297.6378 704 m
+297.6378 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+390.8622 704 m
+438.8622 704 l
+441.6262 704 443.8622 706.236 443.8622 709 c
+443.8622 715 l
+443.8622 717.764 441.6262 720 438.8622 720 c
+390.8622 720 l
+388.0982 720 385.8622 717.764 385.8622 715 c
+385.8622 709 l
+385.8622 706.236 388.0982 704 390.8622 704 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 404.2263 709.4 Tm
+(Georef) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+414.8622 704 m
+414.8622 364 l
+S
+[ ] 0 d
+0.917647 0.952941 0.972549 rg
+0.156863 0.470588 0.654902 RG
+1 w
+n
+498.1441 704 m
+566.0291 704 l
+568.7931 704 571.0291 706.236 571.0291 709 c
+571.0291 715 l
+571.0291 717.764 568.7931 720 566.0291 720 c
+498.1441 720 l
+495.3801 720 493.1441 717.764 493.1441 715 c
+493.1441 709 l
+493.1441 706.236 495.3801 704 498.1441 704 c
+h
+B*
+0.086275 0.196078 0.309804 rg
+BT
+/F2-2 6.6 Tf
+7.92 TL
+ET
+BT
+1 0 0 1 501.6441 709.4 Tm
+(PostgreSQL \057 disco) Tj
+T*
+ET
+0.843137 0.878431 0.905882 RG
+[ 2 2 ] 0 d
+n
+532.0866 704 m
+532.0866 364 l
+S
+[ ] 0 d
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+63.18898 686 m
+180.4134 686 l
+S
+[ ] 0 d
+n
+180.4134 686 m
+176.4134 688.4 l
+S
+n
+180.4134 686 m
+176.4134 683.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 80.77828 690 Tm
+(completa formulario y elige fotos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+180.4134 673 m
+297.6378 673 l
+S
+[ ] 0 d
+n
+297.6378 673 m
+293.6378 675.4 l
+S
+n
+297.6378 673 m
+293.6378 670.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 196.3411 677 Tm
+(POST \057animals multipart \053 Bearer) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 660 m
+265.6378 660 l
+S
+n
+265.6378 660 m
+269.6378 662.4 l
+S
+n
+265.6378 660 m
+269.6378 657.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 242.861 664 Tm
+(Multer filtra tipo\057tamano) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 647 m
+265.6378 647 l
+S
+n
+265.6378 647 m
+269.6378 649.4 l
+S
+n
+265.6378 647 m
+269.6378 644.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 233.3591 651 Tm
+(Zod normaliza y valida campos) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 634 m
+414.8622 634 l
+S
+[ ] 0 d
+n
+414.8622 634 m
+410.8622 636.4 l
+S
+n
+414.8622 634 m
+410.8622 631.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 317.1281 638 Tm
+(normaliza area \050lat\057lon\057placeId\051) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+414.8622 621 m
+297.6378 621 l
+S
+[ ] 0 d
+n
+297.6378 621 m
+301.6378 623.4 l
+S
+n
+297.6378 621 m
+301.6378 618.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 331.6944 625 Tm
+(area o degradacion) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 608 m
+532.0866 608 l
+S
+[ ] 0 d
+n
+532.0866 608 m
+528.0866 610.4 l
+S
+n
+532.0866 608 m
+528.0866 605.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 374.3067 612 Tm
+(guarda fotos en \057uploads\057animal) Tj
+T*
+ET
+0.113725 0.541176 0.541176 RG
+0.113725 0.541176 0.541176 rg
+0.75 w
+n
+297.6378 595 m
+532.0866 595 l
+S
+[ ] 0 d
+n
+532.0866 595 m
+528.0866 597.4 l
+S
+n
+532.0866 595 m
+528.0866 592.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 372.497 599 Tm
+(transaccion Post \053 ClinicalHistory) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+532.0866 582 m
+297.6378 582 l
+S
+[ ] 0 d
+n
+297.6378 582 m
+301.6378 584.4 l
+S
+n
+297.6378 582 m
+301.6378 579.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 401.0853 586 Tm
+(ids y URLs) Tj
+T*
+ET
+0.392157 0.458824 0.529412 RG
+0.392157 0.458824 0.529412 rg
+0.75 w
+[ 3 2 ] 0 d
+n
+297.6378 569 m
+180.4134 569 l
+S
+[ ] 0 d
+n
+180.4134 569 m
+184.4134 571.4 l
+S
+n
+180.4134 569 m
+184.4134 566.6 l
+S
+BT
+/F1-2 5.7 Tf
+6.84 TL
+ET
+BT
+1 0 0 1 219.2238 573 Tm
+(201 publicacion) Tj
+T*
+ET
+Q
+
+
+endstream
+endobj
+29 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+30 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+31 0 obj
+<<
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+/Name /F1
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+32 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+33 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+34 0 obj
+<<
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+/Name /F2
+/Subtype /Type1
+/Type /Font
+>>
+endobj
+35 0 obj
+<<
+/Contents 36 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+36 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 4337
+>>
+stream
+GauHO>Beg[&q9SY^g#Wt6BMo"9Cq4*:8=qT\@/[RHZDjl9YrOtMGOT,NOuh&ID5g$Mqj,OD4[7UZ$?B5558_DnX,774S*d&@dKEb)o)*62dqU`k4t%`(?b%#EV/A6M>X>3%@Il`oG_j\G8<U\G5:G9hYQglB7Aod;%uMOE^RM$ZPAu*U#SU.d+ldreIgW*KJVb8ESuQ`F/Egp\NVO07u$qpKg\(=LuYYIiNoB>78DdenE,TK^\MhlIXZ=VfRFccp&=U$gTu*^PLK@)GAM8BqJLb.nfq@d@Z-lBA'Qp&GZa/(`4jQffd-87Db]'RU[A@^&BDUFoh09P[8].Z"\VfEQ\rIahK8+=j,#i(]!Q\IYbSp(j@oNf&%_UQmMQ0l7td<<,`(uYW=e*A<_VYP.!"<1;7T_q9R3X?.?[p_WZspp@l#bB%q2^@Ym\:13G23%c0oVEAs'je+:LC\FPR4_8,hVpJgd!QW0!7\S7(L"DCq+)q!$:r&J]="DaM4V:BQdO3,g52?_$md?k&gO*[36FT(4I6^<'(,qi9DdZeIoi=uVj/+nOa8M.0$U_@(<c#^5ggO^f0B-?2;C^s=_(6a'f6H!n0g3:V!6cpHW4_At.4,>2g"cS\=_1niY0b<4+Y!obforCsaBXB@&4F=&g07A8,s.:;OE,M8I\;g@qU#Un=tAO>iD(5o)dKoNkBSd/!*6oGl/2R^=cdSf^>i'\NA7%$SX&e6,ZM\XL,8!8kj^H:]Z>GZ/\$dLM]:`7*09;s's]4X(&=B-4lUa#Qp\Qn[KfsimQ.k\.?_rIT!fnS9dMk#jPmlW$6>H<@X1L>+u'HROunb>R!\+kA'Zl7KS*`prK0sNJ8fhuOG:\\\,9]TG[qFcOM%U8GQ2>"gD\1-NH]FHF9nnKHXHp]tY2@Et,HSCppM;h:-Wn;6s^`1X2=1>gR.3m$l=^tFB+u;NaeTKFk&iqQ2]D@.X)gs$#b`01NSGc3?U(e#ZQhaN8=M9r<MNVt[=(@;,Ko"ZtC4bH4_dSOU//s;\cAFq'k2'AiZ9)12G?sbECX#&t+R'=Q:FASO/+;!U#]=H70]BK;SgY.?<h"]SS\I<Dm[TWNO,ZfHJefC#NqPKH(("-%S"L?Rgkf<Hb;.YE'mHs^i8#"fHm*Osl%0V0:g=@o.t%cD5!>]*X&9[g3+@'G:+,J)"0LJB.FLI"I]HN8U(Z'?B;I.RH@f%3$EM`,0?#mcR4+&`g:0tj6tYD%OJ/K*<i<Jh&<o'W.9270)?0P[[U:d4DhL9V/Lp!"T%2nKI<mmOs+9#u,!j(uS9d0;+,kL_S1[TKK&F?kUgA&>0WbsUGZq3ukG4ojF(?&eVkaJ[\QC=dYr/nT+Ko0[ATs<#"9-V+j6JU9!VG@5jn[H9eG;u=q6UeH&c/+;oFH4PJufDLThC#=HO>O"<3J08Wk7!?T_5im=QbgYFkb_u[I_hlO6tl3JS1Ndk.6"$gL>-QIaDQ1c80gBTbiej]+iL!q\Y./3Y*t#>dOq>^([^PHb4p)k:(aHIL_H9BI$+=R!\Uh.W)WLO.g2cj;j2Q?,Go'_9h/*eFsXg4e6D_Dek+uK4qR=dnt4D^b"Pa..+RM'1H7*/2Ge<4BleN$d')Fq(`?``Fl(`i6DA_%8?Jd>$VqR<(#^N%3lT#DUV.24<(IlY5'GQ<a]@/XTh2BWtkie*<a0;bQs.@C@2>9O2RE4G'g0*PEkkmE&MtuK^.C]hf+!ZUutq]WJZolZ)8.*8o7;mM^SmAJ]lf7fX!dMe*t^NRlt;2!I[sO'JB_;Pt\:h_P/<-(U&Lhf/Ds=#*g#iBlWNeqCpA2?c7/5hP^$\0I4f8jp0"6.."(4g9:<\ahQ[4,e[2L#e_\07c6ugKf&WO*S3_!qfn&L%sTKCB*nnN^YiC#fPHO+;6Z^XTHZ&lL.qE`++'.9j3cnYdeZ8eBSS>JVL&N'6b2XqBXG"2ITqLN1A$Rr=sSdp2(I)ac;iK)`4C3dH>F`h8h<6Y3cbCsU4,?c=]+Vfm[@p:SVce<8^@rj;?L*t'Yc^p]`XF(;!a4rlpq:1+DL/'#kSdYT-m^=>+deVmL=[NJj<qM\"aZq>nfrm9gQ;nPlnm0QcRt')PZ.8f^k2<'L.+fnHQuRL.)P,fg^e-E>TJY]Xe3'DLH=KV_-9[4LI*dfGQi*SP^2H)R.\9C9A)aUn6mVk97j7MjEn(R+.0D>lZha-M?%2Sn7i'V<Na(]"gU36TL@I[KkO]9g_'qTb#,=oPtaRcG7@akgGs?:I:n_qc#8]eIf7Ap!QR%duPWKT?r#(BL"&>!Y%OR#i;CL+gI^ZL&Pm][W[4AKpJ#pHsr^/L*/Cd`%5-[g+JkUl!+JP*]WN'hfdu;$f`o-3P]XGdqa>\_^VC5^HW<\f3Z'N62QK1!2b#WRBnuC$Ing^nb*Z^U`[.rkKu<C;ZSXljpen]?ap=XaI`qJIp]1N>$:2gGGj/dCQ\t0aVuoqY1B$#l0cL=g3-:&cb?Oii92(*2LJp,bS`@D4QDlY\3)-hh(ZSIC.q8]B,uOSi^ONUYW)"T0s)N,.[0*O(+fEro%?X2P*fiM<H=8KZpI]AKLReSb&/I)DJE@c9RL-h_I/Lm&;o2*"hUq#c_@3Uisoat&#FQ8@*keCKm/%X%nuTerT+bP8uQJ2Vat\onsT#`3bdgB!OVjk4h?'tCY_AnqW%+d+0!01p?%2l5m9lYU*T?daCS@n;RFpn*r=`LE_;MmbfZ[F!SXZ:%P5X\i$kQBdHX`$HC3KqaOQ*[=Y)0H._V$,#gQ?%Yk9;&B<Mu[P@5-h+\k!NbtF9n/<_Se1;;no\q,s#)pqksf5;EiZ=rLKlgq0@?d@!s\3*oarGb#N4'teb<Qa+jH@EB_R2/"`KkO01qHnS#@75Y\7Glcoj*ZK"5L8d0]@&*gUYu!:h'/@F_p1odM.?oor0doG+$^%KhB:PWgp'nJZ6qNNs!?_tGh2&.@JJZBi4pU4SbfQ-h=#JP4D<%(&iV0hqI'E+"nJ4l9tOOE_?.<m*okoHg&YM=0_]MIOu?+jk2YN'l@g!F<JVG01'ojN^PVjKQ6Y@V?d7Cr$p(mNkQBu.ba]"u>lpV&7$ra13'nb]1oekRB@H=@('c13NoYuo9cKmK0qXY.n3iNu)6i![Vbb)7+UZn.gsApaR/44:r#_@+De.."la'd,_9p_WMN&(+)U$u0ZF&]c/-A9OlOo:7WHe-5!n(c+$MWs.j9!9aZ*'.P&+F7^ctG6G<\X2Z%Zt\kR]1Va`PQ<jS.KA1oZIGS2DZ]#UlIcQVF?kflI+E(hU>:AdU=O#*HkPBYH$`@fUS[t!LjC]"0gkH0h";2,7DmrbpR$kR_pPPNl`Q6UA:TrANE3oE#(*F)oI[&"I4-#0b*,5@3\U,'fW$B,b47&oB_J,me]AaF21m?Xlh9MJd"/8[h[25U[[Wh-L_.+8[c1#G9is2,?0Lka*3N'Sp@V[)Fdre_WdgVWhu]F?#OU#ekthI\tc%3os#QElUFqLiO#r>o,k%j2sSHR(=BYR1RN#41Y80MD"t4DgGEW6Xr)Su\`h2r+h16+R9"-Pd=#L3f.nC]^/87EDsV;k:1h=N?-t5op7#*"6p<^f]t37N@2GXl",D.G7S'Y[JuBqu;l9J.F/!eBVq+@7Zoj'3+7dn;\`o+R6p]FSG("iqm=,)g%I2=1f_[6<Rkl=YpB,TE"6','O(WD>2iJ9=5PA_c)P/Vf$r7d,Njd]ehGt#o^G-dG%r=@JmXi`k_C(C4/Bf5`cX6fJ)g]>AaimiP9Md7?rtN4075>-20JiJ%K*/N3_brBXEjNq5il?cJ;PDIejq&W(nPY<?rVWrR@0'<rhMQddfRgD7Vk.b370(f/ja(2&cb1^+"&G!%m?HFUh$*>!OQJm'+>3a@gG(o2N2R8U8'F`1NnTW<7&_B,M&rh7EPVU;D.X*mk,T5>;GBV)PGiYpn7>gCDIEBj%GUE-p^53XriNXLHi3A)Dqbm1#d2R1.r,M$9_hSRZZJWW!nLqjaAAiR>pWX=;Vc5j1kRI#-NGtQG;@V[r!/HjjeXQn$FQ%#3'?NoY7*P*1:Ne?fA!NO086Z4])?ONX9)aA]VLQ:9r9*8+;JLVGsiD/>Hq(*GFmgV2,?Ejf$o]'BJ+O_['1=g$uQm)hL<8U@j@(*dQ[s#4%a9f3ABi-Kdt"MX%GrlN6ki:<L'B3Llp#+*:$4]AL:<1SU?\lof"WBh%eR+Hfrq6*!\b1VKr3X@&(".l(2Fo(Z-*r@L6U4P>:QgeoCo1WZ5bjg"gI(c^f6N4[A_14-,hUp:%eEmi4I_gq:7Gm()_u?B4aiUBD*BSF81e&mFJ'@jmh)N_m0k@7U>&I_\FW~>
+endstream
+endobj
+37 0 obj
+<<
+/Contents 38 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+38 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 3752
+>>
+stream
+Gb"/)>BA7c&q801kf<%h7$_ZBP0*-E:On/$!$O))0DdMj-MDtcnJOn!;u>VLld<[,`#"6OWS0C%!S1pr\u2`=pW+QqIm!UHPS3pYV;=k+]KT'YaR^FEVH<D!HLf+5'D_fL&<IP0r/7)M3t0"jh>HjIZTb!ljG/a3L?"@^2o$u:;B#C_j+a=+4-\+Z$'4_2+Z\D(j9?bf"*Y`r5+25'-/YVNWJ<'FN-[@RCDpOCN;Oi2VKD\"_i(RraXtniM4VJor:&jfgZdeiot.[iI<#)Vp#Y7Q2#Ttohfpqi0^a9ikP398:X61/p2SrD]!mU/5B96RnS"-_NP&?'dM^#e+s!_pVK;;44ZDTth>X?GHb0\Jip2BF^`WBIY5I!./&91FTqR&ON3UXC*oTJh8S*T4)=np6/D#`97BEJM;5PPn3CIMdTf3/d_.[nrCGAnYTQ+VhHPfSkaKIT0!m_0X2h^.pI<i_-3#^^O!=OUOdEiuIc(Vf$:'](+WN_e8IJs[;*Uu-c"/eq],$IN@;'Na6+"^rebr>EBOH\)5Fo'"APO8(3nN(lI6^'_EST'OoT6he1+=$.=[hHfbJ4@O'h?3c_,<t[dV5#3TCp(_J5th*hdp6Z0X+d]>c!'k5CLtq44h!R,N<]s=AIjWCjF&C\O&&eL2dkLD)$O'R;jiNFU@b+:^`,G"`/D99S*Q2/QQdpOG0RjJS7,ne^?7d/:fl`nrQ<5'+C*=eB]Oh(?)A.LQ.`s&@o;H;s!^HJ?MQtLa"Z_Zo\XE+R6J9cckKW#?;7?LB65@A#^TiMZT>-o/>^Hg?:aiAZ^`Eo[@B!@1,"S7jBN"?UU#6_DB'fZ3AeiZ=`dk],Nb/gQ$KFUe"n`"@lB4Hi;_NL1)$q6cNk-!^,7ZQQIoR*1qA)&lqkrGE'2+P:;Lco%oCA&WG\_GC#kg9U.$[6F+hTNkQJb/b"1>33jRs&T>,O4$>L,!>,ZfG^_XI9pQ?1W%X#GZJt;J&D@9=?BU8i,UXk9^ELa'sJmg0#UmbY%g;:Y>i7ls"3Ir-36?mcmjGo5QD#IrUo2U"_^ii:u=XGUrKlC.ERVm5(4@L0P1A)B*=VbhNE!jjuR[8;nMK/mtcIV^&kni5RB\\''7Ne3CFnhNt7cuJ,\^Y[FmP`P[(9R@%<6:&O%#dJn#bY8YT&WD^fHm<IpK(<25aY6C&jIQLYpY>QZ&0*-7+"X]97Gjp;[].+!o7RSQAH`;#`'.?&5/eeA[E!qd4A^tYgu;s':=E`(F081^lE[c'(M%fre8*/\)q3jT0nN#>meX=2<d.p<Wa*lm/X?gY[1Zap<Em8#k*jXd<=BW)oM++gs3"gg[3pC%2M".X+BE@5OQ8';tIjmK?c"E>eTc[_Q>[M>O=e5XnQ$3dU:]r84UI1"*u2#<%Vu_@Y,bkif$d'C'.7;d0r3s?i'lZYWm(npFcNU'4&;V%fJ4$DEEsl_Y8Yuj+uKHYHSrK/l'/jQH5skMQNRMWp`rn?^f$3O*$i-D[qp!0*%sZYp.;@51ZSIX*gmfKeRBF:`^L^/1TG3FBbUBW1rj$SsUt*.<h`-"+[9H)G-A)-%Q?+Y0@Hn+=6q_b,5</DsDjoTL+]u1_3ULOiamY,I&dl;^%eh?082XK<NGc1ig4UG:EXAH6l98lfoZ\<FD'ZJ1,]@19ge3B_M0`8YO\`Om2jqWf@L]Y5jcP98hBD)<.30WgWY'H:UI?M[PGjf+e\/DY+6CT-Va@50]'>Ze1t<,(\&l9ds_,l7rQDhAR`m^03VkS]VfM4rl2Ge;fTrR!VBXlrWb?3VWV$*taX-]8l3&UH\JLCuIB)9kH,%PV,tQ\h]$+-]Y1sJt?bj2SEm*&T]07ZY(!_T)hOl#1b1e@sBo@#SO;rWt$Gg=rUFmc/Do#Ns/kCca&M7cUSkHVD>N?0UDrZ-pB<V3WAm`T)Zq%*)f2-Z9C@HGrPrC>CoB3[U'nYBY\d#lU%b1bD6foV[_B-g<mNJ3>uB$QD70[Y1%<ZV$i'f455fi4oLEX"I?gIG4qBmfO6("A+Bhaa1Lm0A,^b_F5oh-)m/*p3V1Ih+k3rTAu3AC60Tn?'[NnR=\a8r#7Z5_&^Mk4a<VpkEoA"[EsQm0dD/nL(`0`8KM\jf)*::+'N\SO#PW$kEo*DU[&$YDg@KgCH1ihXT(>FMCr0%<'s$eZ?EjE?TaXR9'gIMXGXrc;)[B<(M;IoMfL:$`%?X=a\dRN*B%$Db:*)5*046,uhFnj!5AMT'i-`P$3er9*)171K4BDg9[\(_KbB$rWjB5AnHn/<0G`a7OY=@'UdBa%tm51XXi&tHN2<<M-?4PdJC;%?pV1NgqQ8k_JaRB1X%YBi'rdVJ,%8!13P8k/#+@U6j"05I!G*18L\R#'&bWB6BJ<6sNZQp4YEaGHT'd(..IR(6G1.QAG/_95Q8&2e.+f&1*LdYRNrHHB2#DLl%"KZ^NTH$rsZEY)M5^l"E-Y_,BpLj"f-GV%A>,n\bptaNGTB4o7A&f'P[>l/0=c<5J`m5L(Ii%Z'f<8?P&?+`\elXh4S0R0$EK_:b+1f-3_PQq+/7*(V'k^L%g]dpr%)u@n#4g@VX*oCrA'=7=IZ6>eE<!sZlD]eh,o?da:UIM>X=9@u*m(_,$/OGW*M>\4>)``u'@muR6.k^PJ3/YufDRIOIGOP;L4C_D5+-is_*2!m_*c%m]6mGGk;iL`\,-0`H[YeIm%^W^F^EAh_P"UbA.Indf&e?qkV8l<VDBG0RCB.T[Ldh#OR5kZ-Rt<\OY^+XZOTg)l_-t$[p,L(K,ACce0E8.m@]N6Db;ilF*D%[Ep^X2d]E,\#_dn'(#'_iR]d0#XK08A!CeP2FFIZ%r6*TYA0#;@6Un/PWhG'QCmZn"Gdp,MGc+aP[G]Bf)n%;>C^\3RajSj>8o-3mqjg;W93A7YJ8"h-:`[oNq/@(q:=tH"qgLJTmJ`PcD16qlUI2JX^9tf+d%TbnfVf9e00?aK&W4#!B$he#n,=Hn?mOD#B.M<!hj`,I693d4e@,;VrWbqE*o?Gc1>Ee0"3208*:_!U,299Zr^2bD.&5U+Hs"ji5A'c&VE_)^TBuBKm!EQhhfHJ$oZ=:*^:b*L"(qmJN?:`e$'750-8:)adWlh'RjO$FMg)MnP$po?n<cpoDnc^A9CNR.*k?rT<SlSpmJ/Z:On*KPR?YK:l7869^MAW<Y#m['-O<`g,tc(gik0I_mP,Ysp(fnL[]*TX(:JDF?Elf(OtJatf[=C+[JNa)@I-$KJ%m%c9Q?6=\ZO(fr(2nHVJ!XJO3GN']:3"keYk]RBmE0EbFB7D6:RU4DW.#FlkZQ_;00R2irm;m9N4'MKp\i-[HSd5j@8`>?-j#Rlg:)#??5Fsa@Mc^S#AJ/6]L)ca98u*#9i7CDUH0qF#G3C25Ysum0:qBF[:?^_9>ZP=1rX20HhfbfmYoUD;V#&Dhaat\jCO&K46^m5l%i5r9Nfjr;?scqX'867:H?:Wj)H%4Rs64V;\Sm];<`]#"6FTB"tg_>.skck,9ipK.RR[@]@YH0%QJ%kK?utM%]-i9-Tq+H-)b)NK[-)B083g].`3)Hs\Wk!*pS2,(DHOJO"Ig[*m,!14i^(X7VdO:qb.NmNE3`nnT3':%rkNjjhuJ6cf]KF4Bp#e/rUL22KU^Er@<=(*4s3Ub9fY!jU9+(Q+9cGo6kEggj@dLYoaDfXZ?/;N2Z>o?s2AjlU,q],ggXGeAAVj#OmH>/p$_Q>Cha*]A9:K!;O8HS*]/FJ`$V,b=iD^tT<-~>
+endstream
+endobj
+39 0 obj
+<<
+/Contents 40 0 R
+/MediaBox [ 0 0 595.2756 841.8898 ]
+/Resources <<
+/Font 6 0 R
+/ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>>
+/Rotate 0
+/Trans <<
+>>
+/Type /Page
+/Parent 2 0 R
+>>
+endobj
+40 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ]
+/Length 1644
+>>
+stream
+Gatm;968iG&AII3m*YK.+@5Oc>cKbUl]0kc0>51I,f:c3"sE<1di[HN85W?$.8$B*a98^IG4Ft/MZj8#s/>mg('#Eli-_7a4]j7dqS\0.--R."0-_,,'0:u#`0"a78_bGK4h1N/KX4uT-293gELarY]+N?ZTn'q>L`;+X5Es'5A4F3[!()mrNFF"D2i1f^e7rOEHOq(^EN^?PBkQTu#E;==#<9&?PM[HoQ^?/]^cqf@DpBH-B%Mt*q8LT9/8"(s(['7S@.=Y`;mR@0,TapI`&HiU5QWV/n[rZ)FJ!_@,[ljhgY2,lMpOeVOE!g&-<:c!5UVR23M,Pj6f#@/*5LaVAE&An35i!BZN1!K&_:.T":8s%Yt'&c&k#lD<>sUj=_a@_N+EW:SsCRcK0p&*$YVeW0F5-H]4EKi18+&Cd2b!@?fcJY6kL`-lc.".6SKF3EB(d570XJL@GiO$qGagLl@]:0NSt3:9H/g,RY.3U?:;fV<&!>=eTk`LLc<QaI@kaMDoQ[<Q=c]N+me,70o;)BKJ<p-KZ[\J3[/_NqBH<k*r(^]5GIJ?EC.BBkQQaD6sottFe6@Ed<=8uXp&6$)!Y9E]ft4uPYdSU`5@1Z'7p/',Ldja\KirM=n5#4-_D<;]\;TQl;?Pdma#X9js_fZ'7NBHj<G:]\(`&\%-f8(;i8YhYM4TugA$%_FfUos8E*CNYlIe]2`9(R'f8u_5H2AHeDohdUL()CX\spS'rgjD%#1(<eW&SB3B_MLChhECD$-^(!@b;c+3hrhXHpKKp!=[]CBm8(KJ&XedjJHUde;$tKifdi@Z'(^DXH@'4@4?VZ_gIq":d2!eL6Vm^Q6Pm[1Co@M1-mS%RYT)%IZSI0uYrH&6Y=j=);*g<St4N;QT#IU(DQRfR?c\P%@j]p>Cb;2EIRfcZ=).IQ=^j/,:T6DF*VSZgjYsI'H:G>]_P4>OfG`JiPbA*(0^FrM;eHCA:`qVEeOlrZ`?\Tb7)$KKH?bZ78*s,s3+-0HRu$oiY?)'DAV*%F9*m/UUg:K-cfn\bKB<.T_M*2(OW8+_qcJhjj?U45#6(('_h',F7b'W]5ND5GgEV6>(MHM@r+qoJ6^<Xjm#9nbLueYd>0!&o!%t?8O\!GKS$\Y+uh&@]gpic!T.=`>(L?3&_R*VmdJXrt;n$LqX*FoeZpQbYu0j'UGqfCA9%>%sYt7Cg>.<I\7BOn4[rGZB-_1If5Q7rkRF_c5Oj<'a"85^n\MmM9'.)T6)<d_VOh9nDa*ND(.BuTcGjLPSW/-bhX1\\*"65mG;`a`I3:r&DR1f(eorb#L[d'/Ok=#ACt)oI.nSVmD)nACV#)Hp0/[tQ(fFt3E4lR*9qES7I8trm!FR4no-qqGR0J:T7BU2>5)p7;>VJ==/"im9auuNY&pMFMshK6pCe?WJfJLJrr["62"1`[RgrmY6;;'%iuEE"#`b>8*Uk%(R5QDL@.n:UQ-D36B^TO)"\+9K"?XN&?)o<kU<:2*1/lepiBe!s]QqL-Q5B<!W>Gi\g#e/VK,8-+<*]WTKo2q-</%;T$!cIN]SgPOE>A,RlcC:3=JJUCC(mog(3J2;V5\YbRaGZIH`/[C%;#cjbk[k*gu5K^>Ma[C5V)1A'NP+E[j.md\&<pH^HHB&mf~>
+endstream
+endobj
+xref
+0 41
+0000000000 65535 f 
+0000000015 00000 n 
+0000000408 00000 n 
+0000000531 00000 n 
+0000000580 00000 n 
+0000000779 00000 n 
+0000002230 00000 n 
+0000002292 00000 n 
+0000002399 00000 n 
+0000002511 00000 n 
+0000002616 00000 n 
+0000002732 00000 n 
+0000002933 00000 n 
+0000007038 00000 n 
+0000007239 00000 n 
+0000011447 00000 n 
+0000011648 00000 n 
+0000015717 00000 n 
+0000015918 00000 n 
+0000018830 00000 n 
+0000019162 00000 n 
+0000045009 00000 n 
+0000045117 00000 n 
+0000045225 00000 n 
+0000045333 00000 n 
+0000045446 00000 n 
+0000045559 00000 n 
+0000045672 00000 n 
+0000046004 00000 n 
+0000074132 00000 n 
+0000074240 00000 n 
+0000074348 00000 n 
+0000074456 00000 n 
+0000074569 00000 n 
+0000074682 00000 n 
+0000074795 00000 n 
+0000074996 00000 n 
+0000079426 00000 n 
+0000079627 00000 n 
+0000083472 00000 n 
+0000083673 00000 n 
+trailer
+<<
+/Size 41
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+85410
+%%EOF
