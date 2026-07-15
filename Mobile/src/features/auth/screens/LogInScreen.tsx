@@ -12,7 +12,6 @@ import { CustomText } from '../../../shared/components/ui/CustomText';
 import { CustomInput } from '../../../shared/components/ui/CustomInput';
 import { Button } from '../../../shared/components/ui/Button';
 import LogoSvg from '../../../assets/images/logo.svg';
-import GoogleSvg from '../../../assets/icons/google.svg';
 import { Link, useRouter } from 'expo-router';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { loginSchema } from '../validations/schemas';
@@ -151,20 +150,7 @@ export const LogInScreen = () => {
                 </TouchableOpacity>
               </Link>
 
-              <View style={styles.separatorContainer}>
-                <View style={styles.line} />
-                <View style={styles.dot} />
-                <View style={styles.line} />
-              </View>
 
-              <Button
-                title="Continuar con Google"
-                icon={GoogleSvg}
-                iconPosition='left'
-                onPress={() => router.push('/(tabs)')}
-                style={styles.googleButton}
-                textColor={theme.colors.black}
-              />
             </View>
         </DismissKeyboard>
       </ScrollView>
@@ -181,10 +167,7 @@ const styles = StyleSheet.create({
   form: { width: '100%' },
   loginButton: { marginTop: 10 },
   footerText: { textAlign: 'center', marginTop: 20 },
-  separatorContainer: { flexDirection: 'row', alignItems: 'center', marginVertical: 30 },
-  line: { flex: 1, height: 1, backgroundColor: theme.colors.gray400 },
-  dot: { width: 8, height: 8, borderRadius: 4, borderWidth: 1, borderColor: theme.colors.gray400, marginHorizontal: 10 },
-  googleButton: { backgroundColor: theme.colors.gray100, borderColor: theme.colors.gray400, borderWidth: 1 },
+
   generalErrorBox: {
     backgroundColor: theme.colors.danger,
     padding: 12,

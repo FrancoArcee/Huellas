@@ -4,7 +4,6 @@ export const translateCategory = (category: string): string => {
     case 'cat': return 'Gato';
     case 'bird': return 'Ave';
     case 'rabbit': return 'Conejo';
-    case 'turtle': return 'Tortuga';
     case 'hamster': return 'Hamster';
     case 'fish': return 'Pez';
     case 'other': return 'Otro';

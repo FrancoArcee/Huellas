@@ -420,8 +420,8 @@ export const EditProfileScreen = () => {
               />
 
               <CustomDropdown
-                label="Medio de comunicación"
-                placeholder="Seleccionar medio"
+                label="Método de Contacto"
+                placeholder="Seleccione un método de contacto"
                 options={COMMUNICATION_OPTIONS}
                 selectedValue={selectedPlatform}
                 onSelect={handlePlatformChange}

@@ -7,18 +7,16 @@ import DogIcon from '../../../assets/icons/categories/dog.svg';
 import CatIcon from '../../../assets/icons/categories/cat.svg';
 import BirdIcon from '../../../assets/icons/categories/bird.svg';
 import RabbitIcon from '../../../assets/icons/categories/rabbit.svg';
-import TurtleIcon from '../../../assets/icons/categories/turtle.svg';
 import HamsterIcon from '../../../assets/icons/categories/hamster.svg';
 import FishIcon from '../../../assets/icons/categories/fish.svg';
 
-type CategoryId = 'dog' | 'cat' | 'bird' | 'rabbit' | 'turtle' | 'hamster' | 'fish';
+type CategoryId = 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster' | 'fish';
 
 const CATEGORIES: { id: CategoryId; label: string; Icon: React.FC<any> }[] = [
   { id: 'dog', label: 'Perros', Icon: DogIcon },
   { id: 'cat', label: 'Gatos', Icon: CatIcon },
   { id: 'bird', label: 'Aves', Icon: BirdIcon },
   { id: 'rabbit', label: 'Conejos', Icon: RabbitIcon },
-  { id: 'turtle', label: 'Tortugas', Icon: TurtleIcon },
   { id: 'hamster', label: 'Hamsters', Icon: HamsterIcon },
   { id: 'fish', label: 'Peces', Icon: FishIcon },
 ];

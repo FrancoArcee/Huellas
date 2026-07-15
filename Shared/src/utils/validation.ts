@@ -8,7 +8,7 @@ import { z } from "zod";
 
 export const contactTypeSchema = z.enum(["WhatsApp", "Telegram", "Instagram", "Discord", "Facebook", "Messenger"]);
 export const petSizeSchema = z.enum(["small", "medium", "large"]);
-export const petCategorySchema = z.enum(["dog", "cat", "bird", "rabbit", "turtle", "hamster", "fish", "other"]);
+export const petCategorySchema = z.enum(["dog", "cat", "bird", "rabbit", "hamster", "fish", "other"]);
 export const postStatusSchema = z.enum(["ADOPTADO", "EN_TRANSITO", "EN_ADOPCION"]);
 
 // ─── Contact Validation Helper ────────────────

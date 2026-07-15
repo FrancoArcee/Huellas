@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import {
-  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -19,10 +18,7 @@ const TOTAL_STEPS = 3;
 const ORANGE = '#FA9D24';
 const STEP_GRAY = '#8F8F8F';
 const FORM_HORIZONTAL_PADDING = 24;
-const dayOptions = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, '0'));
-const monthOptions = Array.from({ length: 12 }, (_, index) => String(index + 1).padStart(2, '0'));
-const currentYear = new Date().getFullYear();
-const yearOptions = Array.from({ length: 40 }, (_, index) => String(currentYear - index));
+
 
 const sizeOptions = ['Pequeño', 'Mediano', 'Grande'];
 const genderOptions = ['Hembra', 'Macho'];
@@ -362,85 +358,33 @@ const DateField = ({
   value: string;
   onChange: (value: string) => void;
 }) => {
-  const [open, setOpen] = useState(false);
-  const [day, setDay] = useState(value.split('/')[0] || '01');
-  const [month, setMonth] = useState(value.split('/')[1] || '01');
-  const [year, setYear] = useState(value.split('/')[2] || String(currentYear));
-
-  const confirmDate = () => {
-    onChange(`${day}/${month}/${year}`);
-    setOpen(false);
-  };
-
   return (
     <View style={styles.field}>
       <Label text={label} />
-      <Pressable
-        accessibilityRole="button"
-        onPress={() => setOpen(true)}
-        style={({ pressed }) => [styles.select, pressed && styles.pressed]}
-      >
-        <CustomText style={[styles.selectText, !value && styles.selectPlaceholder]}>
-          {value || 'Seleccionar fecha'}
-        </CustomText>
-        <View style={styles.calendarIcon}>
-          <View style={styles.calendarBinding} />
-          <View style={styles.calendarLine} />
-        </View>
-      </Pressable>
-
-      <Modal transparent visible={open} animationType="fade" onRequestClose={() => setOpen(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.dateModal}>
-            <CustomText style={styles.modalTitle}>Fecha de nacimiento</CustomText>
-            <View style={styles.dateColumns}>
-              <DateColumn title="Día" value={day} options={dayOptions} onChange={setDay} />
-              <DateColumn title="Mes" value={month} options={monthOptions} onChange={setMonth} />
-              <DateColumn title="Año" value={year} options={yearOptions} onChange={setYear} />
-            </View>
-            <View style={styles.modalActions}>
-              <Pressable onPress={() => setOpen(false)} style={styles.modalSecondaryButton}>
-                <CustomText style={styles.modalSecondaryText}>Cancelar</CustomText>
-              </Pressable>
-              <Pressable onPress={confirmDate} style={styles.modalPrimaryButton}>
-                <CustomText style={styles.modalPrimaryText}>Aceptar</CustomText>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <View style={styles.inputWrap}>
+        <TextInput
+          value={value}
+          onChangeText={(text) => {
+            const cleaned = text.replace(/\D/g, '');
+            let formatted = cleaned;
+            if (cleaned.length > 2) {
+              formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+            }
+            if (cleaned.length > 4) {
+              formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+            }
+            onChange(formatted);
+          }}
+          placeholder="DD/MM/YYYY"
+          placeholderTextColor="#262323"
+          keyboardType="numeric"
+          maxLength={10}
+          style={styles.input}
+        />
+      </View>
     </View>
   );
 };
-
-const DateColumn = ({
-  title,
-  value,
-  options,
-  onChange,
-}: {
-  title: string;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
-}) => (
-  <View style={styles.dateColumn}>
-    <CustomText style={styles.dateColumnTitle}>{title}</CustomText>
-    <ScrollView style={styles.dateOptions} showsVerticalScrollIndicator={false}>
-      {options.map((option) => (
-        <Pressable
-          key={option}
-          onPress={() => onChange(option)}
-          style={[styles.dateOption, value === option && styles.dateOptionSelected]}
-        >
-          <CustomText style={[styles.dateOptionText, value === option && styles.dateOptionTextSelected]}>
-            {option}
-          </CustomText>
-        </Pressable>
-      ))}
-    </ScrollView>
-  </View>
-);
 
 const SelectField = ({
   label,
@@ -742,121 +686,7 @@ const styles = StyleSheet.create({
   dropdownOptionTextSelected: {
     fontFamily: theme.typography.fontFamily.bold,
   },
-  calendarIcon: {
-    width: 19,
-    height: 19,
-    borderWidth: 2,
-    borderColor: theme.colors.black,
-    borderRadius: 4,
-  },
-  calendarBinding: {
-    position: 'absolute',
-    top: -4,
-    left: 3,
-    right: 3,
-    height: 6,
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderColor: theme.colors.black,
-  },
-  calendarLine: {
-    position: 'absolute',
-    top: 5,
-    left: 0,
-    right: 0,
-    height: 2,
-    backgroundColor: theme.colors.black,
-  },
-  modalOverlay: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-  },
-  dateModal: {
-    width: '100%',
-    maxWidth: 360,
-    borderRadius: 18,
-    padding: 18,
-    backgroundColor: theme.colors.background,
-  },
-  modalTitle: {
-    color: theme.colors.black,
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 18,
-    lineHeight: 24,
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  dateColumns: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  dateColumn: {
-    flex: 1,
-  },
-  dateColumnTitle: {
-    color: theme.colors.black,
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 13,
-    lineHeight: 18,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  dateOptions: {
-    height: 168,
-    borderWidth: 1,
-    borderColor: theme.colors.black,
-    borderRadius: 14,
-  },
-  dateOption: {
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dateOptionSelected: {
-    backgroundColor: '#FFE5C1',
-  },
-  dateOptionText: {
-    color: theme.colors.black,
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  dateOptionTextSelected: {
-    fontFamily: theme.typography.fontFamily.bold,
-  },
-  modalActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 12,
-    marginTop: 18,
-  },
-  modalSecondaryButton: {
-    height: 40,
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-  },
-  modalPrimaryButton: {
-    height: 40,
-    borderRadius: 22,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: ORANGE,
-  },
-  modalSecondaryText: {
-    color: theme.colors.black,
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 14,
-    lineHeight: 18,
-  },
-  modalPrimaryText: {
-    color: theme.colors.white,
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 14,
-    lineHeight: 18,
-  },
+
   uploadBox: {
     height: 159,
     borderWidth: 1,

@@ -27,9 +27,22 @@ function calculateAge(birthDate: Date, today = new Date()): number {
   return today.getUTCFullYear() - birthDate.getUTCFullYear() - (hadBirthdayThisYear ? 0 : 1);
 }
 
+function calculateAgeInMonths(birthDate: Date, today = new Date()): number {
+  const yearsDiff = today.getUTCFullYear() - birthDate.getUTCFullYear();
+  const monthsDiff = today.getUTCMonth() - birthDate.getUTCMonth();
+  const daysDiff = today.getUTCDate() - birthDate.getUTCDate();
+  
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+  if (daysDiff < 0) {
+    totalMonths--;
+  }
+  return totalMonths >= 0 ? totalMonths : 0;
+}
+
 function validateBirthDateAgeConsistency(
   birthDateValue: string,
   ageValue: string,
+  unidadTiempo = 'años',
 ): string | undefined {
   if (!birthDateValue || !ageValue) return undefined;
 
@@ -39,10 +52,17 @@ function validateBirthDateAgeConsistency(
   const enteredAge = Number(ageValue);
   if (Number.isNaN(enteredAge)) return undefined;
 
-  const expectedAge = calculateAge(birthDate);
-  return enteredAge === expectedAge
-    ? undefined
-    : `La edad debe coincidir con la fecha de nacimiento (${expectedAge} anios)`;
+  if (unidadTiempo === 'meses') {
+    const expectedAge = calculateAgeInMonths(birthDate);
+    return enteredAge === expectedAge
+      ? undefined
+      : `La edad debe coincidir con la fecha de nacimiento (${expectedAge} ${expectedAge === 1 ? 'mes' : 'meses'})`;
+  } else {
+    const expectedAge = calculateAge(birthDate);
+    return enteredAge === expectedAge
+      ? undefined
+      : `La edad debe coincidir con la fecha de nacimiento (${expectedAge} ${expectedAge === 1 ? 'año' : 'años'})`;
+  }
 }
 
 const dateSchema = z.string().superRefine((value, ctx) => {
@@ -101,7 +121,7 @@ const baseAnimalFormSchema = z.object({
     });
 
 export const animalFormSchema = baseAnimalFormSchema.superRefine((data, ctx) => {
-  const consistencyError = validateBirthDateAgeConsistency(data.fechaNacimiento, data.edad);
+  const consistencyError = validateBirthDateAgeConsistency(data.fechaNacimiento, data.edad, data.unidadTiempo);
   if (consistencyError) {
     ctx.addIssue({
       code: 'custom',
@@ -168,8 +188,12 @@ export function validateStep(
   step: number,
 ): AnimalFormErrors {
   if (step === 1) {
-        const errors = validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
-    const consistencyError = validateBirthDateAgeConsistency(formData.fechaNacimiento, formData.edad);
+    const errors = validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
+    const consistencyError = validateBirthDateAgeConsistency(
+      formData.fechaNacimiento,
+      formData.edad,
+      formData.unidadTiempo
+    );
     if (consistencyError) errors.edad = consistencyError;
     return errors;
   }

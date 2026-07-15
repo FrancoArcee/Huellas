@@ -95,7 +95,10 @@ export default function FavoritesRoute() {
             </View>
           ) : posts.length === 0 ? (
             <View style={styles.centerContainer}>
-              <Text style={styles.emptyText}>Aún no likeaste ninguna publicación</Text>
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>Aún no tenés favoritos</Text>
+                <Text style={styles.emptyText}>Las publicaciones que te gusten aparecerán acá.</Text>
+              </View>
             </View>
           ) : (
             <ScrollView
@@ -192,10 +195,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
   },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontFamily: theme.typography.fontFamily.bold,
+    color: theme.colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
   emptyText: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: theme.typography.fontFamily.regular,
     color: theme.colors.textSecondary,
-    fontFamily: theme.typography.fontFamily.medium,
     textAlign: 'center',
   },
 });

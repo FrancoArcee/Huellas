@@ -10,7 +10,7 @@ export interface AnimalPostRecord {
   unidadTiempo: string;
   weight: number;
   size: 'small' | 'medium' | 'large';
-  category: 'dog' | 'cat' | 'bird' | 'rabbit' | 'turtle' | 'hamster' | 'fish' | 'other';
+  category: 'dog' | 'cat' | 'bird' | 'rabbit' | 'hamster' | 'fish' | 'other';
   gender: 'male' | 'female';
   neutered: boolean;
   latitude: number;
