@@ -124,8 +124,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderRadius: 16,
     width: '80%',
-    maxHeight: 300,
-    paddingVertical: 8,
+    maxHeight: 360,
+    paddingVertical: 12,
   },
   option: {
     paddingHorizontal: 20,

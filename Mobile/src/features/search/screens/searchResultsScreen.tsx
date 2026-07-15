@@ -41,7 +41,6 @@ const categoryLabels: Record<string, string> = {
     cat: 'Gatos',
     bird: 'Aves',
     rabbit: 'Conejos',
-    turtle: 'Tortugas',
     hamster: 'Hamsters',
     fish: 'Peces',
     other: 'Otros',

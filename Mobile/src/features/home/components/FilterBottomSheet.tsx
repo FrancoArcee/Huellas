@@ -57,7 +57,6 @@ const categoryOptions: SelectOption[] = [
   { label: 'Gatos', value: 'cat' },
   { label: 'Aves', value: 'bird' },
   { label: 'Conejos', value: 'rabbit' },
-  { label: 'Tortugas', value: 'turtle' },
   { label: 'Hamsters', value: 'hamster' },
   { label: 'Peces', value: 'fish' },
   { label: 'Otros', value: 'other' },
@@ -101,7 +100,7 @@ type RangePreset = { label: string; chip?: string; value: string; min?: number; 
 
 export const agePresets: RangePreset[] = [
   { label: 'Todas', value: '' },
-  { label: 'Cachorro (0 a 1 año)', chip: 'Cachorro', value: '0-1', min: 0, max: 1 },
+  { label: 'Cría (0 a 1 año)', chip: 'Cría', value: '0-1', min: 0, max: 1 },
   { label: 'Joven (1 a 3 años)', chip: 'Joven', value: '1-3', min: 1, max: 3 },
   { label: 'Adulto (3 a 8 años)', chip: 'Adulto', value: '3-8', min: 3, max: 8 },
   { label: 'Adulto Mayor (8+ años)', chip: 'Adulto Mayor', value: '8+', min: 8 },

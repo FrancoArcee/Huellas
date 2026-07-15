@@ -219,108 +219,108 @@ export const RegisterScreen = () => {
       style={styles.keyboardContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView 
-        style={styles.container} 
+      <ScrollView
+        style={styles.container}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
         <DismissKeyboard style={styles.innerContainer}>
-            <View style={styles.header}>
-              <LogoSvg width={80} height={80} />
-              <CustomText variant="h1" color="primary" style={styles.appName}> Huellas </CustomText>
-            </View>
+          <View style={styles.header}>
+            <LogoSvg width={80} height={80} />
+            <CustomText variant="h1" color="primary" style={styles.appName}> Huellas </CustomText>
+          </View>
 
-            <View style={styles.form}>
-              {errors.general && (
-                <View style={styles.generalErrorBox}>
-                  <CustomText variant="body" color="white" style={styles.generalErrorText}>
-                    {errors.general}
-                  </CustomText>
-                </View>
-              )}
+          <View style={styles.form}>
+            {errors.general && (
+              <View style={styles.generalErrorBox}>
+                <CustomText variant="body" color="white" style={styles.generalErrorText}>
+                  {errors.general}
+                </CustomText>
+              </View>
+            )}
 
+            <CustomInput
+              label="Nombre completo"
+              placeholder="Nombre y Apellido"
+              value={name}
+              onChangeText={handleNameChange}
+              error={errors.name}
+              leftIcon={<User size={20} color={theme.colors.gray500} />}
+            />
+            <CustomDropdown
+              label="Método de Contacto"
+              placeholder="Seleccione un método de contacto"
+              options={COMMUNICATION_OPTIONS}
+              selectedValue={selectedPlatform}
+              onSelect={handlePlatformChange}
+              error={errors.contactType}
+            />
+            {inputConfig && (
               <CustomInput
-                label="Nombre completo"
-                placeholder="Nombre y Apellido"
-                value={name}
-                onChangeText={handleNameChange}
-                error={errors.name}
-                leftIcon={<User size={20} color={theme.colors.gray500} />}
+                label={inputConfig.label}
+                placeholder={inputConfig.placeholder}
+                value={contactValue}
+                onChangeText={handleContactValueChange}
+                error={errors.contact}
+                leftIcon={<MessageSquare size={24} color={theme.colors.gray500} />}
               />
-              <CustomDropdown
-                label="Medio de comunicación"
-                placeholder="Seleccionar medio"
-                options={COMMUNICATION_OPTIONS}
-                selectedValue={selectedPlatform}
-                onSelect={handlePlatformChange}
-                error={errors.contactType}
-              />
-              {inputConfig && (
-                <CustomInput
-                  label={inputConfig.label}
-                  placeholder={inputConfig.placeholder}
-                  value={contactValue}
-                  onChangeText={handleContactValueChange}
-                  error={errors.contact}
-                  leftIcon={<MessageSquare size={20} color={theme.colors.gray500} />}
-                />
-              )}
-              <CustomInput
-                label="Correo electrónico"
-                placeholder="correo@ejemplo.com"
-                value={email}
-                onChangeText={handleEmailChange}
-                error={errors.email}
-                leftIcon={<Mail size={20} color={theme.colors.gray500} />}
-              />
-              <CustomInput
-                label="Contraseña"
-                placeholder="Mínimo 8 caracteres"
-                secureTextEntry
-                value={password}
-                onChangeText={handlePasswordChange}
-                error={errors.password}
-                leftIcon={<Lock size={20} color={theme.colors.gray500} />}
-              />
+            )}
+            <CustomInput
+              label="Correo electrónico"
+              placeholder="correo@ejemplo.com"
+              value={email}
+              onChangeText={handleEmailChange}
+              error={errors.email}
+              leftIcon={<Mail size={20} color={theme.colors.gray500} />}
+            />
+            <CustomInput
+              label="Contraseña"
+              placeholder="Mínimo 8 caracteres"
+              secureTextEntry
+              value={password}
+              onChangeText={handlePasswordChange}
+              error={errors.password}
+              leftIcon={<Lock size={20} color={theme.colors.gray500} />}
+            />
 
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => handleAcceptedTermsChange(!acceptedTerms)}
-                activeOpacity={0.8}
-              >
-                <View style={[
-                  styles.checkbox,
-                  acceptedTerms && { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
-                  errors.acceptedTerms ? { borderColor: theme.colors.danger } : {}
-                ]}>
-                  {acceptedTerms && <CustomText variant="caption" color="white" style={styles.checkText}>✓</CustomText>}
-                </View>
-                <CustomText variant="caption" style={{ marginLeft: 10 }}>
-                  Acepto los términos y condiciones
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => handleAcceptedTermsChange(!acceptedTerms)}
+              activeOpacity={0.8}
+            >
+              <View style={[
+                styles.checkbox,
+                acceptedTerms && { backgroundColor: theme.colors.primary, borderColor: theme.colors.primary },
+                errors.acceptedTerms ? { borderColor: theme.colors.danger } : {}
+              ]}>
+                {acceptedTerms && <CustomText variant="caption" color="white" style={styles.checkText}>✓</CustomText>}
+              </View>
+              <CustomText variant="caption" style={{ marginLeft: 10 }}>
+                Acepto los términos y condiciones
+              </CustomText>
+            </TouchableOpacity>
+
+            {errors.acceptedTerms && (
+              <CustomText variant="caption" color="danger" style={styles.termsErrorText}>
+                {errors.acceptedTerms}
+              </CustomText>
+            )}
+
+            <Button
+              title="Registrarme"
+              loading={isLoading}
+              disabled={isLoading}
+              onPress={handleRegister}
+            />
+
+            <Link href="/(auth)/login" asChild>
+              <TouchableOpacity>
+                <CustomText variant="body" style={styles.footerText}>
+                  Ya tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Inicia sesión</CustomText>
                 </CustomText>
               </TouchableOpacity>
-
-              {errors.acceptedTerms && (
-                <CustomText variant="caption" color="danger" style={styles.termsErrorText}>
-                  {errors.acceptedTerms}
-                </CustomText>
-              )}
-
-              <Button
-                title="Registrarme"
-                loading={isLoading}
-                disabled={isLoading}
-                onPress={handleRegister}
-              />
-
-              <Link href="/(auth)/login" asChild>
-                <TouchableOpacity>
-                  <CustomText variant="body" style={styles.footerText}>
-                    Ya tenes cuenta? <CustomText variant="body" style={{ fontWeight: 'bold' }}>Inicia sesión</CustomText>
-                  </CustomText>
-                </TouchableOpacity>
-              </Link>
-            </View>
+            </Link>
+          </View>
         </DismissKeyboard>
       </ScrollView>
     </KeyboardAvoidingView>

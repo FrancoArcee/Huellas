@@ -18,7 +18,7 @@ import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import Plus from '../../../assets/icons/buttons/plus.svg';
 import Trash from '../../../assets/icons/buttons/trash.svg';
 import Location from '../../../assets/icons/location.svg';
-import { colors } from '../../../theme/index';
+import { colors, theme } from '../../../theme/index';
 import { useAuthStore } from '../../../shared/store/authStore';
 import { FileText, AlertCircle } from 'lucide-react-native';
 import { getStatusColors } from '../../../shared/utils/translations';
@@ -248,15 +248,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: theme.typography.fontFamily.bold,
     color: colors.textPrimary,
-    marginBottom: 8,
     textAlign: 'center',
+    marginBottom: 8,
   },
   emptyText: {
     fontSize: 14,
-    color: colors.gray500,
+    fontFamily: theme.typography.fontFamily.regular,
+    color: colors.textSecondary,
     textAlign: 'center',
   },
   card: {

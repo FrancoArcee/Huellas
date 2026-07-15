@@ -13,7 +13,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { usePublicacionesStore, type PublicacionForm } from '../store/publicaciones';
 import { StepIndicator } from '../components/StepIndicator';
-import { BirthDatePicker } from '../components/BirthDatePicker';
 import { FeedbackModal } from '../../../shared/components/ui/FeedbackModal';
 import ChevronDown from '../../../assets/icons/buttons/chevronDown.svg';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
@@ -210,7 +209,25 @@ export default function EditAnimalScreen() {
             {renderError('nombre')}
 
             <Text style={styles.label}>Fecha de nacimiento</Text>
-            <BirthDatePicker value={formData.fechaNacimiento} onChange={(value) => updateForm('fechaNacimiento', value)} />
+            <TextInput
+              style={[styles.input, errors.fechaNacimiento ? localStyles.inputError : {}]}
+              placeholder="DD/MM/YYYY"
+              placeholderTextColor="#999"
+              value={formData.fechaNacimiento}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/\D/g, '');
+                let formatted = cleaned;
+                if (cleaned.length > 2) {
+                  formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+                }
+                if (cleaned.length > 4) {
+                  formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+                }
+                updateForm('fechaNacimiento', formatted);
+              }}
+              keyboardType="numeric"
+              maxLength={10}
+            />
             {renderError('fechaNacimiento')}
 
             <Text style={styles.label}>Edad <Text style={styles.asterisk}>*</Text></Text>
