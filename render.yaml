@@ -1,0 +1,38 @@
+# ─────────────────────────────────────────────────────
+#  Huellas — Render Blueprint (Backend API)
+# ─────────────────────────────────────────────────────
+#  Levanta el Server (Express + Prisma) como Web Service
+#  Docker. La base de datos PostgreSQL vive en Neon:
+#  su connection string se carga en DATABASE_URL cuando
+#  Render pide las variables (sync: false).
+#
+#  Uso:
+#    Render Dashboard → New → Blueprint → conectar repo
+#    → seleccionar la rama `deploy` → Apply.
+# ─────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: huellas-server
+    runtime: docker
+    dockerfilePath: ./Server/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      # Connection string pooled de Neon:
+      #   postgresql://<user>:<pass>@<host>-pooler.<region>.aws.neon.tech/<db>?sslmode=require
+      - key: DATABASE_URL
+        sync: false
+      # Render genera un secreto aleatorio seguro automáticamente.
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      # URL pública del servicio (se conoce después del primer deploy):
+      #   https://huellas-server.onrender.com
+      - key: BETTER_AUTH_URL
+        sync: false

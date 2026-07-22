@@ -1,0 +1,23 @@
+# ─────────────────────────────────────────────────────
+#  Huellas — Docker build context (monorepo root)
+#  El Dockerfile de Server usa la raíz como contexto;
+#  esto evita subir artefactos locales y secretos.
+# ─────────────────────────────────────────────────────
+
+.git
+**/node_modules
+**/dist
+**/.expo
+**/.env
+**/.env.*
+!**/.env.example
+
+# Mobile no participa del build del backend
+Mobile
+
+# Uploads locales y artefactos no necesarios
+Server/uploads
+output
+ia
+*.log
+session-*.md
