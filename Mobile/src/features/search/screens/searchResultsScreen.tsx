@@ -940,9 +940,8 @@ const styles = StyleSheet.create({
         gap: 16,
     },
     petCard: {
-        width: '92%',
-        maxWidth: 360,
-        height: 175,
+        width: '94%',
+        maxWidth: 500,
         alignSelf: 'center',
         marginBottom: 16,
     },
