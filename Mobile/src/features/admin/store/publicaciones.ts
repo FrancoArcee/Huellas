@@ -10,6 +10,7 @@ import {
 export interface Publicacion {
   id: string;
   nombre: string;
+  categoria: string;
   fechaNacimiento: string;
   edad: string;
   unidadTiempo: string;
@@ -30,6 +31,7 @@ export interface Publicacion {
 
 export interface PublicacionForm {
   nombre: string;
+  categoria: string;
   fechaNacimiento: string;
   edad: string;
   unidadTiempo: string;
@@ -62,6 +64,33 @@ function toIsoBirthDate(value: string): string | undefined {
   return new Date(Date.UTC(year!, month! - 1, day!)).toISOString();
 }
 
+const categoryLabels: Record<AnimalPostRecord['category'], string> = {
+  dog: 'Perro',
+  cat: 'Gato',
+  bird: 'Ave',
+  rabbit: 'Conejo',
+  hamster: 'Hamster',
+  fish: 'Pez',
+  other: 'Otro',
+};
+
+const categoryValues: Record<string, AnimalPostRecord['category']> = {
+  Perro: 'dog',
+  Perros: 'dog',
+  Gato: 'cat',
+  Gatos: 'cat',
+  Ave: 'bird',
+  Aves: 'bird',
+  Conejo: 'rabbit',
+  Conejos: 'rabbit',
+  Hamster: 'hamster',
+  Hamsters: 'hamster',
+  Pez: 'fish',
+  Peces: 'fish',
+  Otro: 'other',
+  Otros: 'other',
+};
+
 function toPublicacion(post: AnimalPostRecord): Publicacion {
   const sizeLabels: Record<AnimalPostRecord['size'], string> = {
     small: 'Chico',
@@ -72,10 +101,11 @@ function toPublicacion(post: AnimalPostRecord): Publicacion {
   return {
     id: post.id,
     nombre: post.name,
+    categoria: categoryLabels[post.category] ?? 'Perro',
     fechaNacimiento: formatBirthDate(post.birthDate),
     edad: String(post.age),
     unidadTiempo: post.unidadTiempo || (post.age === 1 ? 'año' : 'años'),
-    tamano: sizeLabels[post.size],
+    tamano: sizeLabels[post.size] ?? 'Mediano',
     ubicacion: post.location,
     peso: String(post.weight),
     genero: post.gender === 'female' ? 'Hembra' : 'Macho',
@@ -105,7 +135,7 @@ function toPayload(form: PublicacionForm): AnimalPostPayload {
     unidadTiempo: form.unidadTiempo || 'años',
     weight: Number(form.peso),
     size: sizes[form.tamano] ?? 'medium',
-    category: 'dog',
+    category: categoryValues[form.categoria] ?? 'dog',
     gender: form.genero === 'Hembra' ? 'female' : 'male',
     neutered: form.castrado === 'Si',
     status: form.estado === 'Adoptado' ? 'ADOPTADO' : form.estado === 'En tránsito' ? 'EN_TRANSITO' : 'EN_ADOPCION',

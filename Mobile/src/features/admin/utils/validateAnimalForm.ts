@@ -86,6 +86,9 @@ const baseAnimalFormSchema = z.object({
     .min(1, 'El nombre es obligatorio')
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(100, 'El nombre no puede superar los 100 caracteres'),
+  categoria: z.enum(['Perro', 'Gato', 'Ave', 'Conejo', 'Hamster', 'Pez', 'Otro'], {
+    message: 'Seleccioná una categoría válida',
+  }),
   fechaNacimiento: dateSchema,
   edad: z
     .string()
@@ -118,7 +121,7 @@ const baseAnimalFormSchema = z.object({
   descripcion: z
     .string()
     .max(255, 'La descripción no puede superar los 255 caracteres'),
-    });
+});
 
 export const animalFormSchema = baseAnimalFormSchema.superRefine((data, ctx) => {
   const consistencyError = validateBirthDateAgeConsistency(data.fechaNacimiento, data.edad, data.unidadTiempo);
@@ -188,7 +191,7 @@ export function validateStep(
   step: number,
 ): AnimalFormErrors {
   if (step === 1) {
-    const errors = validateFields(formData, ['nombre', 'fechaNacimiento', 'edad', 'tamano']);
+    const errors = validateFields(formData, ['nombre', 'categoria', 'fechaNacimiento', 'edad', 'tamano']);
     const consistencyError = validateBirthDateAgeConsistency(
       formData.fechaNacimiento,
       formData.edad,

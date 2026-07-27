@@ -40,6 +40,7 @@ export default function CreateAnimalScreen() {
 
   const [formData, setFormData] = useState<PublicacionForm>({
     nombre: '',
+    categoria: '',
     fechaNacimiento: '',
     edad: '',
     unidadTiempo: 'años',
@@ -56,7 +57,7 @@ export default function CreateAnimalScreen() {
   });
   const [imagenes, setImagenes] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [openSelect, setOpenSelect] = useState<'tamano' | 'genero' | 'castrado' | 'estado' | null>(null);
+  const [openSelect, setOpenSelect] = useState<'categoria' | 'tamano' | 'genero' | 'castrado' | 'estado' | null>(null);
   const [errors, setErrors] = useState<AnimalFormErrors>({});
   const [openUnitDropdown, setOpenUnitDropdown] = useState(false);
   const [alertError, setAlertError] = useState<{ title: string; message: string } | null>(null);
@@ -66,6 +67,7 @@ export default function CreateAnimalScreen() {
     storage.getLocationCoords().then(setUserCoords).catch(() => {});
   }, []);
 
+  const categorias = ['Perro', 'Gato', 'Ave', 'Conejo', 'Hamster', 'Pez', 'Otro'];
   const tamanos = ['Chico', 'Mediano', 'Grande'];
   const generos = ['Macho', 'Hembra'];
   const castrados = ['Si', 'No'];
@@ -171,6 +173,29 @@ export default function CreateAnimalScreen() {
               <Text style={styles.label}>Nombre de la mascota <Text style={styles.asterisk}>*</Text></Text>
               <TextInput style={styles.input} placeholder="Nombre" value={formData.nombre} onChangeText={(t) => updateForm('nombre', t)} />
               {renderError('nombre')}
+
+              <Text style={styles.label}>Especie <Text style={styles.asterisk}>*</Text></Text>
+              <TouchableOpacity style={styles.dropdownInput} onPress={() => setOpenSelect(openSelect === 'categoria' ? null : 'categoria')}>
+                <Text style={{ color: formData.categoria ? '#000' : '#999' }}>{formData.categoria || 'Seleccionar...'}</Text>
+                <ChevronDown width={20} height={20} color="#555" />
+              </TouchableOpacity>
+              {openSelect === 'categoria' && (
+                <View style={styles.selectOptions}>
+                  {categorias.map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={styles.selectOption}
+                      onPress={() => {
+                        updateForm('categoria', option);
+                        setOpenSelect(null);
+                      }}
+                    >
+                      <Text style={styles.selectOptionText}>{option}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+              {renderError('categoria')}
 
               <Text style={styles.label}>Fecha de nacimiento</Text>
               <TextInput
