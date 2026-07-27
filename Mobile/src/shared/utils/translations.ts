@@ -28,8 +28,11 @@ export const translateSize = (size: string): string => {
   }
 };
 
-export const formatAge = (age: number | undefined): string => {
+export const formatAge = (age: number | undefined, unidadTiempo?: string): string => {
   if (age === undefined || age === null) return '';
+  if (unidadTiempo === 'meses') {
+    return `${age} ${age === 1 ? 'mes' : 'meses'}`;
+  }
   return `${age} ${age === 1 ? 'año' : 'años'}`;
 };
 

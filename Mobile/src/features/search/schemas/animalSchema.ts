@@ -7,6 +7,7 @@ export const backendAnimalSchema = z.object({
   category: z.string().default(''),
   size: z.string().optional(),
   age: z.number().optional(),
+  unidadTiempo: z.string().optional(),
   weight: z.number().optional(),
   gender: z.string().optional(),
   latitude: z.number().optional(),
@@ -46,7 +47,9 @@ export const mapBackendAnimalToDTO = (backend: BackendAnimalDTO): AnimalDTO => (
   distanceKm: 0,
   type: backend.category,
   gender: backend.gender || '',
-  age: backend.age ? `${backend.age} años` : '',
+  age: backend.age
+    ? `${backend.age} ${backend.unidadTiempo === 'meses' ? (backend.age === 1 ? 'mes' : 'meses') : (backend.age === 1 ? 'año' : 'años')}`
+    : '',
   weightKg: backend.weight || 0,
   latitude: backend.latitude,
   longitude: backend.longitude,

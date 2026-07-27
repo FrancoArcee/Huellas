@@ -121,8 +121,23 @@ function calculateAgeFromBirthDate(value: string, today = new Date()): number | 
   return today.getUTCFullYear() - birthDate.getUTCFullYear() - (hadBirthdayThisYear ? 0 : 1);
 }
 
+function calculateAgeInMonthsFromBirthDate(value: string, today = new Date()): number | null {
+  const birthDate = new Date(value);
+  if (Number.isNaN(birthDate.getTime())) return null;
+
+  const yearsDiff = today.getUTCFullYear() - birthDate.getUTCFullYear();
+  const monthsDiff = today.getUTCMonth() - birthDate.getUTCMonth();
+  const daysDiff = today.getUTCDate() - birthDate.getUTCDate();
+
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+  if (daysDiff < 0) {
+    totalMonths--;
+  }
+  return totalMonths >= 0 ? totalMonths : 0;
+}
+
 function validateBirthDateAndAge(
-  data: { age?: number; birthDate?: string },
+  data: { age?: number; birthDate?: string; unidadTiempo?: string },
   ctx: z.RefinementCtx,
 ): void {
   if (!data.birthDate) return;
@@ -137,30 +152,51 @@ function validateBirthDateAndAge(
     return;
   }
 
-  const expectedAge = calculateAgeFromBirthDate(data.birthDate);
-  if (expectedAge === null) return;
+  if (data.unidadTiempo === "meses") {
+    const expectedMonths = calculateAgeInMonthsFromBirthDate(data.birthDate);
+    if (expectedMonths === null) return;
 
-  if (expectedAge > 50) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["birthDate"],
-      message: "El campo birthDate no puede ser una fecha futura",
-    });
-  }
+    if (expectedMonths > 600) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["birthDate"],
+        message: "El campo birthDate no coincide con la edad máxima permitida",
+      });
+    }
 
-  if (data.age !== undefined && data.age !== expectedAge) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["age"],
-      message: `El campo age debe ser consistente con birthDate (debería ser ${expectedAge} años)`,
-    });
+    if (data.age !== undefined && data.age !== expectedMonths) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["age"],
+        message: `El campo age debe ser consistente con birthDate (debería ser ${expectedMonths} ${expectedMonths === 1 ? 'mes' : 'meses'})`,
+      });
+    }
+  } else {
+    const expectedAge = calculateAgeFromBirthDate(data.birthDate);
+    if (expectedAge === null) return;
+
+    if (expectedAge > 50) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["birthDate"],
+        message: "El campo birthDate no coincide con la edad máxima permitida",
+      });
+    }
+
+    if (data.age !== undefined && data.age !== expectedAge) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["age"],
+        message: `El campo age debe ser consistente con birthDate (debería ser ${expectedAge} ${expectedAge === 1 ? 'año' : 'años'})`,
+      });
+    }
   }
 }
 
 
 export const createPostSchema = z.object({
   name:       z.string().min(1).max(100),
-  age:        z.number().int().min(0).max(50),
+  age:        z.number().int().min(0).max(600),
   unidadTiempo: z.string().min(1, "La unidad de tiempo es requerida"),
   weight:     z.number().positive(),
   size:       petSizeSchema,
@@ -175,13 +211,13 @@ export const createPostSchema = z.object({
   description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl:  z.array(z.string().url()).optional(),
   status:     postStatusSchema.optional(),
-  }).superRefine((data, ctx) => {
+}).superRefine((data, ctx) => {
   validateBirthDateAndAge(data, ctx);
 });
 
 export const updatePostSchema = z.object({
   name:        z.string().min(1).max(100).optional(),
-  age:         z.number().int().min(0).max(50).optional(),
+  age:         z.number().int().min(0).max(600).optional(),
   unidadTiempo: z.string().min(1, "La unidad de tiempo es requerida").optional(),
   weight:      z.number().positive().optional(),
   size:        petSizeSchema.optional(),
@@ -196,7 +232,7 @@ export const updatePostSchema = z.object({
   description: z.string().max(255, "La descripción no puede superar los 255 caracteres").optional(),
   photosUrl:   z.array(z.string().url()).optional(),
   status:      postStatusSchema.optional(),
-  }).superRefine((data, ctx) => {
+}).superRefine((data, ctx) => {
   validateBirthDateAndAge(data, ctx);
 });
 

@@ -7,6 +7,7 @@ export interface AnimalPost {
   category: string;
   size: string;
   age: number;
+  unidadTiempo?: string;
   weight: number;
   gender: string;
   description: string;

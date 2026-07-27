@@ -161,11 +161,17 @@ export const usePublicacionesStore = create<PublicacionesState>((set) => ({
   },
 
   editarPublicacion: async (id, actualizada, photos, existingPhotosUrl) => {
-    const updated = toPublicacion(
-      await adminService.update(id, toPayload(actualizada), photos, existingPhotosUrl),
-    );
+    const existingPost = usePublicacionesStore.getState().publicaciones.find((post) => post.id === id);
+    const responseRecord = await adminService.update(id, toPayload(actualizada), photos, existingPhotosUrl);
+    const updated = toPublicacion({
+      ...responseRecord,
+      clinicalHistory:
+        responseRecord.clinicalHistory && responseRecord.clinicalHistory.length > 0
+          ? responseRecord.clinicalHistory
+          : (existingPost?.clinicalHistory as any) ?? responseRecord.clinicalHistory,
+    });
     set((state) => ({
-      publicaciones: state.publicaciones.map((post) => post.id === id ? updated : post),
+      publicaciones: state.publicaciones.map((post) => (post.id === id ? updated : post)),
     }));
     return updated;
   },

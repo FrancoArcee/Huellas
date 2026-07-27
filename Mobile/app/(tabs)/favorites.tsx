@@ -122,7 +122,7 @@ export default function FavoritesRoute() {
 
                 const petType = translateCategory(pet.category);
                 const petGender = translateGender(pet.gender);
-                const petAge = formatAge(pet.age);
+                const petAge = formatAge(pet.age, pet.unidadTiempo);
                 const details = [petType, petAge].filter(Boolean).join(' · ');
 
                 const imageSource = pet.photosUrl?.[0] || '';

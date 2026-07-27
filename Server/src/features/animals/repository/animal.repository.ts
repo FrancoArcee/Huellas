@@ -123,17 +123,65 @@ export const animalRepository = {
    * Create a new post (animal publication).
    */
   async create(data: Prisma.PostCreateInput) {
-    return prisma.post.create({ data });
+    const post = await prisma.post.create({
+      data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            profilePictureUrl: true,
+            contact: true,
+            contactType: true,
+          },
+        },
+        clinicalHistory: {
+          include: {
+            entries: {
+              orderBy: { date: "asc" },
+            },
+          },
+        },
+        _count: {
+          select: { favorites: true },
+        },
+      },
+    });
+    return mapPostClinicalHistory(post);
   },
 
   /**
    * Update an existing post. Returns the updated record.
    */
   async update(id: string, data: Prisma.PostUpdateInput) {
-    return prisma.post.update({
+    const post = await prisma.post.update({
       where: { id },
       data,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            profilePictureUrl: true,
+            contact: true,
+            contactType: true,
+          },
+        },
+        clinicalHistory: {
+          include: {
+            entries: {
+              orderBy: { date: "asc" },
+            },
+          },
+        },
+        _count: {
+          select: { favorites: true },
+        },
+      },
     });
+    return mapPostClinicalHistory(post);
   },
 
   /**

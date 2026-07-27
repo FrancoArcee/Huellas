@@ -106,7 +106,7 @@ export const useHomeData = () => {
               distanceKm: dist,
               type: translateCategory(detail.category),
               gender: translateGender((detail as any).gender),
-              age: formatAge(detail.age),
+              age: formatAge(detail.age, (detail as any).unidadTiempo),
               weightKg: detail.weight || 0,
               isFavorite: !!favRecord,
             };

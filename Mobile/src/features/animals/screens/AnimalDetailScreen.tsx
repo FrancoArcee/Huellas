@@ -214,7 +214,9 @@ export const AnimalDetailScreen = ({ topInset = 0 }: Props) => {
   const ownerInitials = getOwnerInitials(post.user.name);
   const photos = post.photosUrl?.length ? post.photosUrl : [''];
   const weightLabel = `${post.weight} Kg`;
-  const ageLabel = `${post.age} ${post.age === 1 ? 'año' : 'años'}`;
+  const ageLabel = post.unidadTiempo === 'meses'
+    ? `${post.age} ${post.age === 1 ? 'mes' : 'meses'}`
+    : `${post.age} ${post.age === 1 ? 'año' : 'años'}`;
   const ContactIcon = contactIcons[post.user.contactType];
 
   return (

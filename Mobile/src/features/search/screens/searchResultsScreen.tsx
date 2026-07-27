@@ -639,7 +639,7 @@ export function SearchResultsScreen() {
                     renderItem={({ item }) => {
                         const type = translateCategory(item.type);
                         const gender = translateGender(item.gender);
-                        const age = formatAge(parseInt(item.age, 10) || undefined);
+                        const age = item.age;
                         const details = [type, age].filter(Boolean).join(' · ');
                         const hasReferenceCoordinates =
                             (fetchParams.latitude !== undefined &&
@@ -781,7 +781,7 @@ export function SearchResultsScreen() {
                             {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)} · {translateStatus(selectedAnimal.status)}
                         </Text>
                         <Text numberOfLines={1} style={styles.inlineCardMeta}>
-                            {formatAge(parseInt(selectedAnimal.age, 10) || undefined)} · {selectedAnimal.weightKg} kg
+                            {selectedAnimal.age} · {selectedAnimal.weightKg} kg
                         </Text>
                     </View>
                 </TouchableOpacity>
