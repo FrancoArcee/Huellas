@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { theme } from '../../../theme';
 import { CustomText } from '../../../shared/components/ui/CustomText';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ChevronDownIcon from '../../../assets/icons/buttons/chevronDown.svg';
 import { AddressAutocomplete } from '../../../shared/components/ui/AddressAutocomplete';
 
@@ -154,6 +155,7 @@ export const FilterBottomSheet = ({
   initialValues = initialFilters,
   hasUserLocation = false,
 }: FilterBottomSheetProps) => {
+  const insets = useSafeAreaInsets();
   const [filters, setFilters] = useState<SheetFilters>(toSheetFilters(initialValues));
   const [openSelect, setOpenSelect] = useState<SelectKey | null>(null);
 
@@ -320,7 +322,7 @@ export const FilterBottomSheet = ({
   };
 
   return (
-    <Modal visible={shouldRender} transparent animationType="none" onRequestClose={onClose}>
+    <Modal visible={shouldRender} transparent animationType="none" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.modalRoot}>
         <Animated.View
           style={[
@@ -336,7 +338,15 @@ export const FilterBottomSheet = ({
           <Pressable style={styles.backdropPressable} onPress={onClose} />
         </Animated.View>
 
-        <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.sheet,
+            {
+              paddingBottom: Math.max(insets.bottom + 12, theme.spacing.lg),
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="Cerrar filtros"

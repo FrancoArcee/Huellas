@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
   contentShell: {
     flex: 1,
     width: '100%',
-    maxWidth: 390,
     backgroundColor: theme.colors.background,
   },
   header: {
@@ -183,9 +182,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   petCard: {
-    width: '92%',
-    maxWidth: 360,
-    height: 175,
+    width: '94%',
+    maxWidth: 500,
     alignSelf: 'center',
     marginBottom: 16,
   },
