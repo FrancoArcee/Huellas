@@ -20,6 +20,7 @@ import { X, ChevronDown, Upload, FileText, Trash2 } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import type { ImagePickerAsset } from 'expo-image-picker';
 import type { ClinicalHistoryItem } from '@huellas/shared';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../../theme/index';
 
 interface ClinicalHistoryFormModalProps {
@@ -50,6 +51,7 @@ export function ClinicalHistoryFormModal({
   onSubmit,
   editingItem,
 }: ClinicalHistoryFormModalProps) {
+  const insets = useSafeAreaInsets();
   const [type, setType] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [name, setName] = useState('');
@@ -206,6 +208,7 @@ export function ClinicalHistoryFormModal({
       visible={visible}
       animationType="slide"
       transparent
+      statusBarTranslucent
       onRequestClose={onClose}
     >
       <View style={styles.overlay}>
@@ -213,7 +216,7 @@ export function ClinicalHistoryFormModal({
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.keyboardView}
         >
-          <View style={styles.modalContainer}>
+          <View style={[styles.modalContainer, { paddingBottom: Math.max(insets.bottom + 16, 24) }]}>
             <View style={styles.header}>
               <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
                 <X width={24} height={24} color={colors.black} />
