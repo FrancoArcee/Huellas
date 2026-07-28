@@ -1,12 +1,20 @@
 // ───────────────────────────────────────────────
 //  Upload Middleware — Multer configuration
 // ───────────────────────────────────────────────
+//  Con Cloudinary configurado, los archivos se procesan
+//  en memoria y se suben a la nube (persistentes). Sin
+//  Cloudinary, se guardan en disco local (desarrollo).
 
 import { randomUUID } from "crypto";
 import { mkdirSync, unlinkSync } from "fs";
 import path from "path";
 import multer from "multer";
 import { HttpError } from "../errors/HttpError";
+import {
+  destroyCloudinaryByUrl,
+  isCloudinaryEnabled,
+  uploadToCloudinary,
+} from "../../config/cloudinary";
 
 export const animalUploadDirectory = path.resolve(process.cwd(), "uploads", "animal");
 mkdirSync(animalUploadDirectory, { recursive: true });
@@ -20,12 +28,14 @@ const extensionByMimeType: Record<string, string> = {
   "image/webp": ".webp",
 };
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, animalUploadDirectory),
-  filename: (_req, file, cb) => {
-    cb(null, `${randomUUID()}${extensionByMimeType[file.mimetype] ?? ""}`);
-  },
-});
+const storage = isCloudinaryEnabled
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: (_req, _file, cb) => cb(null, animalUploadDirectory),
+      filename: (_req, file, cb) => {
+        cb(null, `${randomUUID()}${extensionByMimeType[file.mimetype] ?? ""}`);
+      },
+    });
 
 export const upload = multer({
   storage,
@@ -52,8 +62,26 @@ export const upload = multer({
   },
 });
 
+/**
+ * Devuelve las URLs públicas de las fotos recién subidas:
+ * Cloudinary si está configurado, o el disco local si no.
+ */
+export async function persistAnimalPhotos(
+  files: Express.Multer.File[],
+  baseUrl: string,
+): Promise<string[]> {
+  if (isCloudinaryEnabled) {
+    return Promise.all(files.map((file) => uploadToCloudinary(file.buffer, "animals")));
+  }
+  return files.map((file) => `${baseUrl}/uploads/animal/${file.filename}`);
+}
+
 export function removeAnimalUploads(photoUrls: string[]): void {
   for (const photoUrl of photoUrls) {
+    if (photoUrl.includes("res.cloudinary.com")) {
+      void destroyCloudinaryByUrl(photoUrl);
+      continue;
+    }
     try {
       const parsedUrl = new URL(photoUrl, "http://localhost");
       if (!parsedUrl.pathname.startsWith("/uploads/animal/")) continue;
@@ -84,12 +112,14 @@ const clinicalExtensionByMimeType: Record<string, string> = {
   "application/pdf": ".pdf",
 };
 
-const clinicalStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, clinicalUploadDirectory),
-  filename: (_req, file, cb) => {
-    cb(null, `${randomUUID()}${clinicalExtensionByMimeType[file.mimetype] ?? ""}`);
-  },
-});
+const clinicalStorage = isCloudinaryEnabled
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: (_req, _file, cb) => cb(null, clinicalUploadDirectory),
+      filename: (_req, file, cb) => {
+        cb(null, `${randomUUID()}${clinicalExtensionByMimeType[file.mimetype] ?? ""}`);
+      },
+    });
 
 export const clinicalUpload = multer({
   storage: clinicalStorage,
@@ -117,8 +147,26 @@ export const clinicalUpload = multer({
   },
 });
 
+/**
+ * Devuelve las URLs públicas de los documentos clínicos
+ * recién subidos (Cloudinary o disco local).
+ */
+export async function persistClinicalDocuments(
+  files: Express.Multer.File[],
+  baseUrl: string,
+): Promise<string[]> {
+  if (isCloudinaryEnabled) {
+    return Promise.all(files.map((file) => uploadToCloudinary(file.buffer, "clinical")));
+  }
+  return files.map((file) => `${baseUrl}/uploads/clinical/${file.filename}`);
+}
+
 export function removeClinicalUploads(documentUrls: string[]): void {
   for (const documentUrl of documentUrls) {
+    if (documentUrl.includes("res.cloudinary.com")) {
+      void destroyCloudinaryByUrl(documentUrl);
+      continue;
+    }
     try {
       const parsedUrl = new URL(documentUrl, "http://localhost");
       if (!parsedUrl.pathname.startsWith("/uploads/clinical/")) continue;

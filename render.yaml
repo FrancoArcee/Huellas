@@ -36,3 +36,12 @@ services:
       #   https://huellas-server.onrender.com
       - key: BETTER_AUTH_URL
         sync: false
+      # Cloudinary (almacenamiento persistente de imágenes).
+      # Sin estas variables, los uploads van al disco efímero del
+      # contenedor y SE PIERDEN en cada redeploy/restart.
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false

@@ -6,13 +6,17 @@ import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, updatePostSchema, postSearchSchema } from "@huellas/shared";
 import { animalService, PostNotFoundError, ForbiddenError } from "../service/animal.service";
 import { clinicalHistoryService } from "../../clinical-history/service/clinicalHistory.service";
-import { removeAnimalUploads } from "../../../shared/middleware/uploadMiddleware";
+import {
+  persistAnimalPhotos,
+  removeAnimalUploads,
+} from "../../../shared/middleware/uploadMiddleware";
 
-function uploadedPhotoUrls(req: Request): string[] {
-  const files = (req.files as Express.Multer.File[] | undefined) ?? [];
-  return files.map(
-    (file) => `${req.protocol}://${req.get("host")}/uploads/animal/${file.filename}`,
-  );
+function getFiles(req: Request): Express.Multer.File[] {
+  return (req.files as Express.Multer.File[] | undefined) ?? [];
+}
+
+function getBaseUrl(req: Request): string {
+  return `${req.protocol}://${req.get("host")}`;
 }
 
 function parseExistingPhotos(value: unknown): string[] {
@@ -56,8 +60,9 @@ export async function createPost(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const newPhotos = uploadedPhotoUrls(req);
+  let newPhotos: string[] = [];
   try {
+    newPhotos = await persistAnimalPhotos(getFiles(req), getBaseUrl(req));
     const parsed = createPostSchema.safeParse({
       ...normalizePostBody(req.body),
       photosUrl: newPhotos,
@@ -213,8 +218,9 @@ export async function updatePost(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const newPhotos = uploadedPhotoUrls(req);
+  let newPhotos: string[] = [];
   try {
+    newPhotos = await persistAnimalPhotos(getFiles(req), getBaseUrl(req));
     const id = String(req.params.id);
     const existingPost = await animalService.getPost(id);
     const retainedPhotos = parseExistingPhotos(req.body.existingPhotosUrl);
