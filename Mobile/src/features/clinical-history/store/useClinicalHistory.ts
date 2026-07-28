@@ -37,6 +37,14 @@ export const useClinicalHistoryStore = create<ClinicalHistoryState>((set, get) =
     try {
       const data = await clinicalHistoryService.listByPost(postId);
       set({ items: data });
+
+      usePublicacionesStore.setState((state) => ({
+        publicaciones: state.publicaciones.map((p) =>
+          p.id === postId
+            ? { ...p, clinicalHistory: data }
+            : p
+        ),
+      }));
     } catch (err: any) {
       throw err;
     } finally {

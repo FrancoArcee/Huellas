@@ -47,6 +47,14 @@ export function ClinicalHistoryScreen() {
   const [itemToDelete, setItemToDelete] = useState<ClinicalHistoryItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  useEffect(() => {
+    if (postId) {
+      fetchItems(postId).catch((err) => {
+        console.error('Error fetching clinical history items:', err);
+      });
+    }
+  }, [postId, fetchItems]);
+
   const handleEditItem = (item: ClinicalHistoryItem) => {
     setEditingItem(item);
     setModalVisible(true);
