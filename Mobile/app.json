@@ -17,7 +17,7 @@
       "package": "com.huellas.app",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCK2JkdV-5h2s2iypSB-Lbs51k3jYuYbrs"
+          "apiKey": ""
         }
       },
       "icon": "./src/assets/images/logo.png",
