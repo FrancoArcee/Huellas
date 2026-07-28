@@ -12,18 +12,21 @@ import {
 import prisma from "../../../config/database";
 import { sendSuccess } from "../../../shared/utils/response";
 import { clinicalHistoryService } from "../service/clinicalHistory.service";
-import { removeClinicalUploads as removeLocalClinicalUploads } from "../../../shared/middleware/clinicalHistoryUploadMiddleware";
-import { removeClinicalUploads as removeRemoteClinicalUploads } from "../../../shared/middleware/uploadMiddleware";
+import {
+  persistClinicalHistoryDocument,
+  removeClinicalUploads as removeLocalClinicalUploads,
+} from "../../../shared/middleware/clinicalHistoryUploadMiddleware";
+import {
+  persistClinicalDocuments,
+  removeClinicalUploads as removeRemoteClinicalUploads,
+} from "../../../shared/middleware/uploadMiddleware";
 
-function getFileUrl(req: Request, filename: string): string {
-  return `${req.protocol}://${req.get("host")}/uploads/clinical-history/${filename}`;
+function getBaseUrl(req: Request): string {
+  return `${req.protocol}://${req.get("host")}`;
 }
 
-function uploadedDocumentUrls(req: Request): string[] {
-  const files = (req.files as Express.Multer.File[] | undefined) ?? [];
-  return files.map(
-    (file) => `${req.protocol}://${req.get("host")}/uploads/clinical/${file.filename}`,
-  );
+function getFiles(req: Request): Express.Multer.File[] {
+  return (req.files as Express.Multer.File[] | undefined) ?? [];
 }
 
 function parseExistingDocuments(req: Request): string[] {
@@ -64,8 +67,11 @@ export async function createClinicalHistoryItem(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const comprobanteUrl = req.file ? getFileUrl(req, req.file.filename) : "";
+  let comprobanteUrl = "";
   try {
+    if (req.file) {
+      comprobanteUrl = await persistClinicalHistoryDocument(req.file, getBaseUrl(req));
+    }
     const postId = req.params.postId as string;
     if (!postId) {
       if (req.file) removeLocalClinicalUploads([comprobanteUrl]);
@@ -111,8 +117,11 @@ export async function updateClinicalHistoryItem(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const newComprobanteUrl = req.file ? getFileUrl(req, req.file.filename) : undefined;
+  let newComprobanteUrl: string | undefined;
   try {
+    if (req.file) {
+      newComprobanteUrl = await persistClinicalHistoryDocument(req.file, getBaseUrl(req));
+    }
     const itemId = req.params.itemId as string;
     if (!itemId) {
       if (req.file) removeLocalClinicalUploads([newComprobanteUrl!]);
@@ -203,8 +212,9 @@ export async function createEntry(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const newDocuments = uploadedDocumentUrls(req);
+  let newDocuments: string[] = [];
   try {
+    newDocuments = await persistClinicalDocuments(getFiles(req), getBaseUrl(req));
     const parsed = createClinicalHistoryEntrySchema.safeParse({
       ...req.body,
       documentsUrl: newDocuments,
@@ -242,8 +252,9 @@ export async function updateEntry(
   res: Response,
   next: NextFunction,
 ): Promise<void> {
-  const newDocuments = uploadedDocumentUrls(req);
+  let newDocuments: string[] = [];
   try {
+    newDocuments = await persistClinicalDocuments(getFiles(req), getBaseUrl(req));
     const retainedDocuments = parseExistingDocuments(req);
     const allDocuments = [...retainedDocuments, ...newDocuments];
 

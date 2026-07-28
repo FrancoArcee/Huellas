@@ -9,6 +9,7 @@ import crypto from "crypto";
 import { createUserSchema, updateUserSchema } from "@huellas/shared";
 import { auth } from "../../../config/auth";
 import { userService, UserNotFoundError, ForbiddenError, ContactAlreadyInUseError } from "../service/user.service";
+import { isCloudinaryEnabled, uploadToCloudinary } from "../../../config/cloudinary";
 
 // ─── Handlers ──────────────────────────────────
 
@@ -213,6 +214,16 @@ export async function uploadProfilePicture(
   try {
     if (!req.file) {
       res.status(400).json({ success: false, message: "No file uploaded" });
+      return;
+    }
+
+    // Con Cloudinary configurado, la foto va a la nube (persistente)
+    if (isCloudinaryEnabled) {
+      const fileUrl = await uploadToCloudinary(req.file.buffer, "users");
+      res.status(200).json({
+        success: true,
+        url: fileUrl,
+      });
       return;
     }
 
