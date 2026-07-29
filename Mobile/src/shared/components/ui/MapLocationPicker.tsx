@@ -63,14 +63,19 @@ export const MapLocationPicker = ({
             permission = await Location.requestForegroundPermissionsAsync();
           }
           if (permission.status === 'granted') {
-            const position = await Location.getCurrentPositionAsync({
-              accuracy: Location.Accuracy.Balanced,
-            });
-            coords = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            };
-            delta = 0.01;
+            const position = await Promise.race([
+              Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Balanced,
+              }),
+              new Promise<null>((resolve) => setTimeout(() => resolve(null), 6000)),
+            ]);
+            if (position) {
+              coords = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              };
+              delta = 0.01;
+            }
           }
         } catch {
           // sin permiso o sin señal: seguimos con los fallbacks

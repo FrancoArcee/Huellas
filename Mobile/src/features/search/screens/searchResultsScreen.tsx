@@ -31,7 +31,7 @@ import { getDistanceKm } from '../../../shared/utils/distance';
 import { AnimalDTO } from '../schemas/animalSchema';
 import { FetchAnimalsParams, fetchAnimals } from '../services/animalsService';
 import { animalService } from '../../animals/services/animalService';
-import { translateCategory, translateGender, formatAge, formatDistance, translateStatus, getStatusColors } from '../../../shared/utils/translations';
+import { translateCategory, translateGender, formatDistance, translateStatus } from '../../../shared/utils/translations';
 
 type FilterOption = { id: string; label: string };
 type LayoutMode = 'list' | 'map';
@@ -334,8 +334,18 @@ export function SearchResultsScreen() {
     };
 
     useEffect(() => {
+        if (fetchParams.latitude !== undefined && fetchParams.longitude !== undefined) {
+            return;
+        }
+
+        let cancelled = false;
+
         const loadLocation = async () => {
+            // Desbloquea el fetch del mapa de inmediato (GPS puede colgarse).
             const savedCoords = await storage.getLocationCoords();
+            if (!cancelled) {
+                setUserCoords(savedCoords);
+            }
 
             try {
                 let permission = await Location.getForegroundPermissionsAsync();
@@ -343,29 +353,35 @@ export function SearchResultsScreen() {
                     permission = await Location.requestForegroundPermissionsAsync();
                 }
 
-                if (permission.status === 'granted') {
-                    const location = await Location.getCurrentPositionAsync({
-                        accuracy: Location.Accuracy.Balanced,
-                    });
-                    const currentCoords = {
-                        latitude: location.coords.latitude,
-                        longitude: location.coords.longitude,
-                    };
+                if (permission.status !== 'granted' || cancelled) return;
 
-                    await storage.setLocation(currentCoords.latitude, currentCoords.longitude);
+                const location = await Promise.race([
+                    Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.Balanced,
+                    }),
+                    new Promise<null>((resolve) => setTimeout(() => resolve(null), 6000)),
+                ]);
+
+                if (!location || cancelled) return;
+
+                const currentCoords = {
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                };
+
+                await storage.setLocation(currentCoords.latitude, currentCoords.longitude);
+                if (!cancelled) {
                     setUserCoords(currentCoords);
-                    return;
                 }
             } catch (error) {
                 console.warn('Error getting current location for distances', error);
             }
-
-            setUserCoords(savedCoords);
         };
 
-        if (fetchParams.latitude === undefined || fetchParams.longitude === undefined) {
-            loadLocation();
-        }
+        loadLocation();
+        return () => {
+            cancelled = true;
+        };
     }, [fetchParams.latitude, fetchParams.longitude]);
 
     // Fit map coordinates when filtered animals list changes
@@ -598,6 +614,122 @@ export function SearchResultsScreen() {
         />
     );
 
+    if (layoutMode === 'map') {
+        return (
+            <View style={styles.container}>
+                <AppMap
+                    ref={mapRef}
+                    style={styles.map}
+                    initialRegion={{
+                        ...mapCenter,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                    }}
+                    onPress={() => {
+                        setSelectedAnimal(null);
+                    }}
+                >
+                    {fetchParams.radius !== undefined &&
+                        fetchParams.latitude !== undefined &&
+                        fetchParams.longitude !== undefined && (
+                            <MapCircle
+                                center={{
+                                    latitude: fetchParams.latitude,
+                                    longitude: fetchParams.longitude,
+                                }}
+                                radius={fetchParams.radius * 1000}
+                                strokeColor="rgba(241, 156, 43, 0.55)"
+                                fillColor="rgba(241, 156, 43, 0.10)"
+                                strokeWidth={1.5}
+                            />
+                        )}
+
+                    {mapAnimals.map((animal) => {
+                        if (hiddenMarkerId === animal.id) return null;
+                        const isSelected = selectedAnimal?.id === animal.id;
+                        return (
+                            <Marker
+                                key={animal.id}
+                                coordinate={{
+                                    latitude: animal.latitude!,
+                                    longitude: animal.longitude!,
+                                }}
+                                anchor={{ x: 0.5, y: 0.976 }}
+                                onPress={(e) => {
+                                    e.stopPropagation();
+                                    if (isSelected) {
+                                        router.push({
+                                            pathname: '/animals/[id]',
+                                            params: { id: animal.id },
+                                        });
+                                    } else {
+                                        if (selectedAnimal) {
+                                            handleCloseCard(selectedAnimal.id);
+                                        }
+                                        setSelectedAnimal(animal);
+                                    }
+                                }}
+                            >
+                                <View style={styles.markerContainer}>
+                                    <PawMarkerPin isSelected={isSelected} />
+                                </View>
+                            </Marker>
+                        );
+                    })}
+                </AppMap>
+
+                {renderFloatingOverlay()}
+                {renderFilterSheet()}
+
+                {loading && animals.length === 0 && (
+                    <View pointerEvents="none" style={styles.mapLoadingOverlay}>
+                        <ActivityIndicator size="large" color={theme.colors.primary} />
+                    </View>
+                )}
+
+                {selectedAnimal && (
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => {
+                            router.push({
+                                pathname: '/animals/[id]',
+                                params: { id: selectedAnimal.id },
+                            });
+                        }}
+                        style={[styles.inlineCard, { bottom: insets.bottom + 16 }]}
+                    >
+                        <Image
+                            source={{ uri: selectedAnimal.photoUri }}
+                            style={styles.inlineCardImage}
+                        />
+                        <View style={styles.inlineCardDetails}>
+                            <View style={styles.inlineCardHeader}>
+                                <Text numberOfLines={1} style={styles.inlineCardName}>
+                                    {selectedAnimal.name}
+                                </Text>
+                                <TouchableOpacity
+                                    onPress={(evt) => {
+                                        evt.stopPropagation();
+                                        handleCloseCard(selectedAnimal.id);
+                                    }}
+                                    style={styles.closeCardBtn}
+                                >
+                                    <Text style={styles.closeCardText}>×</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <Text numberOfLines={1} style={styles.inlineCardInfo}>
+                                {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)} · {translateStatus(selectedAnimal.status)}
+                            </Text>
+                            <Text numberOfLines={1} style={styles.inlineCardMeta}>
+                                {selectedAnimal.age} · {selectedAnimal.weightKg} kg
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            </View>
+        );
+    }
+
     if (loading && animals.length === 0) {
         return (
             <View style={styles.centeredContainer}>
@@ -606,7 +738,7 @@ export function SearchResultsScreen() {
         );
     }
 
-    if (animals.length === 0 && layoutMode === 'list') {
+    if (animals.length === 0) {
         return (
             <View style={styles.container}>
                 {renderFloatingOverlay()}
@@ -622,170 +754,60 @@ export function SearchResultsScreen() {
         );
     }
 
-    if (layoutMode === 'list') {
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    data={animals}
-                    keyExtractor={(item) => item.id}
-                    numColumns={1}
-                    contentContainerStyle={[
-                        styles.listContent,
-                        {
-                            paddingTop: overlayHeight > 0 ? overlayHeight + 12 : insets.top + 130,
-                            paddingBottom: insets.bottom + 24,
-                        },
-                    ]}
-                    renderItem={({ item }) => {
-                        const type = translateCategory(item.type);
-                        const gender = translateGender(item.gender);
-                        const age = item.age;
-                        const details = [type, age].filter(Boolean).join(' · ');
-                        const hasReferenceCoordinates =
-                            (fetchParams.latitude !== undefined &&
-                                fetchParams.longitude !== undefined) ||
-                            userCoords != null;
-                        const distText = hasReferenceCoordinates
-                            ? formatDistance(item.distanceKm)
-                            : 'Distancia no disponible';
-                        return (
-                            <PetHorizontalCard
-                                name={item.name}
-                                details={details}
-                                location={distText}
-                                image={item.photoUri}
-                                status={item.status}
-                                tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
-                                isLiked={!!favoriteIds[item.id]}
-                                onLikePress={() => handleFavoriteToggle(item.id)}
-                                onPress={() => {
-                                    router.push({
-                                        pathname: '/animals/[id]',
-                                        params: { id: item.id },
-                                    });
-                                }}
-                                onButtonPress={() => {
-                                    router.push({
-                                        pathname: '/animals/[id]',
-                                        params: { id: item.id },
-                                    });
-                                }}
-                                style={styles.petCard}
-                            />
-                        );
-                    }}
-                />
-                {renderFloatingOverlay()}
-                {renderFilterSheet()}
-            </View>
-        );
-    }
-
     return (
         <View style={styles.container}>
-            <AppMap
-                ref={mapRef}
-                style={styles.map}
-                initialRegion={{
-                    ...mapCenter,
-                    latitudeDelta: 0.05,
-                    longitudeDelta: 0.05,
-                }}
-                onPress={() => {
-                    setSelectedAnimal(null);
-                }}
-            >
-                {fetchParams.radius !== undefined &&
-                    fetchParams.latitude !== undefined &&
-                    fetchParams.longitude !== undefined && (
-                        <MapCircle
-                            center={{
-                                latitude: fetchParams.latitude,
-                                longitude: fetchParams.longitude,
-                            }}
-                            radius={fetchParams.radius * 1000}
-                            strokeColor="rgba(241, 156, 43, 0.55)"
-                            fillColor="rgba(241, 156, 43, 0.10)"
-                            strokeWidth={1.5}
-                        />
-                    )}
-
-                {mapAnimals.map((animal) => {
-                    if (hiddenMarkerId === animal.id) return null;
-                    const isSelected = selectedAnimal?.id === animal.id;
+            <FlatList
+                data={animals}
+                keyExtractor={(item) => item.id}
+                numColumns={1}
+                contentContainerStyle={[
+                    styles.listContent,
+                    {
+                        paddingTop: overlayHeight > 0 ? overlayHeight + 12 : insets.top + 130,
+                        paddingBottom: insets.bottom + 24,
+                    },
+                ]}
+                renderItem={({ item }) => {
+                    const type = translateCategory(item.type);
+                    const gender = translateGender(item.gender);
+                    const age = item.age;
+                    const details = [type, age].filter(Boolean).join(' · ');
+                    const hasReferenceCoordinates =
+                        (fetchParams.latitude !== undefined &&
+                            fetchParams.longitude !== undefined) ||
+                        userCoords != null;
+                    const distText = hasReferenceCoordinates
+                        ? formatDistance(item.distanceKm)
+                        : 'Distancia no disponible';
                     return (
-                        <Marker
-                            key={animal.id}
-                            coordinate={{
-                                latitude: animal.latitude!,
-                                longitude: animal.longitude!,
+                        <PetHorizontalCard
+                            name={item.name}
+                            details={details}
+                            location={distText}
+                            image={item.photoUri}
+                            status={item.status}
+                            tags={[gender, `${item.weightKg} KG`].filter(Boolean)}
+                            isLiked={!!favoriteIds[item.id]}
+                            onLikePress={() => handleFavoriteToggle(item.id)}
+                            onPress={() => {
+                                router.push({
+                                    pathname: '/animals/[id]',
+                                    params: { id: item.id },
+                                });
                             }}
-                            anchor={{ x: 0.5, y: 0.976 }}
-                            onPress={(e) => {
-                                e.stopPropagation();
-                                if (isSelected) {
-                                    router.push({
-                                        pathname: '/animals/[id]',
-                                        params: { id: animal.id },
-                                    });
-                                } else {
-                                    if (selectedAnimal) {
-                                        handleCloseCard(selectedAnimal.id);
-                                    }
-                                    setSelectedAnimal(animal);
-                                }
+                            onButtonPress={() => {
+                                router.push({
+                                    pathname: '/animals/[id]',
+                                    params: { id: item.id },
+                                });
                             }}
-                        >
-                            <View style={styles.markerContainer}>
-                                <PawMarkerPin isSelected={isSelected} />
-                            </View>
-                        </Marker>
+                            style={styles.petCard}
+                        />
                     );
-                })}
-            </AppMap>
-
+                }}
+            />
             {renderFloatingOverlay()}
             {renderFilterSheet()}
-
-            {selectedAnimal && (
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() => {
-                        router.push({
-                            pathname: '/animals/[id]',
-                            params: { id: selectedAnimal.id },
-                        });
-                    }}
-                    style={[styles.inlineCard, { bottom: insets.bottom + 16 }]}
-                >
-                    <Image
-                        source={{ uri: selectedAnimal.photoUri }}
-                        style={styles.inlineCardImage}
-                    />
-                    <View style={styles.inlineCardDetails}>
-                        <View style={styles.inlineCardHeader}>
-                            <Text numberOfLines={1} style={styles.inlineCardName}>
-                                {selectedAnimal.name}
-                            </Text>
-                            <TouchableOpacity
-                                onPress={(evt) => {
-                                    evt.stopPropagation();
-                                    handleCloseCard(selectedAnimal.id);
-                                }}
-                                style={styles.closeCardBtn}
-                            >
-                                <Text style={styles.closeCardText}>×</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Text numberOfLines={1} style={styles.inlineCardInfo}>
-                            {translateCategory(selectedAnimal.type)} · {translateGender(selectedAnimal.gender)} · {translateStatus(selectedAnimal.status)}
-                        </Text>
-                        <Text numberOfLines={1} style={styles.inlineCardMeta}>
-                            {selectedAnimal.age} · {selectedAnimal.weightKg} kg
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            )}
         </View>
     );
 }
@@ -803,6 +825,13 @@ const styles = StyleSheet.create({
     },
     map: {
         ...StyleSheet.absoluteFillObject,
+    },
+    mapLoadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(255,255,255,0.25)',
+        zIndex: 5,
     },
     floatingOverlay: {
         position: 'absolute',

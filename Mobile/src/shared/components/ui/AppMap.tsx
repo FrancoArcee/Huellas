@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
-import MapView, { type MapViewProps } from 'react-native-maps';
+import { Platform } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, type MapViewProps } from 'react-native-maps';
 
 /**
  * Mapa base de la app: un único punto de configuración para que todos
@@ -63,6 +64,7 @@ const voyagerStyle = [
 export const AppMap = forwardRef<MapView, MapViewProps>((props, ref) => (
   <MapView
     ref={ref}
+    provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
     customMapStyle={voyagerStyle}
     toolbarEnabled={false}
     // iOS: Apple Maps sigue el modo oscuro del sistema; la app es clara
