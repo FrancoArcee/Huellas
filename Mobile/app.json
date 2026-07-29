@@ -20,10 +20,10 @@
           "apiKey": ""
         }
       },
-      "icon": "./src/assets/images/logo.png",
+      "icon": "./src/assets/images/icon.png",
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/logo.png",
-        "backgroundColor": "#F1EEEE"
+        "foregroundImage": "./src/assets/images/adaptive-icon.png",
+        "backgroundColor": "#FB7005"
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
