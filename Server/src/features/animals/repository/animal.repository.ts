@@ -1,12 +1,6 @@
-// ───────────────────────────────────────────────
-//  Animal Repository — Prisma operations for Post
-// ───────────────────────────────────────────────
-
 import type { Prisma } from "@prisma/client";
 import prisma from "../../../config/database";
 import type { AreaFilter } from "../../locations/service/location.service";
-
-// ─── Types ─────────────────────────────────────
 
 export interface PaginatedPosts {
   posts: Array<Record<string, unknown>>;
@@ -24,15 +18,12 @@ export interface PostFilters {
   areaFilter?: AreaFilter;
   q?: string;
   status?: string;
-  // ── Geolocation filters ──
   latitude?: number;
   longitude?: number;
   radius?: number; // in kilometers
-  // ── Range filters ──
   minAge?: number;
   maxAge?: number;
   neutered?: boolean;
-  // ── User filter ──
   userId?: string;
 }
 
@@ -61,8 +52,6 @@ async function findIdsWithinRadius(
   `;
   return rows.map((r: { id: string }) => r.id);
 }
-
-// ─── Repository ────────────────────────────────
 
 function mapPostClinicalHistory(post: any) {
   if (!post) return post;
@@ -160,7 +149,6 @@ export const animalRepository = {
 
     const where: Prisma.PostWhereInput = {};
 
-    // ── Geolocation filter ───────────────────────
     if (
       filters.latitude !== undefined &&
       filters.longitude !== undefined &&
@@ -174,7 +162,6 @@ export const animalRepository = {
       where.id = { in: ids };
     }
 
-    // ── Text / category filters ───────────────────
     if (filters.category) {
       where.category = filters.category;
     }
@@ -184,7 +171,6 @@ export const animalRepository = {
     if (filters.gender) {
       where.gender = filters.gender;
     }
-    // ── Locality filter ──────────────────────────
     // Cuando hay una localidad normalizada (Georef) se filtra por
     // pertenencia real: ID exacto de localidad o su contenedor
     // administrativo. El match textual queda como fallback en el OR
@@ -219,7 +205,6 @@ export const animalRepository = {
       where.status = { not: "ADOPTADO" as any };
     }
 
-    // ── Range filters ────────────────────────────
     if (filters.minAge !== undefined || filters.maxAge !== undefined) {
       where.age = {
         ...(filters.minAge !== undefined && { gte: filters.minAge }),
@@ -231,7 +216,6 @@ export const animalRepository = {
       where.neutered = filters.neutered;
     }
 
-    // ── User filter ──────────────────────────────
     if (filters.userId) {
       where.userId = filters.userId;
     }

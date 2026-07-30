@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────
-//  Env — Environment variables configuration
+//  Env — Configuración de variables de entorno
 // ───────────────────────────────────────────────
 
 import dotenv from "dotenv";
