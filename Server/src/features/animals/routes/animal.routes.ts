@@ -1,7 +1,3 @@
-// ───────────────────────────────────────────────
-//  Animal Routes — Express router
-// ───────────────────────────────────────────────
-
 import { Router } from "express";
 import { requireAuth } from "../../../shared/middleware/authMiddleware";
 import { upload } from "../../../shared/middleware/uploadMiddleware";
@@ -16,8 +12,6 @@ import {
 
 const router = Router();
 
-// ─── Public routes ─────────────────────────────
-
 /**
  * GET /animals
  * List posts with optional filters and pagination.
@@ -30,31 +24,27 @@ router.get("/", listPosts);
  */
 router.get("/:id", getPost);
 
-// ─── Protected routes (require authentication) ─
-
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (any authenticated user).
+ * Obtiene el historial clínico de un post (cualquier usuario autenticado).
  */
 router.get("/:id/clinical-history", requireAuth, getClinicalHistory);
 
-// ─── Protected routes (require authentication) ─
-
 /**
  * POST /animals
- * Create a new post (animal publication).
+ * Crea un nuevo post (publicación de animal).
  */
 router.post("/", requireAuth, upload.array("photos", 3), createPost);
 
 /**
  * PUT /animals/:id
- * Update a post (owner only).
+ * Actualiza un post (solo dueño).
  */
 router.put("/:id", requireAuth, upload.array("photos", 3), updatePost);
 
 /**
  * DELETE /animals/:id
- * Delete a post (owner only).
+ * Elimina un post (solo dueño).
  */
 router.delete("/:id", requireAuth, deletePost);
 

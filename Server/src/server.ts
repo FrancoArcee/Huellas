@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────
-//  Entry point — Start the server
+//  Entry point — Inicia el servidor
 // ───────────────────────────────────────────────
 
 import "./config/server";

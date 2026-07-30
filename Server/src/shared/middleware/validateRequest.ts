@@ -1,13 +1,13 @@
 // ───────────────────────────────────────────────
-//  Validate Request — Zod schema validation middleware
+//  Validate Request — Middleware de validación de esquemas Zod
 // ───────────────────────────────────────────────
 
 import type { Request, Response, NextFunction } from "express";
 import type { ZodSchema } from "zod";
 
 /**
- * Express middleware that validates req.body (or req.query) against a Zod schema.
- * If validation fails, responds with 400 and the field errors.
+ * Middleware de Express que valida req.body (o req.query) contra un esquema Zod.
+ * Si la validación falla, responde con 400 y los errores de campo.
  */
 export function validate(schema: ZodSchema) {
   return (req: Request, res: Response, next: NextFunction): void => {

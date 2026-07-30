@@ -1,7 +1,3 @@
-// ───────────────────────────────────────────────
-//  Animal Controller — Express request handlers
-// ───────────────────────────────────────────────
-
 import type { Request, Response, NextFunction } from "express";
 import { createPostSchema, updatePostSchema, postSearchSchema } from "@huellas/shared";
 import { animalService, PostNotFoundError, ForbiddenError } from "../service/animal.service";
@@ -48,12 +44,10 @@ function normalizePostBody(body: Record<string, unknown>): Record<string, unknow
   return normalized;
 }
 
-// ─── Handlers ──────────────────────────────────
-
 /**
  * POST /animals
- * Create a new post (animal publication).
- * Requires authentication.
+ * Crear un nuevo post (animal publication).
+ * requiere autenticación.
  */
 export async function createPost(
   req: Request,
@@ -93,8 +87,8 @@ export async function createPost(
 
 /**
  * GET /animals
- * List posts with optional filters, geolocation search, and pagination.
- * Public endpoint (no authentication required).
+ * Lista publicaciones con filtros opcionales, búsqueda geográfica y paginación.
+ * Endpoint público (no requiere autenticación).
  *
  * Query params:
  *   q          – text search on pet name
@@ -159,8 +153,8 @@ export async function listPosts(
 
 /**
  * GET /animals/:id
- * Retrieve a single post by ID.
- * Public endpoint (no authentication required).
+ * Obtiene un post por ID.
+ * Endpoint público (no requiere autenticación).
  */
 export async function getPost(
   req: Request,
@@ -186,7 +180,7 @@ export async function getPost(
 
 /**
  * GET /animals/:id/clinical-history
- * Retrieve the clinical history of a post (any authenticated user).
+ * Obtiene el historial clínico de un post (cualquier usuario autenticado).
  */
 export async function getClinicalHistory(
   req: Request,
@@ -211,7 +205,7 @@ export async function getClinicalHistory(
 
 /**
  * PUT /animals/:id
- * Update a post. The requester must be the owner.
+ * Actualiza un post. El solicitante debe ser el dueño.
  */
 export async function updatePost(
   req: Request,
@@ -266,7 +260,7 @@ export async function updatePost(
 
 /**
  * DELETE /animals/:id
- * Delete a post. The requester must be the owner.
+ * Elimina un post. El solicitante debe ser el dueño.
  */
 export async function deletePost(
   req: Request,

@@ -1,15 +1,9 @@
-// ───────────────────────────────────────────────
-//  Animal Service — Business logic layer
-// ───────────────────────────────────────────────
-
 import prisma from "../../../config/database";
 import { animalRepository } from "../repository/animal.repository";
 import {
   locationService,
   type AreaFilter,
 } from "../../locations/service/location.service";
-
-// ─── Helpers ───────────────────────────────────
 
 /**
  * Normaliza la ubicación del post (provincia / departamento / municipio /
@@ -33,8 +27,6 @@ async function normalizedAreaFields(
   return area ? { ...area } : {};
 }
 
-// ─── Errors ────────────────────────────────────
-
 export class PostNotFoundError extends Error {
   public statusCode: number = 404;
   constructor(message: string = "Post not found") {
@@ -51,11 +43,9 @@ export class ForbiddenError extends Error {
   }
 }
 
-// ─── Service ───────────────────────────────────
-
 export const animalService = {
   /**
-   * Retrieve a single post by ID. Throws 404 if not found.
+   * Obtiene un post por ID. Lanza 404 si no existe.
    */
   async getPost(id: string) {
     const post = await animalRepository.findById(id);
@@ -66,7 +56,7 @@ export const animalService = {
   },
 
   /**
-   * Create a new post. The userId comes from the authenticated user.
+   * Crea un nuevo post. El userId viene del usuario autenticado.
    */
   async createPost(data: Record<string, unknown>, userId: string) {
     const { userId: _ignoredUserId, ...postData } = data;
@@ -95,8 +85,8 @@ export const animalService = {
   },
 
   /**
-   * Update a post. Only the owner (requestingUserId === post.userId) is allowed.
-   * Throws 403 if the requester is not the owner.
+   * Actualiza un post. Solo el dueño puede hacerlo.
+   * Lanza 403 si no es el propietario.
    */
   async updatePost(id: string, data: Record<string, unknown>, requestingUserId: string) {
     const existing = await animalRepository.findById(id);
@@ -124,8 +114,8 @@ export const animalService = {
   },
 
   /**
-   * Delete a post. Only the owner (requestingUserId === post.userId) is allowed.
-   * Throws 403 if the requester is not the owner.
+   * Elimina un post. Solo el dueño puede hacerlo.
+   * Lanza 403 si no es el propietario.
    */
   async deletePost(id: string, requestingUserId: string): Promise<void> {
     const existing = await animalRepository.findById(id);
@@ -140,9 +130,9 @@ export const animalService = {
   },
 
   /**
-   * List posts with optional filters, geolocation search, and pagination.
+   * Lista posts con filtros opcionales, búsqueda geográfica y paginación.
    *
-   * When `placeId` references a Georef locality, it is resolved to
+   * Cuando `placeId` referencia una localidad Georef, se resuelve a
    * normalized area conditions (locality / municipality / department)
    * so posts are matched by real geographic containment instead of
    * matching the free-text location field.

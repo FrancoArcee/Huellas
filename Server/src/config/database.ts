@@ -1,10 +1,6 @@
 // ───────────────────────────────────────────────
 //  Database — Prisma Client singleton
 // ───────────────────────────────────────────────
-//  Prisma 7.x uses the "client" engine by default,
-//  which requires a driver adapter to connect.
-//  We use @prisma/adapter-pg for PostgreSQL.
-// ───────────────────────────────────────────────
 
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
